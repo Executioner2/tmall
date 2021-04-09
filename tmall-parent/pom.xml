@@ -41,6 +41,7 @@
         <spring.cloud.alibaba.version>2.2.5.RELEASE</spring.cloud.alibaba.version>
         <fastjson.version>1.2.29</fastjson.version>
         <jwt.version>0.7.0</jwt.version>
+        <fastdfs.version>1.27-SNAPSHOT</fastdfs.version>
     </properties>
 
     <!--子模块继承之后，提供作用：锁定版本+子模块不用写groupId和version-->
@@ -129,6 +130,12 @@
                 <groupId>io.jsonwebtoken</groupId>
                 <artifactId>jjwt</artifactId>
                 <version>${jwt.version}</version>
+            </dependency>
+            <!-- fastDFS文件管理 -->
+            <dependency>
+                <groupId>org.csource</groupId>
+                <artifactId>fastdfs-client-java</artifactId>
+                <version>${fastdfs.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

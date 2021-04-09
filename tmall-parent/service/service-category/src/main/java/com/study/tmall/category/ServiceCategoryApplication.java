@@ -1,7 +1,10 @@
 package com.study.tmall.category;
 
+import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
+import org.springframework.context.annotation.ComponentScan;
 
 /**
  * Copyright@1205878539@qq.com
@@ -11,6 +14,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * Description:
  */
 @SpringBootApplication
+@EnableDiscoveryClient
+@ComponentScan(basePackages = "com.study")
+@MapperScan("com.study.tmall.category.mapper")
 public class ServiceCategoryApplication {
     public static void main(String[] args) {
         SpringApplication.run(ServiceCategoryApplication.class, args);

@@ -1,1 +1,5 @@
+com\study\tmall\config\MybatisPlusConfig.class
 com\study\tmall\config\Swagger2Config.class
+com\study\tmall\util\FastDFSUtil.class
+com\study\tmall\util\MD5.class
+com\study\tmall\util\IpUtil.class
