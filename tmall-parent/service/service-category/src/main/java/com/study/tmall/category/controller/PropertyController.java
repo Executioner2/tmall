@@ -90,9 +90,6 @@ public class PropertyController {
             @ApiParam(name = "property", value = "属性对象", required = true)
             @RequestBody Property property){
 
-        if (property == null || StringUtils.isEmpty(property.getName())){
-            throw new TmallException(ResultCodeEnum.PARAM_ERROR);
-        }
         propertyService.updateById(property);
         return Result.ok();
     }

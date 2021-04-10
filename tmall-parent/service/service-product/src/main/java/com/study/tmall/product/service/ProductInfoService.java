@@ -1,7 +1,12 @@
 package com.study.tmall.product.service;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.study.tmall.model.product.ProductInfo;
+import com.study.tmall.vo.product.ProductQueryVo;
+
+import java.util.List;
 
 /**
  * Copyright@1205878539@qq.com
@@ -11,4 +16,9 @@ import com.study.tmall.model.product.ProductInfo;
  * Description:
  */
 public interface ProductInfoService extends IService<ProductInfo> {
+    // 批量删除商品
+    void batchRemove(List<String> idList);
+
+    // 分页条件显示商品
+    IPage<ProductInfo> findPageProductInfo(Page<ProductInfo> page, ProductQueryVo productQueryVo);
 }

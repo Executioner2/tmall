@@ -5,6 +5,7 @@ com\study\tmall\vo\product\ProductQueryVo.class
 com\study\tmall\vo\user\UserQueryVo.class
 com\study\tmall\model\product\ProductInfo.class
 com\study\tmall\model\order\OrderInfo.class
+com\study\tmall\vo\product\ProductImageReturnVo.class
 com\study\tmall\enums\PaymentStatusEnum.class
 com\study\tmall\model\category\Property.class
 com\study\tmall\model\user\UserLoginRecord.class

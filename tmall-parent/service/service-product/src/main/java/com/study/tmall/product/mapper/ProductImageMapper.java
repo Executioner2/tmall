@@ -2,6 +2,7 @@ package com.study.tmall.product.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.study.tmall.model.product.ProductImage;
+import org.apache.ibatis.annotations.Param;
 
 /**
  * Copyright@1205878539@qq.com
@@ -11,4 +12,6 @@ import com.study.tmall.model.product.ProductImage;
  * Description:
  */
 public interface ProductImageMapper extends BaseMapper<ProductImage> {
+    // 获取第一张缩略图
+    ProductImage getFirstThumbnailImage(@Param("pid") String pid);
 }

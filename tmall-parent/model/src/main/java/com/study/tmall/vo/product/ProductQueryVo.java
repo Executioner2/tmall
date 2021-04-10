@@ -21,7 +21,7 @@ public class ProductQueryVo {
     private String categoryId;
 
     @ApiModelProperty(value = "商品名称 or 商品小标题")
-    private String key;
+    private String keyword;
 
     @ApiModelProperty(value = "商品最低价格")
     private BigDecimal lowPrice;

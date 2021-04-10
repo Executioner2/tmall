@@ -3,5 +3,29 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.study.tmall.product.mapper.ProductImageMapper">
+    <resultMap id="productImageBean" type="com.study.tmall.model.product.ProductImage">
+        <id column="id" property="id"/>
+        <result column="product_id" property="productId"/>
+        <result column="type" property="type"/>
+        <result column="url" property="url"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="is_deleted" property="isDeleted"/>
+    </resultMap>
 
+    <select id="getFirstThumbnailImage" resultMap="productImageBean">
+        select
+            id,
+            product_id,
+            type,
+            url,
+            is_deleted
+        from
+            product_image
+        where
+            product_id=#{pid}
+            and is_deleted=0
+            and type=0
+        limit 0,1
+    </select>
 </mapper>

@@ -41,7 +41,7 @@ public class ProductInfo extends BaseEntity {
 
     @ApiModelProperty(value = "商品实际售价")
     @TableField("promote_price")
-    private BigDecimal promote_price;
+    private BigDecimal promotePrice;
 
     @ApiModelProperty(value = "库存")
     @TableField("stock")
