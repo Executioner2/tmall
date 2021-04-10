@@ -16,6 +16,9 @@ import java.util.Date;
 @Data
 @ApiModel(description = "属性查询vo类")
 public class PropertyQueryVo {
+    @ApiModelProperty(value = "分类id")
+    private String categoryId;
+
     @ApiModelProperty(value = "属性名称")
     private String name;
 

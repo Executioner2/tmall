@@ -9,19 +9,20 @@ package com.study.tmall.enums;
  */
 public enum ImageUrlEnum {
     NGINX_IP("http://192.168.123.130"), // nginx的ip
+    GROUP_1("group1"),
     ;
 
-    private String ip; // 图片服务器的ip
+    private String str; // 图片服务器的ip
 
-    ImageUrlEnum(String ip) {
-        this.ip = ip;
+    ImageUrlEnum(String str) {
+        this.str = str;
     }
 
-    public String getIp() {
-        return ip;
+    public String getStr() {
+        return str;
     }
 
-    public void setIp(String ip) {
-        this.ip = ip;
+    public void setStr(String str) {
+        this.str = str;
     }
 }

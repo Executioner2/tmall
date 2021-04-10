@@ -1,7 +1,12 @@
 package com.study.tmall.category.service;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.study.tmall.model.category.Property;
+import com.study.tmall.vo.category.PropertyQueryVo;
+
+import java.util.List;
 
 /**
  * Copyright@1205878539@qq.com
@@ -11,4 +16,9 @@ import com.study.tmall.model.category.Property;
  * Description:
  */
 public interface PropertyService extends IService<Property> {
+    // 批量删除属性
+    void batchRemove(List<String> idList);
+
+    // 分页条件显示属性
+    IPage<Property> findPageProperty(Page<Property> page, PropertyQueryVo propertyQueryVo);
 }

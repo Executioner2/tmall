@@ -3,11 +3,8 @@ package com.study.tmall.category.controller;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.study.tmall.category.service.CategoryInfoService;
-import com.study.tmall.enums.ImageUrlEnum;
 import com.study.tmall.model.category.CategoryInfo;
 import com.study.tmall.result.Result;
-import com.study.tmall.util.FastDFSUtil;
-import com.study.tmall.util.ImageUtil;
 import com.study.tmall.vo.category.CategoryQueryVo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -16,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
-import java.io.IOException;
+import java.util.List;
 
 /**
  * Copyright@1205878539@qq.com
@@ -47,37 +44,68 @@ public class CategoryInfoController {
 
         Page<CategoryInfo> page = new Page<>(current, limit);
         IPage<CategoryInfo> pageModule = categoryInfoService.findPageCategoryInfo(page, categoryQueryVo);
-        return Result.ok();
+        return Result.ok(pageModule);
     }
 
     // 添加分类
     @ApiOperation(value = "添加分类")
-    @PostMapping("/save")
+    @PostMapping("/save/{name}")
     public Result save(
-            @ApiParam(name = "categoryInfo", value = "分类实体类", required = true)
-            @RequestBody CategoryInfo categoryInfo,
+            @ApiParam(name = "name", value = "分类名称", required = true)
+            @PathVariable String name,
 
             @ApiParam(name = "file", value = "分类图片")
             MultipartFile file){
 
-        try {
-            // 考虑到文件传输体验，所以就在控制层将图片添加到fastDFS文件系统中
-            String filename = file.getOriginalFilename(); // 获得文件名
-            String fileExtName = "jpg"; // 默认为jpg，防止出错
-            if (filename.contains(".")){
-                fileExtName = filename.substring(filename.lastIndexOf(".") + 1); // 取得文件拓展名
-            }
-            // 上传到fastDFS中
-            String[] upload = FastDFSUtil.upload(file.getBytes(), fileExtName);
-            categoryInfo.setImageUrl(ImageUtil.compoundUrl(upload)); // 设置最终可直接访问的imageUrl地址
-            // 写入数据库中
-            categoryInfoService.save(categoryInfo);
-
-            return Result.ok();
-        } catch (IOException e) {
-            e.printStackTrace();
-            return Result.fail();
-        }
+        // 设置分类参数
+        CategoryInfo categoryInfo = new CategoryInfo();
+        categoryInfo.setName(name);
+        // 写入数据库中
+        categoryInfoService.saveCategory(categoryInfo, file);
+        return Result.ok();
     }
 
+    // 删除分类
+    @ApiOperation(value = "删除分类")
+    @DeleteMapping("/{id}")
+    public Result remove(
+            @ApiParam(name = "id", value = "分类id", required = true)
+            @PathVariable String id){
+
+        categoryInfoService.removeCategoryById(id);
+        return Result.ok();
+    }
+
+    // 批量删除分类
+    @ApiOperation(value = "批量删除分类")
+    @DeleteMapping("/batchRemove")
+    public Result batchRemove(
+            @ApiParam(name = "idList", value = "分类id集合", required = true)
+            @RequestBody List<String> idList){
+        categoryInfoService.batchRemoveCategory(idList);
+        return Result.ok();
+    }
+
+    // 编辑分类
+    @ApiOperation(value = "编辑分类")
+    @PutMapping("/update/{id}/{name}")
+    public Result update(
+            @ApiParam(name = "id", value = "分类id", required = true)
+            @PathVariable String id,
+
+            @ApiParam(name = "name", value = "分类名称")
+            @PathVariable String name,
+
+            @ApiParam(name = "file", value = "分类图片")
+            MultipartFile file){
+
+        // 设置参数
+        CategoryInfo categoryInfo = new CategoryInfo();
+        categoryInfo.setId(id);
+        categoryInfo.setName(name);
+        // 更新分类
+        categoryInfoService.updateCategoryById(categoryInfo, file);
+
+        return Result.ok();
+    }
 }

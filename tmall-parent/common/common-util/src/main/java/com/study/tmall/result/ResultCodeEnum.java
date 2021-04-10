@@ -36,6 +36,8 @@ public enum ResultCodeEnum {
     PAY_RUN(221, "支付中"),
     CANCEL_ORDER_FAIL(225, "取消订单失败"),
     CANCEL_ORDER_NO(225, "不能取消预约"),
+
+    DELETE_FAIL(301, "删除失败")
     ;
 
     private Integer code;
