@@ -16,4 +16,14 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/admin/product/productInfo")
 public class ProductInfoController {
 
+    // 分页条件显示商品
+
+    // 批量删除商品
+
+    // 删除商品
+
+    // 添加商品
+
+
+    // 编辑商品
 }
