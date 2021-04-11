@@ -22,6 +22,6 @@ import java.util.List;
 @FeignClient(value = "service-category")
 public interface PropertyFeignClient {
     // 内部调用，显示对应分类下的所有属性
-    @GetMapping("/admin/category/property/inner/show/{cid}")
-    List<Property> showByCid(@PathVariable("cid") String cid);
+    @GetMapping("/admin/category/property/inner/show/{categoryId}")
+    List<Property> showByCid(@PathVariable("categoryId") String categoryId);
 }

@@ -1,7 +1,10 @@
 package com.study.tmall.order.service;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.study.tmall.model.order.OrderInfo;
+import com.study.tmall.vo.order.OrderQueryVo;
 
 /**
  * Copyright@1205878539@qq.com
@@ -11,4 +14,9 @@ import com.study.tmall.model.order.OrderInfo;
  * Description:
  */
 public interface OrderInfoService extends IService<OrderInfo> {
+    // 分页条件显示订单
+    IPage<OrderInfo> findPageOrderInfo(Page<OrderInfo> page, OrderQueryVo orderQueryVo);
+
+    // 订单发货
+    void deliverGoods(Integer id);
 }

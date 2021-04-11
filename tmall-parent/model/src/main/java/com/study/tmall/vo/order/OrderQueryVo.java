@@ -2,6 +2,7 @@ package com.study.tmall.vo.order;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.Data;
 
 import java.util.Date;
 
@@ -12,10 +13,11 @@ import java.util.Date;
  * Versions:1.0.0
  * Description:
  */
+@Data
 @ApiModel(description = "订单查询vo类")
 public class OrderQueryVo {
-    @ApiModelProperty(value = "id")
-    private String id;
+    @ApiModelProperty(value = "订单编号")
+    private String outTradeNo;
 
     @ApiModelProperty(value = "用户id")
     private String userId;
@@ -24,8 +26,8 @@ public class OrderQueryVo {
     private Integer status;
 
     @ApiModelProperty(value = "创建日期开始")
-    private Date createTimeBegin;
+    private Date createDateBegin;
 
     @ApiModelProperty(value = "创建日期结束")
-    private Date createTimeEnd;
+    private Date createDateEnd;
 }

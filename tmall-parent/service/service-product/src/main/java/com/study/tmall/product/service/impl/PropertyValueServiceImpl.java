@@ -34,13 +34,13 @@ public class PropertyValueServiceImpl extends ServiceImpl<PropertyValueMapper, P
 
     /**
      * 显示商品属性值
-     * @param pid
+     * @param productId
      * @return
      */
     @Override
-    public List<PropertyAndValueVo> show(String pid) {
+    public List<PropertyAndValueVo> show(String productId) {
         // 查询出categoryId
-        ProductInfo productInfo = productInfoService.getById(pid);
+        ProductInfo productInfo = productInfoService.getById(productId);
         if (productInfo == null) {
             throw new TmallException(ResultCodeEnum.PARAM_ERROR);
         }
@@ -53,7 +53,7 @@ public class PropertyValueServiceImpl extends ServiceImpl<PropertyValueMapper, P
 
         // 查询出产品对应的propertyValue
         QueryWrapper<PropertyValue> wrapper = new QueryWrapper<>();
-        wrapper.eq("product_id", pid);
+        wrapper.eq("product_id", productId);
         List<PropertyValue> propertyValues = baseMapper.selectList(wrapper);
 
         // 封装成List<PropertyAndValueVo>
@@ -67,12 +67,12 @@ public class PropertyValueServiceImpl extends ServiceImpl<PropertyValueMapper, P
 
     /**
      * 根据商品id删除商品下的属性值
-     * @param pid
+     * @param productId
      */
     @Override
-    public void removeByPid(String pid) {
+    public void removeByPid(String productId) {
         QueryWrapper<PropertyValue> wrapper = new QueryWrapper<>();
-        wrapper.eq("product_id", pid);
+        wrapper.eq("product_id", productId);
         baseMapper.delete(wrapper);
     }
 

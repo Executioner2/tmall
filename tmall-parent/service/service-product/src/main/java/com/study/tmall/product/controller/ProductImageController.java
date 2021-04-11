@@ -30,21 +30,21 @@ public class ProductImageController {
 
     // 显示商品图片
     @ApiOperation(value = "显示商品图片")
-    @GetMapping("/show/{pid}")
+    @GetMapping("/show/{productId}")
     public Result show(
-            @ApiParam(name = "pid", value = "商品id", required = true)
-            @PathVariable String pid){
+            @ApiParam(name = "productId", value = "商品id", required = true)
+            @PathVariable String productId){
 
-        Map<String, List<ProductImageReturnVo>> map = productImageService.showByProductId(pid);
+        Map<String, List<ProductImageReturnVo>> map = productImageService.showByProductId(productId);
         return Result.ok(map);
     }
 
     // 批量上传图片
     @ApiOperation(value = "批量上传图片")
-    @PostMapping("/batchUpload/{pid}/{type}")
+    @PostMapping("/batchUpload/{productId}/{type}")
     public Result batchUploadImage (
-            @ApiParam(name = "pid", value = "商品id", required = true)
-            @PathVariable String pid,
+            @ApiParam(name = "productId", value = "商品id", required = true)
+            @PathVariable String productId,
 
             @ApiParam(name = "type", value = "图片类型", required = true)
             @PathVariable Integer type,
@@ -53,9 +53,9 @@ public class ProductImageController {
             MultipartFile[] files){
 
         ProductImage productImage = new ProductImage();
-        productImage.setProductId(pid);
+        productImage.setProductId(productId);
         productImage.setType(type);
-        productImageService.batchUploadImage(pid, type, files);
+        productImageService.batchUploadImage(productId, type, files);
         return Result.ok();
     }
 

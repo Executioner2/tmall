@@ -73,13 +73,13 @@ public class PropertyServiceImpl extends ServiceImpl<PropertyMapper, Property> i
 
     /**
      * 根据分类id显示所有属性
-     * @param cid
+     * @param categoryId
      * @return
      */
     @Override
-    public List<Property> showByCid(String cid) {
+    public List<Property> showByCid(String categoryId) {
         QueryWrapper<Property> wrapper = new QueryWrapper<>();
-        wrapper.eq("category_id", cid);
+        wrapper.eq("category_id", categoryId);
         return baseMapper.selectList(wrapper);
     }
 

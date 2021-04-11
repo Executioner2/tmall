@@ -35,22 +35,22 @@ public class ProductImageServiceImpl extends ServiceImpl<ProductImageMapper, Pro
 
     /**
      * 批量上传图片
-     * @param pid
+     * @param productId
      * @param type
      * @param files
      */
     @Override
-    public void batchUploadImage(String pid, Integer type, MultipartFile[] files) {
+    public void batchUploadImage(String productId, Integer type, MultipartFile[] files) {
         // 先查询数据库中是否有这个商品
         try {
-            ProductInfo productInfo = productInfoService.getById(pid);
+            ProductInfo productInfo = productInfoService.getById(productId);
             if (files == null || productInfo == null){
                 throw new TmallException(ResultCodeEnum.PARAM_ERROR);
             }
             // 上传图片
             for (MultipartFile file : files) {
                 ProductImage productImage = new ProductImage();
-                productImage.setProductId(pid);
+                productImage.setProductId(productId);
                 productImage.setType(type);
 
                 String[] upload = FastDFSUtil.upload(file.getBytes(), ImageUtil.getFileExtName(file));
@@ -66,14 +66,14 @@ public class ProductImageServiceImpl extends ServiceImpl<ProductImageMapper, Pro
 
     /**
      * 显示商品图片
-     * @param pid
+     * @param productId
      * @return
      */
     @Override
-    public Map<String, List<ProductImageReturnVo>> showByProductId(String pid) {
+    public Map<String, List<ProductImageReturnVo>> showByProductId(String productId) {
         // 根据商品id查询出对应的所有商品图片
         QueryWrapper<ProductImage> wrapper = new QueryWrapper<>();
-        wrapper.eq("product_id", pid);
+        wrapper.eq("product_id", productId);
 
         List<ProductImage> productImages = baseMapper.selectList(wrapper);
         // 让图片list集合 按 type 进行分组

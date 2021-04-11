@@ -17,10 +17,10 @@ import java.util.Map;
  */
 public interface ProductImageService extends IService<ProductImage> {
     // 批量上传图片
-    void batchUploadImage(String pid, Integer type, MultipartFile[] files);
+    void batchUploadImage(String productId, Integer type, MultipartFile[] files);
 
     // 显示商品图片
-    Map<String, List<ProductImageReturnVo>> showByProductId(String pid);
+    Map<String, List<ProductImageReturnVo>> showByProductId(String productId);
 
     // 删除图片
     void removeImageById(String id);

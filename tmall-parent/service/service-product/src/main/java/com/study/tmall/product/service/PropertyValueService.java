@@ -15,8 +15,8 @@ import java.util.List;
  */
 public interface PropertyValueService extends IService<PropertyValue> {
     // 显示商品属性值
-    List<PropertyAndValueVo> show(String pid);
+    List<PropertyAndValueVo> show(String productId);
 
     // 根据商品id删除商品下的属性值
-    void removeByPid(String pid);
+    void removeByPid(String productId);
 }

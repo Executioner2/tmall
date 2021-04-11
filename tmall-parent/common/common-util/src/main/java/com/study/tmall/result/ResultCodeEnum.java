@@ -39,6 +39,10 @@ public enum ResultCodeEnum {
 
     DELETE_FAIL(301, "删除失败"),
     PROPERTY_NULL(302, "未录入分类属性"),
+
+    PAY_FAIL(400, "支付失败"),
+    DELIVER_GOODS_FAIL(401, "发货失败"),
+    CONFIRM_GOODS_FAIL(402, "确认收货失败")
     ;
 
     private Integer code;

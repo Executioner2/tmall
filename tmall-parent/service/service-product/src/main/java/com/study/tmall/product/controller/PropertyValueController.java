@@ -28,12 +28,12 @@ public class PropertyValueController {
 
     // 显示商品属性值
     @ApiOperation(value = "显示商品属性值")
-    @GetMapping("/show/{pid}")
+    @GetMapping("/show/{productId}")
     public Result show(
-            @ApiParam(name = "pid", value = "商品id", required = true)
-            @PathVariable String pid){
+            @ApiParam(name = "productId", value = "商品id", required = true)
+            @PathVariable String productId){
 
-        List<PropertyAndValueVo> list = propertyValueService.show(pid);
+        List<PropertyAndValueVo> list = propertyValueService.show(productId);
         return Result.ok(list);
     }
 

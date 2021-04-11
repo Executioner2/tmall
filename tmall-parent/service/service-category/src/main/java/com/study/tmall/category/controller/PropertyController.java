@@ -93,11 +93,11 @@ public class PropertyController {
 
     // 内部调用，显示对应分类下的所有属性
     @ApiOperation(value = "内部调用，显示对应分类下的所有属性")
-    @GetMapping("/inner/show/{cid}") // inner 内部调用
+    @GetMapping("/inner/show/{categoryId}") // inner 内部调用
     public List<Property> showByCid(
-            @ApiParam(name = "cid", value = "分类id", required = true)
-            @PathVariable String cid){
+            @ApiParam(name = "categoryId", value = "分类id", required = true)
+            @PathVariable String categoryId){
 
-        return propertyService.showByCid(cid);
+        return propertyService.showByCid(categoryId);
     }
 }
