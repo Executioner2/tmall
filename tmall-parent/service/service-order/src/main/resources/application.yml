@@ -1,0 +1,19 @@
+server:
+  port: 8204
+
+spring:
+  application:
+    name: service-order
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 192.168.123.130:8848
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://192.168.123.130:3306/tmall_order?useUnicode=true&characterEncoding=UTF-8&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=GMT%2B8
+    username: root
+    password: 123321
+
+# 指定mapper的.xml文件路径
+mybatis-plus:
+  mapper-locations: classpath:com/study/tmall/order/mapper/xml/*.xml

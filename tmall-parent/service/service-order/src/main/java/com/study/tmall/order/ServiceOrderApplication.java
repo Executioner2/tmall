@@ -1,7 +1,10 @@
 package com.study.tmall.order;
 
+import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
+import org.springframework.context.annotation.ComponentScan;
 
 /**
  * Copyright@1205878539@qq.com
@@ -11,6 +14,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * Description:
  */
 @SpringBootApplication
+@ComponentScan(basePackages = "com.study.tmall")
+@MapperScan("com.study.tmall.order.mapper")
+@EnableDiscoveryClient
 public class ServiceOrderApplication {
     public static void main(String[] args) {
         SpringApplication.run(ServiceOrderApplication.class, args);
