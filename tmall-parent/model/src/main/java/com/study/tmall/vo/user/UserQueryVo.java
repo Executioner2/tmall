@@ -17,8 +17,8 @@ public class UserQueryVo {
     @ApiModelProperty(value = "用户id")
     private String id;
 
-    @ApiModelProperty(value = "用户名称 昵称 姓名")
-    private String name;
+    @ApiModelProperty(value = "用户手机号 昵称 姓名")
+    private String keyword;
 
     @ApiModelProperty(value = "用户认证状态")
     private Integer authStatus;
