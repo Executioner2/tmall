@@ -2,6 +2,9 @@ package com.study.tmall.product.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.study.tmall.model.product.PropertyValue;
+import com.study.tmall.vo.product.PropertyAndValueVo;
+
+import java.util.List;
 
 /**
  * Copyright@1205878539@qq.com
@@ -11,4 +14,9 @@ import com.study.tmall.model.product.PropertyValue;
  * Description:
  */
 public interface PropertyValueService extends IService<PropertyValue> {
+    // 显示商品属性值
+    List<PropertyAndValueVo> show(String pid);
+
+    // 根据商品id删除商品下的属性值
+    void removeByPid(String pid);
 }

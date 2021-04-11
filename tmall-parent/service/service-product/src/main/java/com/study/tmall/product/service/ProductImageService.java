@@ -30,4 +30,7 @@ public interface ProductImageService extends IService<ProductImage> {
 
     // 从数据库查询产品第一张缩略图的url
     String getFirstThumbnailImage(String id);
+
+    // 根据商品id删除图片
+    void removeImageByPid(String pid);
 }

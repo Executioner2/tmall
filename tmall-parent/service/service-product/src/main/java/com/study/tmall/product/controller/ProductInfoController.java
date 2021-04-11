@@ -64,7 +64,7 @@ public class ProductInfoController {
             @ApiParam(name = "id", value = "商品id", required = true)
             @PathVariable String id){
 
-        productInfoService.removeById(id);
+        productInfoService.removeProductById(id);
         return Result.ok();
     }
 
@@ -75,7 +75,7 @@ public class ProductInfoController {
             @ApiParam(name = "productInfo", value = "商品实体类", required = true)
             @RequestBody ProductInfo productInfo){
 
-        productInfoService.save(productInfo);
+        productInfoService.saveProduct(productInfo);
         return Result.ok();
     }
 

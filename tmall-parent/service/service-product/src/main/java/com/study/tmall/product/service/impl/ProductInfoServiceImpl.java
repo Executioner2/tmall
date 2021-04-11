@@ -4,11 +4,15 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.study.tmall.category.client.PropertyFeignClient;
 import com.study.tmall.exception.TmallException;
+import com.study.tmall.model.category.Property;
 import com.study.tmall.model.product.ProductInfo;
+import com.study.tmall.model.product.PropertyValue;
 import com.study.tmall.product.mapper.ProductInfoMapper;
 import com.study.tmall.product.service.ProductImageService;
 import com.study.tmall.product.service.ProductInfoService;
+import com.study.tmall.product.service.PropertyValueService;
 import com.study.tmall.result.ResultCodeEnum;
 import com.study.tmall.vo.product.ProductQueryVo;
 import org.springframework.stereotype.Service;
@@ -30,6 +34,10 @@ import java.util.List;
 public class ProductInfoServiceImpl extends ServiceImpl<ProductInfoMapper, ProductInfo> implements ProductInfoService {
     @Resource
     private ProductImageService productImageService;
+    @Resource
+    private PropertyFeignClient propertyFeignClient;
+    @Resource
+    private PropertyValueService propertyValueService;
 
     /**
      * 批量删除商品
@@ -38,7 +46,7 @@ public class ProductInfoServiceImpl extends ServiceImpl<ProductInfoMapper, Produ
     @Override
     public void batchRemove(List<String> idList) {
         idList.stream().forEach(item -> {
-            baseMapper.deleteById(item);
+            this.removeProductById(item);
         });
     }
 
@@ -90,6 +98,52 @@ public class ProductInfoServiceImpl extends ServiceImpl<ProductInfoMapper, Produ
             this.packImage(item);
         });
         return productInfoIPage;
+    }
+
+    /**
+     * 添加商品
+     * @param productInfo
+     */
+    @Override
+    public void saveProduct(ProductInfo productInfo) {
+        // 添加商品
+        baseMapper.insert(productInfo);
+
+        // 根据分类属性创建商品属性值，默认值空字符串
+        // 远程调用category查询分类属性
+        List<Property> propertyList = propertyFeignClient.showByCid(productInfo.getCategoryId());
+        propertyList.stream().forEach(item -> {
+            // 调用 PropertyValueService 保存商品属性值
+            PropertyValue propertyValue = new PropertyValue();
+            propertyValue.setPropertyId(item.getId());
+            propertyValue.setProductId(productInfo.getId());
+            propertyValueService.save(propertyValue);
+        });
+    }
+
+    /**
+     * 删除商品
+     * @param id
+     */
+    @Override
+    public void removeProductById(String id) {
+        // 如果没有这个商品则抛出参数异常
+        ProductInfo productInfo = baseMapper.selectById(id);
+        if (productInfo == null) {
+            throw new TmallException(ResultCodeEnum.PARAM_ERROR);
+        }
+
+        // 删除商品下的属性值
+        propertyValueService.removeByPid(id);
+
+        // 删除商品下的图片
+        productImageService.removeImageByPid(id);
+
+        // 不能删除商品下的评论，因为评论属于用户
+        // 不能删除商品对应的订单，因为订单属于用户
+
+        // 删除商品
+        baseMapper.deleteById(id);
     }
 
     // 把第一张缩略图装进去

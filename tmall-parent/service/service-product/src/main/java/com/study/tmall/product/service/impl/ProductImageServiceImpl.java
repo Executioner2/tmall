@@ -141,4 +141,26 @@ public class ProductImageServiceImpl extends ServiceImpl<ProductImageMapper, Pro
         }
         return firstThumbnailImage.getUrl();
     }
+
+    /**
+     * 根据商品id删除图片
+     * @param pid
+     */
+    @Override
+    public void removeImageByPid(String pid) {
+        // 查询数据库中是否存在数据
+        QueryWrapper<ProductImage> wrapper = new QueryWrapper<>();
+        wrapper.eq("product_id", pid);
+        List<ProductImage> productImages = baseMapper.selectList(wrapper);
+
+        if (productImages != null) { // 如果不为空则开始删除
+            productImages.stream().forEach(item -> {
+                // 删除fastDFS中的图片
+                String[] splitUrl = ImageUtil.splitUrl(item.getUrl());
+                FastDFSUtil.delete(splitUrl[1], splitUrl[2]);
+            });
+            // 逻辑删除数据库中的记录
+            baseMapper.delete(wrapper);
+        }
+    }
 }

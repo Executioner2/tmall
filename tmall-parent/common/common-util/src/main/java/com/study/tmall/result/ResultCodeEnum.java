@@ -37,7 +37,8 @@ public enum ResultCodeEnum {
     CANCEL_ORDER_FAIL(225, "取消订单失败"),
     CANCEL_ORDER_NO(225, "不能取消预约"),
 
-    DELETE_FAIL(301, "删除失败")
+    DELETE_FAIL(301, "删除失败"),
+    PROPERTY_NULL(302, "未录入分类属性"),
     ;
 
     private Integer code;

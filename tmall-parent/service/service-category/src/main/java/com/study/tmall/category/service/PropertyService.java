@@ -21,4 +21,10 @@ public interface PropertyService extends IService<Property> {
 
     // 分页条件显示属性
     IPage<Property> findPageProperty(Page<Property> page, PropertyQueryVo propertyQueryVo);
+
+    // 根据分类id显示所有属性
+    List<Property> showByCid(String cid);
+
+    // 删除分类下的属性
+    void removeByCid(String cid);
 }

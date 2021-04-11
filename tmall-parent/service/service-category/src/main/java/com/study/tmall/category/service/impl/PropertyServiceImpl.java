@@ -70,4 +70,27 @@ public class PropertyServiceImpl extends ServiceImpl<PropertyMapper, Property> i
 
         return propertyPage;
     }
+
+    /**
+     * 根据分类id显示所有属性
+     * @param cid
+     * @return
+     */
+    @Override
+    public List<Property> showByCid(String cid) {
+        QueryWrapper<Property> wrapper = new QueryWrapper<>();
+        wrapper.eq("category_id", cid);
+        return baseMapper.selectList(wrapper);
+    }
+
+    /**
+     * 删除分类下的属性
+     * @param cid
+     */
+    @Override
+    public void removeByCid(String cid) {
+        QueryWrapper<Property> wrapper = new QueryWrapper<>();
+        wrapper.eq("category_id", cid);
+        baseMapper.delete(wrapper);
+    }
 }

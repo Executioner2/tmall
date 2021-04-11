@@ -3,15 +3,12 @@ package com.study.tmall.category.controller;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.study.tmall.category.service.PropertyService;
-import com.study.tmall.exception.TmallException;
 import com.study.tmall.model.category.Property;
 import com.study.tmall.result.Result;
-import com.study.tmall.result.ResultCodeEnum;
 import com.study.tmall.vo.category.PropertyQueryVo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -92,5 +89,15 @@ public class PropertyController {
 
         propertyService.updateById(property);
         return Result.ok();
+    }
+
+    // 内部调用，显示对应分类下的所有属性
+    @ApiOperation(value = "内部调用，显示对应分类下的所有属性")
+    @GetMapping("/inner/show/{cid}") // inner 内部调用
+    public List<Property> showByCid(
+            @ApiParam(name = "cid", value = "分类id", required = true)
+            @PathVariable String cid){
+
+        return propertyService.showByCid(cid);
     }
 }

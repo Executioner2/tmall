@@ -21,4 +21,10 @@ public interface ProductInfoService extends IService<ProductInfo> {
 
     // 分页条件显示商品
     IPage<ProductInfo> findPageProductInfo(Page<ProductInfo> page, ProductQueryVo productQueryVo);
+
+    // 添加商品
+    void saveProduct(ProductInfo productInfo);
+
+    // 删除商品
+    void removeProductById(String id);
 }

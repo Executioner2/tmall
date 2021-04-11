@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.study.tmall.category.mapper.CategoryInfoMapper;
 import com.study.tmall.category.service.CategoryInfoService;
+import com.study.tmall.category.service.PropertyService;
 import com.study.tmall.exception.TmallException;
 import com.study.tmall.model.category.CategoryInfo;
 import com.study.tmall.result.ResultCodeEnum;
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.annotation.Resource;
 import java.io.IOException;
 import java.util.Date;
 import java.util.List;
@@ -30,6 +32,8 @@ import java.util.Objects;
  */
 @Service
 public class CategoryInfoServiceImpl extends ServiceImpl<CategoryInfoMapper, CategoryInfo> implements CategoryInfoService {
+    @Resource
+    private PropertyService propertyService;
 
     /**
      * 分页条件显示分类
@@ -73,6 +77,11 @@ public class CategoryInfoServiceImpl extends ServiceImpl<CategoryInfoMapper, Cat
         if (categoryInfo == null){ // 如果为空，抛出异常
             throw new TmallException(ResultCodeEnum.PARAM_ERROR);
         }
+
+        // 不能删除分类下的商品，商品数据多且重要
+
+        // 删除分类下的属性
+        propertyService.removeByCid(id);
 
         // 删除图片
         this.deleteFastImage(categoryInfo.getImageUrl());
