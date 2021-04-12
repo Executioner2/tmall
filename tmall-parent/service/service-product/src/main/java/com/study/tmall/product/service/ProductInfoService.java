@@ -27,4 +27,7 @@ public interface ProductInfoService extends IService<ProductInfo> {
 
     // 删除商品
     void removeProductById(String id);
+
+    // 根据id查询商品（内部调用）
+    List<ProductInfo> listProductInfoById(List<String> idList);
 }

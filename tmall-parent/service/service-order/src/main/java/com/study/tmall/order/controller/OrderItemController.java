@@ -1,5 +1,7 @@
 package com.study.tmall.order.controller;
 
+import com.study.tmall.model.order.OrderItem;
+import com.study.tmall.order.service.OrderItemService;
 import com.study.tmall.result.Result;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -8,6 +10,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import javax.annotation.Resource;
+import java.util.List;
 
 /**
  * Copyright@1205878539@qq.com
@@ -20,16 +25,18 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/admin/order/orderItem")
 @RestController
 public class OrderItemController {
+    @Resource
+    private OrderItemService orderItemService;
 
     // 显示订单项
     @ApiOperation(value = "显示订单项")
     @GetMapping("/show/{orderId}")
     public Result getOrderItem(
-            @ApiParam(value = "orderId", name = "订单的id", required = true)
-            @PathVariable Integer orderId){
+            @ApiParam(name = "orderId", value = "订单的id", required = true)
+            @PathVariable String orderId){
 
-        // TODO 显示订单项
-        return Result.ok();
+        List<OrderItem> list = orderItemService.showByOrderId(orderId);
+        return Result.ok(list);
     }
 }
 

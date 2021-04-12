@@ -3,6 +3,8 @@ package com.study.tmall.order.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.study.tmall.model.order.OrderItem;
 
+import java.util.List;
+
 /**
  * Copyright@1205878539@qq.com
  * Author:2Executioner
@@ -11,4 +13,6 @@ import com.study.tmall.model.order.OrderItem;
  * Description:
  */
 public interface OrderItemService extends IService<OrderItem> {
+    // 显示订单项
+    List<OrderItem> showByOrderId(String orderId);
 }

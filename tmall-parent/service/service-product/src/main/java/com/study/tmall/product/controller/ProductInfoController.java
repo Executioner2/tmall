@@ -89,4 +89,14 @@ public class ProductInfoController {
         productInfoService.updateById(productInfo);
         return Result.ok();
     }
+
+    // 根据id查询商品（内部调用）
+    @ApiOperation(value = "根据id查询商品（内部调用）")
+    @PostMapping("/inner/list")
+    public List<ProductInfo> listProductInfoById(
+            @ApiParam(name = "idList", value = "商品id集合", required = true)
+            @RequestBody List<String> idList){
+
+        return productInfoService.listProductInfoById(idList);
+    }
 }

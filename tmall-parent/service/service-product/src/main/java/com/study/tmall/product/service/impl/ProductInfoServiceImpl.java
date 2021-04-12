@@ -20,8 +20,7 @@ import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
 import java.math.BigDecimal;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * Copyright@1205878539@qq.com
@@ -144,6 +143,28 @@ public class ProductInfoServiceImpl extends ServiceImpl<ProductInfoMapper, Produ
 
         // 删除商品
         baseMapper.deleteById(id);
+    }
+
+    /**
+     * 根据id查询商品（内部调用）
+     * @param idList
+     * @return
+     */
+    @Override
+    public List<ProductInfo> listProductInfoById(List<String> idList) {
+        // 如果idList没有就返回空
+        if (idList == null || idList.size() == 0) return null;
+        List<ProductInfo> list = new ArrayList<>();
+        // 遍历封装
+        idList.stream().forEach(item -> {
+            ProductInfo productInfo = baseMapper.selectById(item);
+            if (productInfo != null) {
+                this.packImage(productInfo); // 把图片搞进去
+            }
+            // 即使查询出来为空也装入集合，保证数据不错位
+            list.add(productInfo);
+        });
+        return list;
     }
 
     // 把第一张缩略图装进去

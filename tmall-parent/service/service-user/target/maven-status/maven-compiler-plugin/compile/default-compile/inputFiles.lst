@@ -1,2 +1,9 @@
+E:\JavaProject\study\tmall-v1.0\tmall-parent\service\service-user\src\main\java\com\study\tmall\user\service\impl\UserLoginRecordServiceImpl.java
+E:\JavaProject\study\tmall-v1.0\tmall-parent\service\service-user\src\main\java\com\study\tmall\user\service\UserLoginRecordService.java
 E:\JavaProject\study\tmall-v1.0\tmall-parent\service\service-user\src\main\java\com\study\tmall\user\ServiceUserApplication.java
-E:\JavaProject\study\tmall-v1.0\tmall-parent\service\service-user\src\main\java\com\study\tmall\user\controller\UserController.java
+E:\JavaProject\study\tmall-v1.0\tmall-parent\service\service-user\src\main\java\com\study\tmall\user\service\impl\UserInfoServiceImpl.java
+E:\JavaProject\study\tmall-v1.0\tmall-parent\service\service-user\src\main\java\com\study\tmall\user\service\UserInfoService.java
+E:\JavaProject\study\tmall-v1.0\tmall-parent\service\service-user\src\main\java\com\study\tmall\user\mapper\UserInfoMapper.java
+E:\JavaProject\study\tmall-v1.0\tmall-parent\service\service-user\src\main\java\com\study\tmall\user\config\UserConfig.java
+E:\JavaProject\study\tmall-v1.0\tmall-parent\service\service-user\src\main\java\com\study\tmall\user\controller\UserInfoController.java
+E:\JavaProject\study\tmall-v1.0\tmall-parent\service\service-user\src\main\java\com\study\tmall\user\mapper\UserLoginRecordMapper.java

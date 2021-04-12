@@ -45,10 +45,10 @@ public class OrderInfoServiceImpl extends ServiceImpl<OrderInfoMapper, OrderInfo
         if (status != null) {
             wrapper.eq("status", status);
         }
-        if (StringUtils.isEmpty(userId)) {
+        if (!StringUtils.isEmpty(userId)) {
             wrapper.eq("user_id", userId);
         }
-        if (StringUtils.isEmpty(outTradeNo)) {
+        if (!StringUtils.isEmpty(outTradeNo)) {
             wrapper.eq("out_trade_no", outTradeNo);
         }
         if (createDateBegin != null) {

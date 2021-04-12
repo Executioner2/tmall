@@ -17,3 +17,8 @@ spring:
 # 指定mapper的.xml文件路径
 mybatis-plus:
   mapper-locations: classpath:com/study/tmall/order/mapper/xml/*.xml
+
+# 日志打印级别
+#logging:
+#  level:
+#    root: debug
