@@ -7,7 +7,6 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.study.tmall.enums.OrderStatusEnum;
 import com.study.tmall.exception.TmallException;
 import com.study.tmall.model.order.OrderInfo;
-import com.study.tmall.model.user.UserInfo;
 import com.study.tmall.order.mapper.OrderInfoMapper;
 import com.study.tmall.order.service.OrderInfoService;
 import com.study.tmall.result.ResultCodeEnum;
@@ -71,7 +70,7 @@ public class OrderInfoServiceImpl extends ServiceImpl<OrderInfoMapper, OrderInfo
      * @param id
      */
     @Override
-    public void deliverGoods(Integer id) {
+    public void deliverGoods(String id) {
         OrderInfo orderInfo = baseMapper.selectById(id);
         if (orderInfo == null) { // 如果查不出来就抛出参数异常
             throw new TmallException(ResultCodeEnum.PARAM_ERROR);

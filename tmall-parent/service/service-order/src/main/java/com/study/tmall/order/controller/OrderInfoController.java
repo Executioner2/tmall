@@ -50,7 +50,7 @@ public class OrderInfoController {
     @PutMapping("/deliverGoods/{id}")
     public Result deliverGoods(
             @ApiParam(name = "id", value = "订单id", required = true)
-            @PathVariable Integer id){
+            @PathVariable String id){
 
         orderInfoService.deliverGoods(id);
         return Result.ok();

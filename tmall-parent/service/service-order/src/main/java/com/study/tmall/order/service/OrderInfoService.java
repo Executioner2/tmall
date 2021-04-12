@@ -18,5 +18,5 @@ public interface OrderInfoService extends IService<OrderInfo> {
     IPage<OrderInfo> findPageOrderInfo(Page<OrderInfo> page, OrderQueryVo orderQueryVo);
 
     // 订单发货
-    void deliverGoods(Integer id);
+    void deliverGoods(String id);
 }
