@@ -12,6 +12,8 @@ import org.springframework.web.multipart.MultipartFile;
  */
 public class ImageUtil {
 
+    private ImageUtil(){}
+
     /**
      * 传入保存图片后fastUtil返回的字符数组
      * 返回融合后的图片url地址

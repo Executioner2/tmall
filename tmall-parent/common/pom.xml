@@ -46,12 +46,13 @@
             <artifactId>springfox-swagger-ui</artifactId>
         </dependency>
 
-        <!-- hutool-all -->
+        <!--hutool-all-->
         <dependency>
             <groupId>cn.hutool</groupId>
             <artifactId>hutool-all</artifactId>
         </dependency>
 
+        <!--fastdfs文件管理客户端-->
         <dependency>
             <groupId>org.csource</groupId>
             <artifactId>fastdfs-client-java</artifactId>

@@ -11,6 +11,8 @@ import javax.servlet.http.HttpServletRequest;
  */
 public class TokenUtil {
 
+    private TokenUtil(){}
+
     /**
      * 获取token中的用户名
      * @param request
