@@ -101,7 +101,7 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
                 && authStatus != AuthStatusEnum.AUTH_FAIL.getStatus().intValue()){ // 不通过认证的值
             throw new TmallException(ResultCodeEnum.PARAM_ERROR);
         }
-        // 如果传来的authStatus和数据库中一直就不用更新数据库
+        // 如果传来的authStatus和数据库中一致就不用更新数据库
         if (userInfo.getAuthStatus() == authStatus){
             return;
         }
