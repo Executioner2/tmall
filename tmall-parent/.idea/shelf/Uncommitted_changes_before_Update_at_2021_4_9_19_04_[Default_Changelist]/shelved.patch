@@ -1,0 +1,17 @@
+Index: model/src/main/java/com/study/tmall/vo/order/OrderQueryVo.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.study.tmall.vo.order;\r\n\r\nimport io.swagger.annotations.ApiModel;\r\nimport io.swagger.annotations.ApiModelProperty;\r\n\r\nimport java.math.BigDecimal;\r\nimport java.util.Date;\r\n\r\n/**\r\n * Copyright@1205878539@qq.com\r\n * Author:2Executioner\r\n * Date:2021-04-09 14:56\r\n * Versions:1.0.0\r\n * Description:\r\n */\r\n@ApiModel(description = \"订单查询vo类\")\r\npublic class OrderQueryVo {\r\n    @ApiModelProperty(value = \"id\")\r\n    private String id;\r\n\r\n    @ApiModelProperty(value = \"用户id\")\r\n    private String userId;\r\n\r\n    @ApiModelProperty(value = \"订单状态\")\r\n    private Integer status;\r\n\r\n    @ApiModelProperty(value = \"创建日期开始\")\r\n    private Date createTimeBegin;\r\n\r\n    @ApiModelProperty(value = \"创建日期结束\")\r\n    private Date createTimeEnd;\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- model/src/main/java/com/study/tmall/vo/order/OrderQueryVo.java	(revision bb0500e8bbd5c1138c75d7fb124ab727499a249a)
++++ model/src/main/java/com/study/tmall/vo/order/OrderQueryVo.java	(date 1617951534978)
+@@ -3,7 +3,6 @@
+ import io.swagger.annotations.ApiModel;
+ import io.swagger.annotations.ApiModelProperty;
+ 
+-import java.math.BigDecimal;
+ import java.util.Date;
+ 
+ /**
