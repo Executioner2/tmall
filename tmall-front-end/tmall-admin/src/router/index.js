@@ -43,16 +43,32 @@ export const constantRoutes = [
     hidden: true
   },
 
+  // {
+  //   path: '/',
+  //   component: Layout,
+  //   redirect: '/dashboard',
+  //   hidden: true,
+  //   children: [{
+  //     path: 'dashboard',
+  //     name: 'Dashboard',
+  //     component: () => import('@/views/dashboard/index'),
+  //     meta: { title: 'Dashboard', icon: 'dashboard' }
+  //   }]
+  // },
+
+  // 分类管理
   {
     path: '/',
     component: Layout,
-    redirect: '/dashboard',
-    children: [{
-      path: 'dashboard',
-      name: 'Dashboard',
-      component: () => import('@/views/dashboard/index'),
-      meta: { title: 'Dashboard', icon: 'dashboard' }
-    }]
+    redirect: '/category',
+    children: [
+      {
+        path: 'category',
+        name: '分类管理',
+        component: () => import('@/views/category/categoryInfo/index'),
+        meta: { title: '分类管理', icon: 'nested' }
+      }
+    ]
   },
 
   {
