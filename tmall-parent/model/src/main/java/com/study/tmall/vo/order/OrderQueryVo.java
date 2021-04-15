@@ -3,6 +3,7 @@ package com.study.tmall.vo.order;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
 
@@ -26,8 +27,10 @@ public class OrderQueryVo {
     private Integer status;
 
     @ApiModelProperty(value = "创建日期开始")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date createDateBegin;
 
     @ApiModelProperty(value = "创建日期结束")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date createDateEnd;
 }

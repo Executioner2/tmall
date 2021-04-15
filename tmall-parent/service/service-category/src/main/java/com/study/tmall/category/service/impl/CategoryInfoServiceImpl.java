@@ -19,9 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import java.io.IOException;
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * Copyright@1205878539@qq.com
@@ -57,7 +55,7 @@ public class CategoryInfoServiceImpl extends ServiceImpl<CategoryInfoMapper, Cat
             wrapper.ge("create_time", createTimeBegin);
         }
         // 如果结束日期不为空
-        if (createTimeBegin != null){
+        if (createTimeEnd != null){
             wrapper.le("create_time", createTimeEnd);
         }
 
@@ -121,49 +119,48 @@ public class CategoryInfoServiceImpl extends ServiceImpl<CategoryInfoMapper, Cat
     /**
      * 编辑分类
      * @param categoryInfo
-     * @param file
+     *
      */
     @Override
-    public void updateCategoryById(CategoryInfo categoryInfo, MultipartFile file) {
-        try {
-            // 从数据库中取得分类
-            CategoryInfo original = this.getById(categoryInfo);
-            if (original == null){
-                throw new TmallException(ResultCodeEnum.PARAM_ERROR);
-            }
-            // 如果传来的分类名称为空则用以前的名称
-            if (StringUtils.isEmpty(categoryInfo.getName())){
-                categoryInfo.setName(original.getName());
-            }
-            // 把新的图片上传到fdfs
-            if (file != null) {
-                // 删除原来的图片
-                this.deleteFastImage(original.getImageUrl());
-                String[] upload = FastDFSUtil.upload(file.getBytes(), ImageUtil.getFileExtName(file));
-                categoryInfo.setImageUrl(ImageUtil.compoundUrl(upload));
-            }
-            baseMapper.updateById(categoryInfo);
-        } catch (IOException e) {
-            e.printStackTrace();
+    public void updateCategoryById(CategoryInfo categoryInfo) {
+        // 从数据库中取得分类
+        CategoryInfo original = this.getById(categoryInfo);
+        if (original == null) {
+            throw new TmallException(ResultCodeEnum.PARAM_ERROR);
         }
+        // 如果传来的分类名称为空则用以前的名称
+        if (StringUtils.isEmpty(categoryInfo.getName())) {
+            categoryInfo.setName(original.getName());
+        }
+        // 如果图片地址为空也用原来的
+        if (StringUtils.isEmpty(categoryInfo.getImageUrl())){
+            categoryInfo.setImageUrl(original.getImageUrl());
+        } else {
+            // 否则删除原来的图片
+            this.deleteFastImage(original.getImageUrl());
+        }
+        // 更新数据库
+        baseMapper.updateById(categoryInfo);
     }
 
     /**
-     * 添加分类
-     * @param categoryInfo
+     * 添加分类图片
      * @param file
+     * @return
      */
     @Override
-    public void saveCategory(CategoryInfo categoryInfo, MultipartFile file) {
+    public Map<String, String>  saveImage(MultipartFile file) {
+        // 上传到fastDFS中
         try {
-            if (file != null) {
-                // 上传到fastDFS中
-                String[] upload = FastDFSUtil.upload(file.getBytes(), ImageUtil.getFileExtName(file));
-                categoryInfo.setImageUrl(ImageUtil.compoundUrl(upload)); // 设置最终可直接访问的imageUrl地址
-            }
-            baseMapper.insert(categoryInfo);
+            Map<String, String> map = new HashMap<>();
+            String filename = file.getOriginalFilename();
+            String[] upload = FastDFSUtil.upload(file.getBytes(), ImageUtil.getFileExtName(file));
+            map.put("filename", filename); // 文件名称，包括拓展名
+            map.put("imageUrl", ImageUtil.compoundUrl(upload)); // 图片url地址
+            return map;
         } catch (IOException e) {
             e.printStackTrace();
+            return null;
         }
     }
 }

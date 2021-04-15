@@ -65,7 +65,7 @@ export const constantRoutes = [
       {
         path: 'category',
         name: '分类管理',
-        component: () => import('@/views/category/categoryInfo/index'),
+        component: () => import('@/views/category/categoryInfo/index.vue'),
         meta: { title: '分类管理', icon: 'nested' }
       }
     ]

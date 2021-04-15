@@ -3,6 +3,7 @@ package com.study.tmall.vo.product;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -30,8 +31,10 @@ public class ProductQueryVo {
     private BigDecimal highPrice;
 
     @ApiModelProperty(value = "创建日期开始")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date createTimeBegin;
 
     @ApiModelProperty(value = "创建日期结束")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date createTimeEnd;
 }

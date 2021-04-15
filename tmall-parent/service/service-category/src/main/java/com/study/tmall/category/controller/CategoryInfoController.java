@@ -14,6 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Copyright@1205878539@qq.com
@@ -49,20 +50,24 @@ public class CategoryInfoController {
 
     // 添加分类
     @ApiOperation(value = "添加分类")
-    @PostMapping("/save/{name}")
+    @PostMapping("/save")
     public Result save(
-            @ApiParam(name = "name", value = "分类名称", required = true)
-            @PathVariable String name,
+            @ApiParam(name = "categoryInfo", value = "分类", required = true)
+            @RequestBody CategoryInfo categoryInfo){ // 应该有分类名和分类图片的地址
 
+        categoryInfoService.save(categoryInfo);
+        return Result.ok();
+    }
+
+    // 添加分类图片
+    @ApiOperation(value = "添加分类")
+    @PostMapping("/saveImage")
+    public Result saveImage(
             @ApiParam(name = "file", value = "分类图片")
             MultipartFile file){
 
-        // 设置分类参数
-        CategoryInfo categoryInfo = new CategoryInfo();
-        categoryInfo.setName(name);
-        // 写入数据库中
-        categoryInfoService.saveCategory(categoryInfo, file);
-        return Result.ok();
+        Map<String, String> map = categoryInfoService.saveImage(file);
+        return Result.ok(map);
     }
 
     // 删除分类
@@ -88,24 +93,24 @@ public class CategoryInfoController {
 
     // 编辑分类
     @ApiOperation(value = "编辑分类")
-    @PutMapping("/update/{id}/{name}")
+    @PutMapping("/update")
     public Result update(
-            @ApiParam(name = "id", value = "分类id", required = true)
-            @PathVariable String id,
+            @ApiParam(name = "categoryInfo", value = "分类信息（包含id和图片地址）", required = true)
+            @RequestBody CategoryInfo categoryInfo){
 
-            @ApiParam(name = "name", value = "分类名称")
-            @PathVariable String name,
-
-            @ApiParam(name = "file", value = "分类图片")
-            MultipartFile file){
-
-        // 设置参数
-        CategoryInfo categoryInfo = new CategoryInfo();
-        categoryInfo.setId(id);
-        categoryInfo.setName(name);
         // 更新分类
-        categoryInfoService.updateCategoryById(categoryInfo, file);
-
+        categoryInfoService.updateCategoryById(categoryInfo);
         return Result.ok();
+    }
+
+    // 查询单个分类
+    @ApiOperation(value = "查询单个分类")
+    @GetMapping("/get/{id}")
+    public Result getById(
+            @ApiParam(name = "id", value = "分类id", required = true)
+            @PathVariable String id){
+
+        CategoryInfo categoryInfo = categoryInfoService.getById(id);
+        return Result.ok(categoryInfo);
     }
 }

@@ -8,6 +8,7 @@ import com.study.tmall.vo.category.CategoryQueryVo;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Copyright@1205878539@qq.com
@@ -27,8 +28,8 @@ public interface CategoryInfoService extends IService<CategoryInfo> {
     void batchRemoveCategory(List<String> idList);
 
     // 编辑分类
-    void updateCategoryById(CategoryInfo categoryInfo, MultipartFile file);
+    void updateCategoryById(CategoryInfo categoryInfo);
 
-    // 添加分类
-    void saveCategory(CategoryInfo categoryInfo, MultipartFile file);
+    // 添加分类图片
+    Map<String, String> saveImage(MultipartFile file);
 }

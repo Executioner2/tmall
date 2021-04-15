@@ -3,6 +3,7 @@ package com.study.tmall.vo.category;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
 
@@ -21,8 +22,10 @@ public class CategoryQueryVo {
     private String name;
 
     @ApiModelProperty(value = "创建日期开始")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date createTimeBegin;
 
     @ApiModelProperty(value = "创建日期结束")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date createTimeEnd;
 }
