@@ -62,8 +62,8 @@ public class PropertyServiceImpl extends ServiceImpl<PropertyMapper, Property> i
         if (createTimeBegin != null){
             wrapper.ge("create_time", createTimeBegin);
         }
-        if (createTimeEnd != null){
-            wrapper.ge("create_time", createTimeEnd);
+        if (createTimeEnd != null) {
+            wrapper.le("create_time", createTimeEnd);
         }
 
         IPage<Property> propertyPage = baseMapper.selectPage(page, wrapper);

@@ -4,7 +4,7 @@ const api_url = '/admin/category/categoryInfo'
 
 export default{
     // 分页条件显示
-    findPageProductInfo(current, limit, searchObj){
+    findPageCategoryInfo(current, limit, searchObj){
       return request({
           url: `${api_url}/list/${current}/${limit}`,
           method: 'get',
@@ -42,14 +42,6 @@ export default{
         url: `${api_url}/update`,
         method: 'put',
         data: categoryObj
-      })
-    },
-
-    // 查询单个分类
-    getCategory(id){
-      return request({
-        url: `${api_url}/get/${id}`,
-        method: 'get'
       })
     }
 }

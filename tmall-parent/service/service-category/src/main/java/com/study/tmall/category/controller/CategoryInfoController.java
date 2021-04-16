@@ -102,15 +102,4 @@ public class CategoryInfoController {
         categoryInfoService.updateCategoryById(categoryInfo);
         return Result.ok();
     }
-
-    // 查询单个分类
-    @ApiOperation(value = "查询单个分类")
-    @GetMapping("/get/{id}")
-    public Result getById(
-            @ApiParam(name = "id", value = "分类id", required = true)
-            @PathVariable String id){
-
-        CategoryInfo categoryInfo = categoryInfoService.getById(id);
-        return Result.ok(categoryInfo);
-    }
 }

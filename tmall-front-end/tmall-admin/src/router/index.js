@@ -43,30 +43,33 @@ export const constantRoutes = [
     hidden: true
   },
 
-  // {
-  //   path: '/',
-  //   component: Layout,
-  //   redirect: '/dashboard',
-  //   hidden: true,
-  //   children: [{
-  //     path: 'dashboard',
-  //     name: 'Dashboard',
-  //     component: () => import('@/views/dashboard/index'),
-  //     meta: { title: 'Dashboard', icon: 'dashboard' }
-  //   }]
-  // },
-
   // 分类管理
   {
     path: '/',
     component: Layout,
-    redirect: '/category',
+    redirect: '/category/categoryInfo',
+    name: '分类管理',
+    meta: { title: '分类管理', icon: 'nested' },
     children: [
       {
-        path: 'category',
+        path: 'category/categoryInfo',
         name: '分类管理',
         component: () => import('@/views/category/categoryInfo/index.vue'),
-        meta: { title: '分类管理', icon: 'nested' }
+        meta: { title: '分类管理'}
+      },
+      {
+        path: 'category/property/:id',
+        name: '属性管理',
+        component: () => import('@/views/category/property/index.vue'),
+        meta: { title: '属性管理'},
+        hidden: true
+      },
+      {
+        path: 'product/productInfo/:id',
+        name: '产品管理',
+        component: () => import('@/views/product/productInfo/index.vue'),
+        meta: { title: '产品管理'},
+        hidden: true
       }
     ]
   },

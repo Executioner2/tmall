@@ -5,7 +5,7 @@
     <el-form-item label="分类名称">
       <el-input v-model="searchObj.name" placeholder="分类名称"></el-input>
     </el-form-item>
-    <el-form-item label="创建日期">
+    <el-form-item label="创建日期" style="margin-left: 10px">
       <div class="block">
         <el-date-picker
           value-format="yyyy-MM-dd"
@@ -26,8 +26,9 @@
       </div>
     </el-form-item>
     <el-form-item>
-      <el-button type="primary" @click="queryCategory">查询</el-button>
+      <el-button style="margin-left: 10px" type="primary" @click="queryCategory">查询</el-button>
     </el-form-item>
+    <!-- 批量删除按钮 -->
     <div style="float: right; margin-right: 10px">
       <el-button :disabled="delDisable" @click="batchRemove" type="danger" plain>批量删除</el-button>
     </div>
@@ -68,7 +69,9 @@
       align="center">
       <template slot-scope="scope">
         <el-tooltip class="item" effect="dark" content="属性管理" placement="top">
-          <el-link :underline="false"><i class="el-icon-receiving"></i></el-link>
+          <router-link :to="'/category/property/' + scope.row.id"> <!--跳转到隐藏路由-->
+            <el-link :underline="false"><i class="el-icon-receiving"></i></el-link>
+          </router-link>
         </el-tooltip>
       </template>
     </el-table-column>
@@ -77,9 +80,11 @@
       width="100"
       align="center">
       <template slot-scope="scope">
-        <el-tooltip class="item" effect="dark" content="产品管理" placement="top">
-          <el-link :underline="false"><i class="el-icon-shopping-cart-2"></i></el-link>
-        </el-tooltip>
+        <router-link :to="'/product/productInfo/' + scope.row.id">
+          <el-tooltip class="item" effect="dark" content="产品管理" placement="top">
+            <el-link :underline="false"><i class="el-icon-shopping-cart-2"></i></el-link>
+          </el-tooltip>
+        </router-link>
       </template>
     </el-table-column>
     <el-table-column
@@ -88,7 +93,7 @@
       align="center">
       <template slot-scope="scope">
         <el-tooltip class="item" effect="dark" content="编辑分类" placement="top">
-          <el-link @click="showDialog(scope.row.id)" :underline="false"><i class="el-icon-edit"></i></el-link>
+          <el-link @click="showDialog(scope.row.id, scope.row.name)" :underline="false"><i class="el-icon-edit"></i></el-link>
         </el-tooltip>
       </template>
     </el-table-column>
@@ -108,7 +113,7 @@
   <div style="margin-top: 20px">
     <el-pagination
       :page-size="limit"
-      @current-change="findPageProductInfo"
+      @current-change="findPageCategoryInfo"
       align="center"
       :current-page="current"
       background
@@ -188,7 +193,7 @@
         searchObj: {}, // 条件查询对象
         current: 1, //起始页默认为1
         limit: 5, // 每页显示数据条数，默认5条
-        total: null, // 总页数
+        total: null, // 总记录数
         fileUrl: 'http://localhost/admin/category/categoryInfo/saveImage', // 添加图片的url地址
         categoryObj: {}, //要添加的分类对象
         uploadHint: "只能上传jpg/png文件，且不超过10MB", // 文件上传提示
@@ -200,18 +205,18 @@
     },
 
     created() {
-        this.findPageProductInfo(1)
+        this.findPageCategoryInfo(1)
     },
 
     methods: {
       // 分页条件显示
-      findPageProductInfo(val){
+      findPageCategoryInfo(val){
         this.current = val
-          categoryInfo.findPageProductInfo(this.current, this.limit, this.searchObj)
-            .then(response => {
-                this.list = response.data.records
-                this.total = response.data.total
-            })
+        categoryInfo.findPageCategoryInfo(this.current, this.limit, this.searchObj)
+          .then(response => {
+              this.list = response.data.records
+              this.total = response.data.total
+          })
       },
 
       // 初始化值
@@ -250,25 +255,25 @@
             // 清空上传记录
             this.init()
             // 刷新页面
-            this.findPageProductInfo(this.current)
+            this.findPageCategoryInfo(this.current)
           })
       },
 
       // 查询分类
       queryCategory(){
-        this.findPageProductInfo(1)
+        this.findPageCategoryInfo(1)
       },
 
       // 删除分类
       remove(id){
-        this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+        this.$confirm('此操作将永久删除该记录, 是否继续?', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
           categoryInfo.remove(id)
             .then(response => {
-              this.findPageProductInfo(1)
+              this.findPageCategoryInfo(1)
             })
             .catch(error => {
               this.$message.warning("删除失败！")
@@ -278,7 +283,7 @@
 
       // 批量删除
       batchRemove(){
-        this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+        this.$confirm('此操作将永久删除该记录, 是否继续?', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
@@ -287,7 +292,7 @@
           let idList = this.getIdList()
           categoryInfo.batchRemove(idList)
             .then(response => {
-              this.findPageProductInfo(1)
+              this.findPageCategoryInfo(1)
             })
             .catch(error => {
               this.$message.warning("删除失败！")
@@ -315,14 +320,11 @@
       },
 
       // 显示模态框
-      showDialog(id){
+      showDialog(id, name){
         this.editObj = {}
-        categoryInfo.getCategory(id)
-          .then(response => {
-            this.editObj.id = response.data.id
-            this.editObj.name = response.data.name
-            this.dialogVisible = true
-          })
+        this.editObj.id = id
+        this.editObj.name = name
+        this.dialogVisible = true
       },
 
       // 更新分类
@@ -330,7 +332,7 @@
         categoryInfo.updateCategory(this.editObj)
           .then(response => {
             this.init()
-            this.findPageProductInfo(this.current)
+            this.findPageCategoryInfo(this.current)
           })
       },
 
