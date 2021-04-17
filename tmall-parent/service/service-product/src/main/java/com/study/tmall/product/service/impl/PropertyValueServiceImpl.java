@@ -77,25 +77,35 @@ public class PropertyValueServiceImpl extends ServiceImpl<PropertyValueMapper, P
     }
 
     /**
+     * 异步更新商品属性值
+     * @param propertyAndValueVo
+     */
+    @Override
+    public void updatePropertyValueById(PropertyAndValueVo propertyAndValueVo) {
+        String value = propertyAndValueVo.getPropertyValue();
+        String id = propertyAndValueVo.getPropertyValueId();
+        PropertyValue propertyValue = new PropertyValue();
+        propertyValue.setId(id);
+        propertyValue.setValue(value);
+        baseMapper.updateById(propertyValue);
+    }
+
+    /**
      * 封装属性名和属性值
      * @param propertyValues
      * @param property
      * @return
      */
     private PropertyAndValueVo packPropertyValue(List<PropertyValue> propertyValues, Property property) {
-        if (propertyValues == null) {
-            return null;
-        }
+        PropertyAndValueVo vo = new PropertyAndValueVo();
         for (int i = 0; i < propertyValues.size(); i++) {
             PropertyValue propertyValue = propertyValues.get(i);
-            if (property.getId().equals(propertyValue.getPropertyId())){
-                PropertyAndValueVo vo = new PropertyAndValueVo();
+            if (property.getId().equals(propertyValue.getPropertyId())) {
                 vo.setPropertyName(property.getName());
                 vo.setPropertyValue(propertyValue.getValue());
                 vo.setPropertyValueId(propertyValue.getId());
-                return vo;
             }
         }
-        return null;
+        return vo;
     }
 }

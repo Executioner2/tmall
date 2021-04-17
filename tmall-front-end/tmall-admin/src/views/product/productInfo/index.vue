@@ -102,7 +102,7 @@
         align="center">
         <template slot-scope="scope">
           <el-tooltip class="item" effect="dark" content="图片管理" placement="top">
-            <router-link :to="'/product/productImage/' + scope.row.id"> <!--跳转到隐藏路由-->
+            <router-link @click.native="saveName(scope.row.name)" :to="'/product/productImage/' + scope.row.id"> <!--跳转到隐藏路由-->
               <el-link :underline="false"><i style="font-size: 15px" class="el-icon-picture-outline"></i></el-link>
             </router-link>
           </el-tooltip>
@@ -113,7 +113,7 @@
         width="80"
         align="center">
         <template slot-scope="scope">
-          <router-link :to="'/product/propertyValue/' + scope.row.id">
+          <router-link @click.native="saveName(scope.row.name)" :to="'/product/propertyValue/' + scope.row.id">
             <el-tooltip class="item" effect="dark" content="设置属性" placement="top">
               <el-link :underline="false"><i style="font-size: 15px" class="el-icon-receiving"></i></el-link>
             </el-tooltip>
@@ -400,6 +400,11 @@ export default {
             this.findPageProductInfo(this.current)
           })
       },
+
+      // 保存产品名称，做面包屑导航
+      saveName(name) {
+        cookies.set("productName", name);
+      }
 
     }
   }

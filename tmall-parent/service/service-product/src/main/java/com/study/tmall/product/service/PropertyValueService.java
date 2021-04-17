@@ -19,4 +19,7 @@ public interface PropertyValueService extends IService<PropertyValue> {
 
     // 根据商品id删除商品下的属性值
     void removeByPid(String productId);
+
+    // 异步更新商品属性值
+    void updatePropertyValueById(PropertyAndValueVo propertyAndValueVo);
 }

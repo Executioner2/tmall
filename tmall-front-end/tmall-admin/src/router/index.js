@@ -59,7 +59,7 @@ export const constantRoutes = [
       {
         path: '/',
         component: () => import('@/views/category/index'),
-        meta: { title: 'categoryName', noBar: true},
+        meta: { title: 'categoryName', noBar: true}, // noBar 自定义属性，面包屑不可用
         children: [
           {
             path: 'category/property/:id',
@@ -85,18 +85,24 @@ export const constantRoutes = [
             hidden: true,
           },
           {
-            path: 'productImage/:id',
-            name: '图片管理',
-            component: () => import('@/views/product/productImage/index'),
-            meta: { title: '图片管理'},
-            hidden: true
-          },
-          {
-            path: 'propertyValue/:id',
-            name: '设置属性',
-            component: () => import('@/views/product/propertyValue/index'),
-            meta: { title: '设置属性'},
-            hidden: true
+            path: '/',
+            meta: { title: 'productName', noBar: true},
+            component: () => import('@/views/product/index'), // Parent router-view
+            hidden: true,
+            children: [
+              {
+                path: 'productImage/:id',
+                component: () => import('@/views/product/productImage/index'),
+                meta: { title: '产品图片管理'},
+                hidden: true
+              },
+              {
+                path: 'propertyValue/:id',
+                component: () => import('@/views/product/propertyValue/index'),
+                meta: { title: '编辑产品属性'},
+                hidden: true
+              },
+            ]
           },
         ]
       }

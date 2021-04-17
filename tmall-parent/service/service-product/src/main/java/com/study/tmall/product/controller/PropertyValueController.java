@@ -41,10 +41,10 @@ public class PropertyValueController {
     @ApiOperation(value = "异步更新产品属性值")
     @PutMapping("/update")
     public Result update (
-            @ApiParam(name = "propertyValue", value = "属性值", required = true)
-            @RequestBody PropertyValue propertyValue){
+            @ApiParam(name = "propertyAndValueVo", value = "属性和属性值vo", required = true)
+            @RequestBody PropertyAndValueVo propertyAndValueVo){
 
-        propertyValueService.updateById(propertyValue);
+        propertyValueService.updatePropertyValueById(propertyAndValueVo);
         return Result.ok();
     }
 }

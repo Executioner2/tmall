@@ -40,8 +40,9 @@ export default {
 
       this.levelList = matched.filter(item => item.meta && item.meta.title && item.meta.breadcrumb !== false)
       this.levelList.forEach(function (value) {
-        if (value.meta.title === "categoryName") {
-          value.meta.title = cookies.get("categoryName")
+        switch (value.meta.title) {
+          case "categoryName": value.meta.title = cookies.get("categoryName"); break;
+          case "productName": value.meta.title = cookies.get("productName"); break;
         }
       })
 
