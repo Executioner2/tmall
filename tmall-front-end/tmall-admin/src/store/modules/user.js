@@ -83,7 +83,7 @@ const actions = {
     // 改造为固定值
     const data = {'token':'admin'}
     setToken(data.token)
-    commit('SET_TOKEN', data.token)    
+    commit('SET_TOKEN', data.token)
   },
 
   // 获取用户信息
@@ -92,7 +92,7 @@ const actions = {
    const data = {'roles':['admin'], 'name':'admin', 'avatar':'https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif'}
    if (data.roles && data.roles.length > 0) { // 验证返回的roles是否是一个非空数组
      commit('SET_ROLES', data.roles)
-   } 
+   }
    commit('SET_NAME', data.name)
    commit('SET_AVATAR', data.avatar)
   },

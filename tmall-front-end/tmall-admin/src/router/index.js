@@ -48,29 +48,59 @@ export const constantRoutes = [
     path: '/',
     component: Layout,
     redirect: '/category/categoryInfo',
-    name: '分类管理',
     meta: { title: '分类管理', icon: 'nested' },
     children: [
       {
         path: 'category/categoryInfo',
         name: '分类管理',
-        component: () => import('@/views/category/categoryInfo/index.vue'),
+        component: () => import('@/views/category/categoryInfo/index'),
         meta: { title: '分类管理'}
       },
       {
-        path: 'category/property/:id',
-        name: '属性管理',
-        component: () => import('@/views/category/property/index.vue'),
-        meta: { title: '属性管理'},
-        hidden: true
+        path: '/',
+        component: () => import('@/views/category/index'),
+        meta: { title: 'categoryName', noBar: true},
+        children: [
+          {
+            path: 'category/property/:id',
+            name: '属性管理',
+            component: () => import('@/views/category/property/index'),
+            meta: { title: '属性管理'},
+            hidden: true
+          }
+        ]
       },
       {
-        path: 'product/productInfo/:id',
-        name: '产品管理',
-        component: () => import('@/views/product/productInfo/index.vue'),
-        meta: { title: '产品管理'},
-        hidden: true
+        path: 'product',
+        hidden: true,
+        redirect: '/product/:id',
+        meta: { title: 'categoryName'},
+        component: () => import('@/views/product/index'), // Parent router-view
+        children: [
+          {
+            path: ':id',
+            name: '产品管理',
+            meta: { title: '产品管理'},
+            component: () => import('@/views/product/productInfo/index'),
+            hidden: true,
+          },
+          {
+            path: 'productImage/:id',
+            name: '图片管理',
+            component: () => import('@/views/product/productImage/index'),
+            meta: { title: '图片管理'},
+            hidden: true
+          },
+          {
+            path: 'propertyValue/:id',
+            name: '设置属性',
+            component: () => import('@/views/product/propertyValue/index'),
+            meta: { title: '设置属性'},
+            hidden: true
+          },
+        ]
       }
+
     ]
   },
 

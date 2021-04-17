@@ -5,28 +5,29 @@
     <el-form-item label="分类名称">
       <el-input v-model="searchObj.name" placeholder="分类名称"></el-input>
     </el-form-item>
-    <el-form-item label="创建日期" style="margin-left: 10px">
-      <div class="block">
+    <el-form-item style="margin-left: 10px" label="创建日期">
+      <div class="block" style="display: inline-block">
         <el-date-picker
+          style="width: 160px"
           value-format="yyyy-MM-dd"
           v-model="searchObj.createTimeBegin"
           type="date"
-          placeholder="选择日期时间">
+          placeholder="选择日期">
         </el-date-picker>
       </div>
-    </el-form-item>
-    <el-form-item label="-">
-      <div class="block">
+      <span> - </span>
+      <div class="block" style="display: inline-block">
         <el-date-picker
+          style="width: 160px"
           value-format="yyyy-MM-dd"
           v-model="searchObj.createTimeEnd"
           type="date"
-          placeholder="选择日期时间">
+          placeholder="选择日期">
         </el-date-picker>
       </div>
     </el-form-item>
     <el-form-item>
-      <el-button style="margin-left: 10px" type="primary" @click="queryCategory">查询</el-button>
+      <el-button style="margin-left: 10px" type="primary" @click="findPageCategoryInfo(1)">查询</el-button>
     </el-form-item>
     <!-- 批量删除按钮 -->
     <div style="float: right; margin-right: 10px">
@@ -54,7 +55,7 @@
       label="图片"
       show-overflow-tooltip>
       <template slot-scope="scope">
-        <img :src="scope.row.imageUrl" width="550">
+        <img :src="scope.row.imageUrl" width="400">
       </template>
     </el-table-column>
     <el-table-column
@@ -69,8 +70,8 @@
       align="center">
       <template slot-scope="scope">
         <el-tooltip class="item" effect="dark" content="属性管理" placement="top">
-          <router-link :to="'/category/property/' + scope.row.id"> <!--跳转到隐藏路由-->
-            <el-link :underline="false"><i class="el-icon-receiving"></i></el-link>
+          <router-link @click.native="saveName(scope.row.name)" :to="'/category/property/' + scope.row.id"> <!--跳转到隐藏路由-->
+            <el-link :underline="false"><i style="font-size: 15px" class="el-icon-receiving"></i></el-link>
           </router-link>
         </el-tooltip>
       </template>
@@ -80,9 +81,9 @@
       width="100"
       align="center">
       <template slot-scope="scope">
-        <router-link :to="'/product/productInfo/' + scope.row.id">
+        <router-link @click.native="saveName(scope.row.name)" :to="'/product/' + scope.row.id">
           <el-tooltip class="item" effect="dark" content="产品管理" placement="top">
-            <el-link :underline="false"><i class="el-icon-shopping-cart-2"></i></el-link>
+            <el-link :underline="false"><i style="font-size: 15px" class="el-icon-shopping-cart-2"></i></el-link>
           </el-tooltip>
         </router-link>
       </template>
@@ -93,7 +94,7 @@
       align="center">
       <template slot-scope="scope">
         <el-tooltip class="item" effect="dark" content="编辑分类" placement="top">
-          <el-link @click="showDialog(scope.row.id, scope.row.name)" :underline="false"><i class="el-icon-edit"></i></el-link>
+          <el-link @click="showDialog(scope.row.id, scope.row.name)" :underline="false"><i style="font-size: 15px" class="el-icon-edit"></i></el-link>
         </el-tooltip>
       </template>
     </el-table-column>
@@ -103,7 +104,7 @@
       align="center">
       <template slot-scope="scope">
         <el-tooltip class="item" effect="dark" content="删除分类" placement="top">
-          <el-link  @click="remove(scope.row.id)" :underline="false"><i class="el-icon-delete"></i></el-link>
+          <el-link  @click="remove(scope.row.id)" :underline="false"><i style="font-size: 15px" class="el-icon-delete"></i></el-link>
         </el-tooltip>
       </template>
     </el-table-column>
@@ -132,7 +133,7 @@
         <span>分类添加</span>
       </div>
       <el-form-item label="分类名称" style="margin: 10px">
-        <el-input v-model="categoryObj.name"></el-input>
+        <el-input v-model.trim="categoryObj.name"></el-input>
       </el-form-item>
       <el-form-item label="分类图片" style="margin: 10px">
         <el-upload
@@ -161,7 +162,7 @@
                label-width="80px"
                :model="editObj">
         <el-form-item label="分类名称" style="margin: 10px">
-          <el-input v-model="editObj.name" @input="onInput()"></el-input>
+          <el-input v-model.trim="editObj.name" @input="onInput()"></el-input>
         </el-form-item>
         <el-form-item label="分类图片" style="margin: 10px">
           <el-upload
@@ -176,7 +177,7 @@
         </el-form-item>
         <!--提交按钮-->
         <el-button @click="dialogVisible = false">取 消</el-button>
-        <el-button style="margin-bottom: 10px" type="success" @click="updateCategory">提交</el-button>
+        <el-button style="margin-bottom: 10px" type="success" @click="updateCategoryInfo">提交</el-button>
       </el-form>
   </el-dialog>
 
@@ -185,6 +186,8 @@
 
 <script>
   import categoryInfo from '@/api/category/categoryInfo'
+  import strUtil from "@/utils/myUtil/strUtil"
+  import cookies from 'js-cookie'
 
   export default {
     data() {
@@ -246,7 +249,7 @@
 
       // 添加分类
       addCategory(){
-        if (this.categoryObj.name == null || this.categoryObj.name == "") {
+        if (strUtil.isEmpty(this.categoryObj.name)) {
           this.$message.warning("分类名称不能为空！")
           return
         }
@@ -257,11 +260,6 @@
             // 刷新页面
             this.findPageCategoryInfo(this.current)
           })
-      },
-
-      // 查询分类
-      queryCategory(){
-        this.findPageCategoryInfo(1)
       },
 
       // 删除分类
@@ -283,7 +281,7 @@
 
       // 批量删除
       batchRemove(){
-        this.$confirm('此操作将永久删除该记录, 是否继续?', '提示', {
+        this.$confirm('此操作将永久删除选中记录, 是否继续?', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
@@ -328,8 +326,12 @@
       },
 
       // 更新分类
-      updateCategory(){
-        categoryInfo.updateCategory(this.editObj)
+      updateCategoryInfo(){
+        if (strUtil.isEmpty(this.editObj.name)) {
+          this.$message.warning("分类名称不能为空！")
+          return
+        }
+        categoryInfo.updateCategoryInfo(this.editObj)
           .then(response => {
             this.init()
             this.findPageCategoryInfo(this.current)
@@ -339,6 +341,11 @@
       // 输入时强制刷新，解决input嵌套过深无法刷新
       onInput(){
         this.$forceUpdate();
+      },
+
+      // 保存分类名，做面包屑导航
+      saveName(name) {
+        cookies.set("categoryName", name)
       }
 
     }

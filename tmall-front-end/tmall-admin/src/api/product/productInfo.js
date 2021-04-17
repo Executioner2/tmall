@@ -4,7 +4,7 @@ const api_url = '/admin/product/productInfo'
 
 export default {
   // 分页显示产品
-  findPageProduct(current, limit, searchObj){
+  findPageProductInfo(current, limit, searchObj){
     return request({
         url: `${api_url}/list/${current}/${limit}`,
         method: "get",

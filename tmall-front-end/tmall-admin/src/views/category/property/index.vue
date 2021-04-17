@@ -6,27 +6,28 @@
         <el-input v-model="searchObj.name" placeholder="属性名称"></el-input>
       </el-form-item>
       <el-form-item style="margin-left: 10px" label="创建日期">
-        <div class="block">
+        <div class="block" style="display: inline-block">
           <el-date-picker
+            style="width: 160px"
             value-format="yyyy-MM-dd"
             v-model="searchObj.createTimeBegin"
             type="date"
-            placeholder="选择日期时间">
+            placeholder="选择日期">
           </el-date-picker>
         </div>
-      </el-form-item>
-      <el-form-item label="-">
-        <div class="block">
+        <span> - </span>
+        <div class="block" style="display: inline-block">
           <el-date-picker
+            style="width: 160px"
             value-format="yyyy-MM-dd"
             v-model="searchObj.createTimeEnd"
             type="date"
-            placeholder="选择日期时间">
+            placeholder="选择日期">
           </el-date-picker>
         </div>
       </el-form-item>
       <el-form-item>
-        <el-button style="margin-left: 10px" type="primary" @click="queryProperty">查询</el-button>
+        <el-button style="margin-left: 10px" type="primary" @click="findPageProperty(1)">查询</el-button>
       </el-form-item>
       <!-- 批量删除按钮 -->
       <div style="float: right; margin-right: 10px">
@@ -62,7 +63,7 @@
         align="center">
         <template slot-scope="scope">
           <el-tooltip class="item" effect="dark" content="编辑属性" placement="top">
-            <el-link @click="showDialog(scope.row.id, scope.row.name)" :underline="false"><i class="el-icon-edit"></i></el-link>
+            <el-link @click="showDialog(scope.row.id, scope.row.name)" :underline="false"><i style="font-size: 15px" class="el-icon-edit"></i></el-link>
           </el-tooltip>
         </template>
       </el-table-column>
@@ -72,7 +73,7 @@
         align="center">
         <template slot-scope="scope">
           <el-tooltip class="item" effect="dark" content="删除属性" placement="top">
-            <el-link  @click="remove(scope.row.id)" :underline="false"><i class="el-icon-delete"></i></el-link>
+            <el-link  @click="remove(scope.row.id)" :underline="false"><i style="font-size: 15px" class="el-icon-delete"></i></el-link>
           </el-tooltip>
         </template>
       </el-table-column>
@@ -101,7 +102,7 @@
           <span>新增属性</span>
         </div>
         <el-form-item label="属性名称" style="margin: 10px">
-          <el-input v-model="propertyObj.name"></el-input>
+          <el-input v-model.trim="propertyObj.name"></el-input>
         </el-form-item>
         <!--提交按钮-->
         <el-button style="margin-bottom: 10px" type="success" @click="addProperty">提交</el-button>
@@ -122,7 +123,7 @@
           <span>编辑属性</span>
         </div>
         <el-form-item label="属性名称" style="margin: 10px">
-          <el-input v-model="editObj.name" @input="onInput()"></el-input>
+          <el-input v-model.trim="editObj.name" @input="onInput()"></el-input>
         </el-form-item>
         <!--提交按钮-->
         <el-button @click="dialogVisible = false">取 消</el-button>
@@ -135,6 +136,7 @@
 
 <script>
   import property from '@/api/category/property'
+  import strUtil from "@/utils/myUtil/strUtil";
 
   export default {
     data() {
@@ -170,11 +172,6 @@
           })
       },
 
-      // 查询属性
-      queryProperty(){
-        this.findPageProperty(1)
-      },
-
       // 初始化值
       init(){
         this.searchObj = {}
@@ -186,6 +183,10 @@
 
       // 添加属性
       addProperty() {
+        if (strUtil.isEmpty(this.propertyObj.name)) {
+          this.$message.warning("属性名不能为空")
+          return
+        }
         this.propertyObj.categoryId = this.categoryId
         property.save(this.propertyObj)
           .then(response => {
@@ -213,7 +214,7 @@
 
       // 批量删除
       batchRemove(){
-        this.$confirm('此操作将永久删除该记录, 是否继续?', '提示', {
+        this.$confirm('此操作将永久删除选中记录, 是否继续?', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
@@ -259,6 +260,10 @@
 
       // 更新编辑后的属性
       updateProperty() {
+        if (strUtil.isEmpty(this.editObj.name)) {
+          this.$message.warning("属性名不能为空")
+          return
+        }
         property.update(this.editObj)
           .then(response => {
             this.init()

@@ -37,7 +37,7 @@ export default{
     },
 
     // 更新分类
-    updateCategory(categoryObj){
+    updateCategoryInfo(categoryObj){
       return request({
         url: `${api_url}/update`,
         method: 'put',
