@@ -55,7 +55,7 @@ public class ProductImageController {
         ProductImage productImage = new ProductImage();
         productImage.setProductId(productId);
         productImage.setType(type);
-        productImageService.batchUploadImage(productId, type, files);
+        productImageService.batchUploadImage(productImage, files);
         return Result.ok();
     }
 

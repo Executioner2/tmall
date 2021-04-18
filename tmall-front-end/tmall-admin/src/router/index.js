@@ -59,7 +59,9 @@ export const constantRoutes = [
       {
         path: '/',
         component: () => import('@/views/category/index'),
+        name: 'categoryName',  // 要根据name做动态面包屑，这个参数要有
         meta: { title: 'categoryName', noBar: true}, // noBar 自定义属性，面包屑不可用
+        hidden: true,
         children: [
           {
             path: 'category/property/:id',
@@ -74,6 +76,7 @@ export const constantRoutes = [
         path: 'product',
         hidden: true,
         redirect: '/product/:id',
+        name: 'categoryName',  // 要根据name做动态面包屑，这个参数要有
         meta: { title: 'categoryName'},
         component: () => import('@/views/product/index'), // Parent router-view
         children: [
@@ -86,6 +89,7 @@ export const constantRoutes = [
           },
           {
             path: '/',
+            name: 'productName',  // 要根据name做动态面包屑，这个参数要有
             meta: { title: 'productName', noBar: true},
             component: () => import('@/views/product/index'), // Parent router-view
             hidden: true,

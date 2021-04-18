@@ -35,29 +35,28 @@ public class ProductImageServiceImpl extends ServiceImpl<ProductImageMapper, Pro
 
     /**
      * 批量上传图片
-     * @param productId
-     * @param type
+     * @param productImage
      * @param files
      */
     @Override
-    public void batchUploadImage(String productId, Integer type, MultipartFile[] files) {
+    public void batchUploadImage(ProductImage productImage, MultipartFile[] files) {
         // 先查询数据库中是否有这个商品
         try {
-            ProductInfo productInfo = productInfoService.getById(productId);
+            ProductInfo productInfo = productInfoService.getById(productImage.getProductId());
             if (files == null || productInfo == null){
                 throw new TmallException(ResultCodeEnum.PARAM_ERROR);
             }
             // 上传图片
             for (MultipartFile file : files) {
-                ProductImage productImage = new ProductImage();
-                productImage.setProductId(productId);
-                productImage.setType(type);
+                ProductImage newProductImage = new ProductImage(); // 这里重新创建新的对象，是为了生成新的id
+                newProductImage.setProductId(productImage.getProductId());
+                newProductImage.setType(productImage.getType());
 
                 String[] upload = FastDFSUtil.upload(file.getBytes(), ImageUtil.getFileExtName(file));
-                productImage.setUrl(ImageUtil.compoundUrl(upload));
+                newProductImage.setUrl(ImageUtil.compoundUrl(upload));
 
                 // 保存到数据库
-                baseMapper.insert(productImage);
+                baseMapper.insert(newProductImage);
             }
         } catch (IOException e) {
             e.printStackTrace();

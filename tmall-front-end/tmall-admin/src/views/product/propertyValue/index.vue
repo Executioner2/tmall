@@ -23,7 +23,6 @@
       return {
         list: [], // 结果集合
         productId: null, // 产品id
-        outTime: 0 // 倒计时
       }
     },
     created() {
@@ -41,29 +40,20 @@
 
       // 保存属性
       save(item) {
-        this.outTime = 2
         propertyValue.update(item)
           .then(response => {
-            // 搞一个倒计时设置颜色，倒计时结束回复灰色
+            // 搞一个延迟执行设置颜色，时间到了恢复灰色
             this.$refs[item.propertyValueId][0].style.borderColor="green"
-            let clearTime = setInterval(() => {
-              if (this.outTime <= 0) {
-                this.$refs[item.propertyValueId][0].style.borderColor="#D3D3D3"
-                clearInterval(clearTime)
-              }
-              --this.outTime
-            }, 1000)
+            setTimeout(() => {
+              this.$refs[item.propertyValueId][0].style.borderColor="#D3D3D3"
+            }, 2000)
           })
         .catch(error => {
-          // 搞一个倒计时设置颜色，倒计时结束回复灰色
+          // 搞一个延迟执行设置颜色，时间到了恢复灰色
           this.$refs[item.propertyValueId][0].style.borderColor="red"
-          let clearTime = setInterval(() => {
-            if (this.outTime <= 0) {
-              this.$refs[item.propertyValueId][0].style.borderColor="#D3D3D3"
-              clearInterval(clearTime)
-            }
-            --this.outTime
-          }, 1000)
+          setTimeout(() => {
+            this.$refs[item.propertyValueId][0].style.borderColor="#D3D3D3"
+          }, 2000)
         })
       }
     }

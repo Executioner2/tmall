@@ -22,7 +22,10 @@ export default {
   },
   watch: {
     $route() {
-      this.getBreadcrumb()
+      setTimeout(() => {
+        this.getBreadcrumb()
+      }, 100) // 延迟执行，保证cookie先被存入
+
     }
   },
   created() {
@@ -40,7 +43,7 @@ export default {
 
       this.levelList = matched.filter(item => item.meta && item.meta.title && item.meta.breadcrumb !== false)
       this.levelList.forEach(function (value) {
-        switch (value.meta.title) {
+        switch (value.name) {
           case "categoryName": value.meta.title = cookies.get("categoryName"); break;
           case "productName": value.meta.title = cookies.get("productName"); break;
         }

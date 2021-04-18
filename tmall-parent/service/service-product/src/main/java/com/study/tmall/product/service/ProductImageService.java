@@ -17,7 +17,7 @@ import java.util.Map;
  */
 public interface ProductImageService extends IService<ProductImage> {
     // 批量上传图片
-    void batchUploadImage(String productId, Integer type, MultipartFile[] files);
+    void batchUploadImage(ProductImage productImage, MultipartFile[] files);
 
     // 显示商品图片
     Map<String, List<ProductImageReturnVo>> showByProductId(String productId);
