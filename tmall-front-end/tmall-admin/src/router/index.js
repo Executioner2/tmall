@@ -114,6 +114,33 @@ export const constantRoutes = [
     ]
   },
 
+  // 用户管理
+  {
+    path: '/user',
+    component: Layout,
+    redirect: '/user/userInfo',
+    name: '用户管理',
+    meta: { title: '用户管理', icon: 'el-icon-user-solid' },
+    children: [
+      {
+        path: 'userInfo',
+        name: '用户列表',
+        component: () => import('@/views/user/userInfo/index'),
+        meta: { title: '用户列表', icon: 'el-icon-s-custom' }
+      },
+      {
+        path: 'auth',
+        name: '用户认证审批',
+        component: () => import('@/views/user/auth/index'),
+        meta: { title: '用户认证审批', icon: 'el-icon-s-check' }
+      }
+    ]
+  },
+
+  // 订单管理
+
+  // 热销商品数据可视化
+
   {
     path: '/example',
     component: Layout,
