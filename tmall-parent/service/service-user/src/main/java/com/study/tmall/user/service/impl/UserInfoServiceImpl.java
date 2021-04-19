@@ -55,7 +55,23 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
         }
 
         IPage<UserInfo> userInfoIPage = baseMapper.selectPage(page, wrapper);
+        // 参数封装
+        userInfoIPage.getRecords().stream().forEach(item -> {
+            this.packageUserInfo(item);
+        });
         return userInfoIPage;
+    }
+
+    // 参数封装
+    private UserInfo packageUserInfo(UserInfo userInfo) {
+        Integer authStatus = userInfo.getAuthStatus();
+        Integer status = userInfo.getStatus();
+        // 把密码值清空
+        userInfo.setPassword(null);
+        // 把用户状态的中文字符串包装进去
+        userInfo.getParams().put("authStatusStr", AuthStatusEnum.getStatusNameByStatus(authStatus));
+        userInfo.getParams().put("statusStr", UserLockStatusEnum.getStatusNameByStatus(status));
+        return userInfo;
     }
 
     /**

@@ -13,6 +13,7 @@ com\study\tmall\model\user\UserLoginRecord.class
 com\study\tmall\enums\OrderStatusEnum.class
 com\study\tmall\vo\order\OrderQueryVo.class
 com\study\tmall\model\user\UserInfo.class
+com\study\tmall\vo\user\UserInfoReturnVo.class
 com\study\tmall\enums\ImageUrlEnum.class
 com\study\tmall\enums\PaymentTypeEnum.class
 com\study\tmall\vo\category\PropertyQueryVo.class

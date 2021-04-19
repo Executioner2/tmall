@@ -33,7 +33,7 @@
       </el-form-item>
       <el-form-item>
         <el-button style="margin-left: 10px" type="primary" @click="findPageProductInfo(1)">查询</el-button>
-        <el-button @click="searchObj = {}" type="danger" plain>重置</el-button>
+        <el-button @click="reset" type="danger" plain>重置</el-button>
       </el-form-item>
       <!-- 批量删除按钮 -->
       <div style="float: right; margin-right: 10px">
@@ -48,6 +48,7 @@
       tooltip-effect="dark"
       size="small"
       style="width: 100%"
+      :row-style="{height: '75px'}"
       @selection-change="handleSelectionChange">
       <el-table-column
         type="selection"
@@ -404,6 +405,12 @@ export default {
       // 保存产品名称，做面包屑导航
       saveName(name) {
         cookies.set("productName", name);
+      },
+
+      // 重置
+      reset() {
+        this.searchObj = {}
+        this.findPageProductInfo(1)
       }
 
     }

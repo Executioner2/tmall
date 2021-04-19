@@ -41,6 +41,7 @@
     :data="list"
     tooltip-effect="dark"
     style="width: 100%"
+    :row-style="{height: '80px'}"
     @selection-change="handleSelectionChange">
     <el-table-column
       type="selection"
@@ -55,7 +56,7 @@
       label="图片"
       show-overflow-tooltip>
       <template slot-scope="scope">
-        <img :src="scope.row.imageUrl" width="400">
+        <img :src="scope.row.imageUrl" width="380">
       </template>
     </el-table-column>
     <el-table-column

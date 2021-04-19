@@ -2,6 +2,7 @@ package com.study.tmall.model.order;
 
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.study.tmall.model.base.BaseEntity;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -57,17 +58,21 @@ public class OrderInfo extends BaseEntity {
 
     @ApiModelProperty(value = "订单生成日期") // 记录生成日期在数据库中用的timestamp，订单创建日期用的datetime
     @TableField("create_date")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone="GMT+8")
     private Date createDate;
 
     @ApiModelProperty(value = "买家支付日期")
     @TableField("pay_date")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone="GMT+8")
     private Date payDate;
 
     @ApiModelProperty(value = "卖家发货日期")
     @TableField("delivery_date")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone="GMT+8")
     private Date deliveryDate;
 
     @ApiModelProperty(value = "买家确认收货日期")
     @TableField("confirm_date")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone="GMT+8")
     private Date confirmDate;
 }

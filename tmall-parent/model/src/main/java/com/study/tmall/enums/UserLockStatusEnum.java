@@ -20,6 +20,21 @@ public enum UserLockStatusEnum {
         this.name = name;
     }
 
+    /**
+     * 根据状态获取状态名
+     * @param status
+     * @return
+     */
+    public static String getStatusNameByStatus(Integer status) {
+        UserLockStatusEnum[] values = UserLockStatusEnum.values();
+        for (UserLockStatusEnum obj : values) {
+            if (status.intValue() == obj.getStatus().intValue()) {
+                return obj.getName();
+            }
+        }
+        return "";
+    }
+
     public Integer getStatus() {
         return status;
     }
