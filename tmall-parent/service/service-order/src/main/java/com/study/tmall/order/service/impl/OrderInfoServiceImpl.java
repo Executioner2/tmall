@@ -7,14 +7,25 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.study.tmall.enums.OrderStatusEnum;
 import com.study.tmall.exception.TmallException;
 import com.study.tmall.model.order.OrderInfo;
+import com.study.tmall.model.order.OrderItem;
+import com.study.tmall.model.product.ProductInfo;
+import com.study.tmall.model.user.UserInfo;
 import com.study.tmall.order.mapper.OrderInfoMapper;
 import com.study.tmall.order.service.OrderInfoService;
+import com.study.tmall.order.service.OrderItemService;
 import com.study.tmall.result.ResultCodeEnum;
+import com.study.tmall.user.client.UserInfoFeignClient;
 import com.study.tmall.vo.order.OrderQueryVo;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.RequestBody;
 
+import javax.annotation.Resource;
+import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * Copyright@1205878539@qq.com
@@ -25,6 +36,12 @@ import java.util.Date;
  */
 @Service
 public class OrderInfoServiceImpl extends ServiceImpl<OrderInfoMapper, OrderInfo> implements OrderInfoService {
+    @Resource
+    private UserInfoFeignClient userInfoFeignClient;
+    @Resource
+    private OrderItemService orderItemService;
+
+
 
     /**
      * 分页条件显示订单
@@ -58,12 +75,21 @@ public class OrderInfoServiceImpl extends ServiceImpl<OrderInfoMapper, OrderInfo
         }
 
         IPage<OrderInfo> orderInfoIPage = baseMapper.selectPage(page, wrapper);
+        // 每个订单都要获得用户信息，为了减少远程调用量，把这一页所有订单的用户id封装到list集合中
+        List<String> userIdList = new ArrayList<>();
+        orderInfoIPage.getRecords().stream().forEach(item -> {
+            userIdList.add(item.getUserId());
+        });
+        // 通过远程调用获得用户信息集合
+        List<UserInfo> userInfoList = userInfoFeignClient.listUserInfoOfInner(userIdList);
+
         // 封装参数
         orderInfoIPage.getRecords().stream().forEach(item -> {
-            this.packOrderInfo(item);
+            this.packOrderInfo(item, userInfoList);
         });
         return orderInfoIPage;
     }
+
 
     /**
      * 订单发货
@@ -90,11 +116,41 @@ public class OrderInfoServiceImpl extends ServiceImpl<OrderInfoMapper, OrderInfo
      * 封装订单参数
      * @param orderInfo
      */
-    private OrderInfo packOrderInfo(OrderInfo orderInfo) {
+    private OrderInfo packOrderInfo(OrderInfo orderInfo, List<UserInfo> userInfoList) {
+        Integer number = 0; // 商品总数量
+        BigDecimal totalMoney = new BigDecimal(0);
         Integer orderStatus = orderInfo.getOrderStatus();
         String statusNameByStatus = OrderStatusEnum.getStatusNameByStatus(orderStatus);
-        // 订单状态中文显示
-        orderInfo.getParams().put("orderStatusStr", statusNameByStatus);
+        // 获取订单项信息
+        List<OrderItem> orderItems = orderItemService.showByOrderId(orderInfo.getId());
+        // 封装总数量 和 总金额
+        for (OrderItem obj : orderItems) {
+            ProductInfo productInfo = (ProductInfo) obj.getParams().get("productInfo");
+            number += obj.getNumber();
+            totalMoney = totalMoney.add(productInfo.getPromotePrice());
+        }
+
+        // 额外数据封装
+        orderInfo.getParams().put("number", number); // 商品总数量
+        orderInfo.getParams().put("totalMoney", totalMoney); // 商品总金额
+        orderInfo.getParams().put("orderItems", orderItems); // 订单项
+        orderInfo.getParams().put("orderStatusStr", statusNameByStatus); // 订单状态中文显示
+
+        // 把用户信息封装进去
+        if (orderInfo.getUserId() != null) {
+            Iterator<UserInfo> it = userInfoList.iterator();
+            while (it.hasNext()) {
+                UserInfo userInfo = it.next();
+                if (orderInfo.getUserId().equals(userInfo.getId())) {
+                    if (!StringUtils.isEmpty(userInfo.getNickName())) { // 如果昵称不为空就把昵称做userName
+                        orderInfo.getParams().put("customerName", userInfo.getNickName());
+                    } else if (!StringUtils.isEmpty(userInfo.getPhone())) { // 如果手机号不为空就把昵称做手机号
+                        orderInfo.getParams().put("customerName", userInfo.getPhone());
+                    }
+                    break;
+                }
+            }
+        }
         // TODO 后续根据前端需求继续完善
         return orderInfo;
     }

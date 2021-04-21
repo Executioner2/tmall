@@ -15,6 +15,9 @@ import com.study.tmall.vo.user.UserQueryVo;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Copyright@1205878539@qq.com
  * Author:2Executioner
@@ -124,5 +127,24 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
         // 否则更新认证状态
         userInfo.setAuthStatus(authStatus);
         baseMapper.updateById(userInfo);
+    }
+
+    /**
+     * 获取用户基本信息，内部调用
+     * @param idList
+     * @return
+     */
+    @Override
+    public List<UserInfo> listUserInfo(List<String> idList) {
+        List<UserInfo> userInfoList = new ArrayList<>();
+        idList.stream().forEach(id -> {
+            UserInfo userInfo = baseMapper.selectById(id);
+            if (userInfo != null) { // 如果查出来的用户不为空，则把重要信息做置空处理
+                userInfo.setPassword(null);
+                // TODO 根据未来需求把不需要的参数再进一步置空
+            }
+            userInfoList.add(userInfo);
+        });
+        return userInfoList;
     }
 }

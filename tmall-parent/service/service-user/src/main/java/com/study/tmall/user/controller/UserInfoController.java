@@ -7,11 +7,13 @@ import com.study.tmall.result.Result;
 import com.study.tmall.user.service.UserInfoService;
 import com.study.tmall.vo.user.UserQueryVo;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiModelProperty;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 /**
  * Copyright@1205878539@qq.com
@@ -71,6 +73,17 @@ public class UserInfoController {
 
         userInfoService.authUser(id, authStatus);
         return Result.ok();
+    }
+
+    // 获取用户基本信息，内部调用
+    @ApiModelProperty(value = "获取用户基本信息，内部调用")
+    @PostMapping("/inner/listUserInfo")
+    public List<UserInfo> listUserInfoOfInner(
+            @ApiParam(name = "idList", value = "用户id集合", required = true)
+            @RequestBody List<String> idList){
+
+        List<UserInfo> userInfoList = userInfoService.listUserInfo(idList);
+        return userInfoList;
     }
 
 }

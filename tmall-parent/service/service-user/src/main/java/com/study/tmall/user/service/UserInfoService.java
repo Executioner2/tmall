@@ -6,6 +6,8 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.study.tmall.model.user.UserInfo;
 import com.study.tmall.vo.user.UserQueryVo;
 
+import java.util.List;
+
 /**
  * Copyright@1205878539@qq.com
  * Author:2Executioner
@@ -22,4 +24,7 @@ public interface UserInfoService extends IService<UserInfo> {
 
     // 审批用户认证
     void authUser(String id, Integer authStatus);
+
+    // 获取用户基本信息，内部调用
+    List<UserInfo> listUserInfo(List<String> idList);
 }

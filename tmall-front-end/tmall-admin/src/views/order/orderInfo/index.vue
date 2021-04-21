@@ -3,32 +3,18 @@
     <el-table
       :data="list"
       style="width: 100%">
-      <el-table-column type="expand">
-        <template slot-scope="props">
-          <el-form label-position="left" inline class="demo-table-expand">
-            <el-form-item label="商品名称">
-              <span>{{ props.row.name }}</span>
-            </el-form-item>
-            <el-form-item label="所属店铺">
-              <span>{{ props.row.shop }}</span>
-            </el-form-item>
-            <el-form-item label="商品 ID">
-              <span>{{ props.row.id }}</span>
-            </el-form-item>
-            <el-form-item label="店铺 ID">
-              <span>{{ props.row.shopId }}</span>
-            </el-form-item>
-            <el-form-item label="商品分类">
-              <span>{{ props.row.category }}</span>
-            </el-form-item>
-            <el-form-item label="店铺地址">
-              <span>{{ props.row.address }}</span>
-            </el-form-item>
-            <el-form-item label="商品描述">
-              <span>{{ props.row.desc }}</span>
-            </el-form-item>
-          </el-form>
-        </template>
+      <el-table-column
+        type="expand">
+         <template slot-scope="scope">
+           <div style="width: 100%; text-align: center;" v-for="(item) in scope.row.params.orderItems">
+             <el-image style="width: 50px;" :src="item.params.productInfo.params.imageUrl"></el-image>
+             <div style="display: inline-block; margin-left: 20px; padding-top: 15px; vertical-align: top">
+               <el-link type="primary" style="margin-right: 80px">{{item.params.productInfo.name}}</el-link>
+               <span style="margin-right: 80px">{{item.number + "个"}}</span>
+               <span>{{"单价：¥" + item.params.productInfo.promotePrice}}</span>
+             </div>
+           </div>
+         </template>
       </el-table-column>
       <el-table-column
         label="序号"
@@ -37,15 +23,25 @@
       </el-table-column>
       <el-table-column
         label="状态"
+        width="70"
         prop="params.orderStatusStr">
       </el-table-column>
       <el-table-column
         label="金额"
-        prop="">
+        width="75"
+        prop="params.totalMoney">
+      </el-table-column>
+      <el-table-column
+        label="商品数量"
+        width="80"
+        align="center"
+        header-align="left"
+        prop="params.number">
       </el-table-column>
       <el-table-column
         label="买家名称"
-        prop="">
+        width="120"
+        prop="params.customerName">
       </el-table-column>
       <el-table-column
         label="创建时间"
