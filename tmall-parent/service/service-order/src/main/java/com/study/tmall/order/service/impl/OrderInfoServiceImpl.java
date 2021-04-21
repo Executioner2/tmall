@@ -51,15 +51,15 @@ public class OrderInfoServiceImpl extends ServiceImpl<OrderInfoMapper, OrderInfo
      */
     @Override
     public IPage<OrderInfo> findPageOrderInfo(Page<OrderInfo> page, OrderQueryVo orderQueryVo) {
-        Integer status = orderQueryVo.getStatus(); // 订单状态
+        Integer orderStatus = orderQueryVo.getOrderStatus(); // 订单状态
         String userId = orderQueryVo.getUserId(); // 用户id
         String outTradeNo = orderQueryVo.getOutTradeNo(); // 订单编号
         Date createDateEnd = orderQueryVo.getCreateDateEnd(); // 订单创建日期结束
         Date createDateBegin = orderQueryVo.getCreateDateBegin(); // 订单创建日期开始
 
         QueryWrapper<OrderInfo> wrapper = new QueryWrapper<>();
-        if (status != null) {
-            wrapper.eq("status", status);
+        if (orderStatus != null) {
+            wrapper.eq("order_status", orderStatus);
         }
         if (!StringUtils.isEmpty(userId)) {
             wrapper.eq("user_id", userId);

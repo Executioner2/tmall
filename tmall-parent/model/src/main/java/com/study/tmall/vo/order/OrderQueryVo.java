@@ -24,7 +24,7 @@ public class OrderQueryVo {
     private String userId;
 
     @ApiModelProperty(value = "订单状态")
-    private Integer status;
+    private Integer orderStatus;
 
     @ApiModelProperty(value = "创建日期开始")
     @DateTimeFormat(pattern = "yyyy-MM-dd")

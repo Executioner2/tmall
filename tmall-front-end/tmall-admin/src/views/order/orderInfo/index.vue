@@ -1,8 +1,54 @@
 <template>
   <div>
+    <!-- 条件查询 -->
+    <el-form :inline="true" :model="searchObj" class="demo-form-inline" style="margin: 20px 0px 0px 10px">
+      <el-form-item label="订单号">
+        <el-input style="width: 170px" v-model="searchObj.outTradeNo" placeholder="天猫订单号"></el-input>
+      </el-form-item>
+      <el-form-item label="用户ID">
+        <el-input style="width: 170px" v-model="searchObj.userId" placeholder="用户ID"></el-input>
+      </el-form-item>
+      <el-form-item label="订单状态">
+        <el-select style="width: 100px" v-model="searchObj.orderStatus" placeholder="请选择">
+          <el-option
+            v-for="item in options"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value">
+          </el-option>
+        </el-select>
+      </el-form-item>
+      <el-form-item style="margin-left: 10px" label="创建日期">
+        <div class="block" style="display: inline-block">
+          <el-date-picker
+            style="width: 160px"
+            value-format="yyyy-MM-dd"
+            v-model="searchObj.createDateBegin"
+            type="date"
+            placeholder="选择日期">
+          </el-date-picker>
+        </div>
+        <span> - </span>
+        <div class="block" style="display: inline-block">
+          <el-date-picker
+            style="width: 160px"
+            value-format="yyyy-MM-dd"
+            v-model="searchObj.createDateEnd"
+            type="date"
+            placeholder="选择日期">
+          </el-date-picker>
+        </div>
+      </el-form-item>
+      <el-form-item>
+        <el-button style="margin-left: 10px" type="primary" @click="findPageOrderInfo(1)">查询</el-button>
+        <el-button @click="reset" type="danger" plain>重置</el-button>
+      </el-form-item>
+    </el-form>
+
     <el-table
       :data="list"
-      style="width: 100%">
+      style="width: 100%"
+      :row-style="{height: '65px'}">
       <el-table-column
         type="expand">
          <template slot-scope="scope">
@@ -63,10 +109,23 @@
         label="操作"
         width="150">
         <template slot-scope="scope">
-          <el-button v-if="scope.row.status == 1" @click="authBtn(scope.row.id, 2)" type="primary" size="mini">发货</el-button>
+          <el-button v-if="scope.row.orderStatus == 1" @click="deliver(scope.row.id)" type="primary" size="mini">发货</el-button>
         </template>
       </el-table-column>
     </el-table>
+
+    <!-- 分页 -->
+    <div style="margin-top: 20px">
+      <el-pagination
+        :page-size="limit"
+        @current-change="findPageOrderInfo"
+        align="center"
+        :current-page="current"
+        background
+        layout="prev, pager, next"
+        :total="total">
+      </el-pagination>
+    </div>
   </div>
 </template>
 
@@ -81,6 +140,19 @@ export default {
       limit: 5, // 每页记录数
       total: null, // 总记录数
       searchObj: {}, // 查询条件对象
+      options: [{ // 订单状态
+        value: 0,
+        label: "待付款"
+      },{
+        value: 1,
+        label: "待发货"
+      },{
+        value: 2,
+        label: "待收货"
+      },{
+        value: 3,
+        label: "待评价"
+      }]
     }
   },
   created() {
@@ -95,6 +167,23 @@ export default {
           this.list = response.data.records
           this.total = response.data.total
         })
+    },
+
+    // 发货
+    deliver(id) {
+      orderInfo.deliverGoods(id)
+        .then(response => {
+          this.findPageOrderInfo(this.current)
+          this.$message.success("发货成功！")
+        })
+        .catch(error => {
+          this.$message.error("发货失败！")
+        })
+    },
+
+    // 清空查询条件
+    reset(){
+      this.searchObj = {}
     }
   }
 }
