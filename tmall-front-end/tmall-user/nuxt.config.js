@@ -1,3 +1,4 @@
+// const webpack=require('webpack');
 module.exports = {
   /*
   ** Headers of the page
@@ -27,6 +28,11 @@ module.exports = {
   ** Build configuration
   */
   build: {
+    // plugins: [
+    //   new webpack.ProvidePlugin({
+    //     '$' : 'jquery'
+    //   }),
+    // ],
     /*
     ** Run ESLint on save
     */
@@ -44,6 +50,5 @@ module.exports = {
   plugins: [
     { src: '~/plugins/myPlugin.js', ssr: false }
   ]
-
 }
 

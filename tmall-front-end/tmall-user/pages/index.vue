@@ -1,24 +1,10 @@
 <template>
   <div>
+    <!-- 搜索框 -->
+    <search/>
 
-    <!--这里放nav-->
-    <nav class="top">
-      <div class="navTopDiv">
-        <a href="#">
-          <span class="glyphicon glyphicon-home redColor"></span>天猫首页
-        </a>
-        <span>喵，欢迎来天猫</span>
-        <a href="#">请登录</a>
-        <span class="pull-right">
-                <a href="#">我的订单</a>
-                <a href="#">
-                    <span class="glyphicon glyphicon-shopping-cart redColor"></span>购物车<strong>0</strong>件
-                </a>
-            </span>
-      </div>
-    </nav>
-
-    <!--这里是搜索栏和导航栏-->
+    <!-- 导航栏 -->
+    <!-- 轮播和导航的js -->
     <script>
       $(function () {
         $(".rightMenu:first span").mouseenter(catearShow);
@@ -39,23 +25,7 @@
       }
     </script>
     <div id="searchAndNav" class="searchAndNav">
-      <div id="searchBoxDiv">
-        <a href="#">
-          <img class="logo" src="../static/img/site/logo.gif" height="130" width="290" id="logo"/>
-        </a>
-        <div class="searchRightDiv">
-          <input type="text" placeholder="时尚男鞋 太阳镜" name="keyword">
-          <button class="searchButton">搜索</button>
-          <div class="searchBelow">
-            <span><a href="#">平衡车</a><span>|</span></span>
-            <span><a href="#">扫地机器人</a><span>|</span></span>
-            <span><a href="#">原汁机</a><span>|</span></span>
-            <span><a href="#">冰箱</a></span>
-          </div>
-        </div>
-      </div>
-      <div style="height: 50px"></div>
-      <img id="catear" src="../static/img/site/catear.png" style="left: 500px; top: 38px; display: none"/>   <!--间隔120px-->
+      <img id="catear" src="~/assets/img/site/catear.png" style="left: 500px; top: 38px; display: none"/>   <!--间隔120px-->
       <div class="navAndRotDiv" id="navAndRotDiv">
         <div class="navDiv">
           <div class="head">
@@ -64,10 +34,10 @@
           </div>
           <div class="rightMenu">
                     <span>
-                        <a href="#"><img src="../static/img/site/chaoshi.png" height="72" width="180"/></a>
+                        <a href="#"><img src="~/assets/img/site/chaoshi.png" height="72" width="180"/></a>
                     </span>
             <span>
-                        <a href="#"><img src="../static/img/site/guoji.png" height="72" width="180"/></a>
+                        <a href="#"><img src="~/assets/img/site/guoji.png" height="72" width="180"/></a>
                     </span>
             <span>
                         <a href="#">平板电视</a>
@@ -85,6 +55,7 @@
 
         </div>
       </div>
+
       <div id="lunBoDiv">
         <div id="carousel-of-product" class="carousel slide carousel-of-product" data-ride="carousel" data-interval="2000">
           <ol class="carousel-indicators">
@@ -95,11 +66,11 @@
             <li data-target="#carousel-of-product" data-slide-to="4"></li>
           </ol>
           <div class="carousel-inner" role="listbox">
-            <div class="item active"><img src="../static/img/lunbo/1.jpg"/></div>
-            <div class="item"><img src="../static/img/lunbo/2.jpg"/></div>
-            <div class="item"><img src="../static/img/lunbo/3.jpg"/></div>
-            <div class="item"><img src="../static/img/lunbo/4.jpg"/></div>
-            <div class="item"><img src="../static/img/lunbo/5.jpg"/></div>
+            <div class="item active"><img src="~/assets/img/lunbo/1.jpg"/></div>
+            <div class="item"><img src="~/assets/img/lunbo/2.jpg"/></div>
+            <div class="item"><img src="~/assets/img/lunbo/3.jpg"/></div>
+            <div class="item"><img src="~/assets/img/lunbo/4.jpg"/></div>
+            <div class="item"><img src="~/assets/img/lunbo/5.jpg"/></div>
           </div>
         </div>
       </div>
@@ -107,48 +78,18 @@
     <div style="clear: both"></div>
 
     <!--这里放商品分类-->
-    <script>
-      $(function () {
-        floatMenuHidden();
-        $(".leftMenu>.link").mouseenter(floatMenuBlock);
-        $(".categoryWithCarousel").mouseleave(floatMenuHidden);
-        $(".rightFloatMenu").mouseleave(floatMenuHidden);
-      });
+<!--    <script>-->
+<!--      $(function () {-->
+<!--        $(".leftMenu>.link").mouseenter(floatMenuBlock);-->
+<!--        $(".categoryWithCarousel").mouseleave(floatMenuHidden);-->
+<!--        $(".rightFloatMenu").mouseleave(floatMenuHidden);-->
+<!--      });-->
 
-      function floatMenuHidden() {
-        $(".categoryWithCarousel>.rightFloatMenu").css("display", "none");
-        $(".carousel-indicators").css("z-index","2");
-      }
 
-      function floatMenuBlock() {
-        floatMenuHidden();
-        var menus =  $(".rightFloatMenu");
-        var links = $(".leftMenu>.link");
-        switch (this) {
-          case links[0]: menus[0].style.display ="block";break;
-          case links[1]: menus[1].style.display ="block";break;
-          case links[2]: menus[2].style.display ="block";break;
-          case links[3]: menus[3].style.display ="block";break;
-          case links[4]: menus[4].style.display ="block";break;
-          case links[5]: menus[5].style.display ="block";break;
-          case links[6]: menus[6].style.display ="block";break;
-          case links[7]: menus[7].style.display ="block";break;
-          case links[8]: menus[8].style.display ="block";break;
-          case links[9]: menus[9].style.display ="block";break;
-          case links[10]: menus[10].style.display ="block";break;
-          case links[11]: menus[11].style.display ="block";break;
-          case links[12]: menus[12].style.display ="block";break;
-          case links[13]: menus[13].style.display ="block";break;
-          case links[14]: menus[14].style.display ="block";break;
-          case links[15]: menus[15].style.display ="block";break;
-          case links[16]: menus[16].style.display ="block";break;
-        }
-        $(".carousel-indicators").css("z-index","0");
-      }
-    </script>
-    <div class="categoryWithCarousel" id="categoryWithCarousel">
+<!--    </script>-->
+    <div class="categoryWithCarousel" @mouseleave="floatMenuHidden" id="categoryWithCarousel">
       <div class="leftMenu">
-        <div class="link">
+        <div class="link" @mouseenter="floatMenuBlock">
           <span class="glyphicon glyphicon-link"></span>
           <a href="#">平板电视</a>
         </div>
@@ -194,7 +135,7 @@
         </div>
         <div class="link">
           <span class="glyphicon glyphicon-link"></span>
-          <a href="#">男士手拿包</a>
+          <a :href="'/category/' + categoryId">男士手拿包</a>
         </div>
         <div class="link">
           <span class="glyphicon glyphicon-link"></span>
@@ -217,9 +158,9 @@
           <a href="#">安全座椅</a>
         </div>
       </div>
-      <div class="rightFloatMenu">
+      <div class="rightFloatMenu" @mouseleave="floatMenuHidden">
         <div class="row">
-          <a href="#">大屏影院</a>
+          <a :href="'/product/' + productId">大屏影院</a>
           <a href="#">周末</a>
           <a href="#">新品特惠</a>
           <a href="#">32寸电视机</a>
@@ -1331,7 +1272,7 @@
           <div class="productTitle">平板电视</div>
           <div class="productItem">
             <a href="#" class="product">
-              <img src="../static/img/product/平板电视/676.jpg"/>
+              <img src="~/assets/img/product/平板电视/676.jpg"/>
             </a>
             <a href="#" class="productItemDescLink">
               <span class="productItemDesc">[热销] 夏普屏PANDA/熊猫LE39D71S</span>
@@ -1340,7 +1281,7 @@
           </div>
           <div class="productItem">
             <a href="#" class="product">
-              <img src="../static/img/product/平板电视/665.jpg"/>
+              <img src="~/assets/img/product/平板电视/665.jpg"/>
             </a>
             <a href="#" class="productItemDescLink">
               <span class="productItemDesc">[热销]Changhong/长虹 65S1安卓智</span>
@@ -1349,7 +1290,7 @@
           </div>
           <div class="productItem">
             <a href="#" class="product">
-              <img src="../static/img/product/平板电视/654.jpg"/>
+              <img src="~/assets/img/product/平板电视/654.jpg"/>
             </a>
             <a href="#" class="productItemDescLink">
               <span class="productItemDesc">[热销]Hisense/海信LED40EC52</span>
@@ -1358,7 +1299,7 @@
           </div>
           <div class="productItem">
             <a href="#" class="product">
-              <img src="../static/img/product/平板电视/643.jpg"/>
+              <img src="~/assets/img/product/平板电视/643.jpg"/>
             </a>
             <a href="#" class="productItemDescLink">
               <span class="productItemDesc">[热销]Hisense/海信LED49EC32</span>
@@ -1367,7 +1308,7 @@
           </div>
           <div class="productItem">
             <a href="#" class="product">
-              <img src="../static/img/product/平板电视/632.jpg"/>
+              <img src="~/assets/img/product/平板电视/632.jpg"/>
             </a>
             <a href="#" class="productItemDescLink">
               <span class="productItemDesc">[热销]Konka/康佳LED32S1</span>
@@ -1379,7 +1320,7 @@
           <div class="productTitle">马桶</div>
           <div class="productItem">
             <a href="#">
-              <img src="../static/img/product/马桶/1324.jpg"/>
+              <img src="~/assets/img/product/马桶/1324.jpg"/>
             </a>
             <a href="#" class="productItemDescLink">
               <span class="productItemDesc">[热销] 纳蒂兰卡 1082卫浴洁具 钻石切边 坐</span>
@@ -1388,7 +1329,7 @@
           </div>
           <div class="productItem">
             <a href="#">
-              <img src="../static/img/product/马桶/1313.jpg"/>
+              <img src="~/assets/img/product/马桶/1313.jpg"/>
             </a>
             <a href="#" class="productItemDescLink">
               <span class="productItemDesc">[热销] 德国DGPOSY超漩式彩色马桶缓降坐便器</span>
@@ -1397,7 +1338,7 @@
           </div>
           <div class="productItem">
             <a href="#">
-              <img src="../static/img/product/马桶/1302.jpg"/>
+              <img src="~/assets/img/product/马桶/1302.jpg"/>
             </a>
             <a href="#" class="productItemDescLink">
               <span class="productItemDesc">[热销] 纳蒂兰卡1066卫浴漩冲虹吸式马桶350</span>
@@ -1406,7 +1347,7 @@
           </div>
           <div class="productItem">
             <a href="#">
-              <img src="../static/img/product/马桶/1291.jpg"/>
+              <img src="~/assets/img/product/马桶/1291.jpg"/>
             </a>
             <a href="#" class="productItemDescLink">
               <span class="productItemDesc">[热销] 箭牌马桶/ARROW AB1118脲醛盖</span>
@@ -1415,7 +1356,7 @@
           </div>
           <div class="productItem">
             <a href="#">
-              <img src="../static/img/product/马桶/1280.jpg"/>
+              <img src="~/assets/img/product/马桶/1280.jpg"/>
             </a>
             <a href="#" class="productItemDescLink">
               <span class="productItemDesc">[热销] 乐洁士智能马桶高品质全自动遥控感应一体式</span>
@@ -1424,127 +1365,7 @@
           </div>
         </div>
         <div class="endDiv" id="endDiv">
-          <img src="../static/img/site/end.png" height="53" width="82"/>
-        </div>
-      </div>
-    </div>
-
-    <!--这里是footer部分-->
-    <div id="footer" class="footer">
-      <div class="footerEnsure">
-        <a href="#">
-          <img src="../static/img/site/ensure.png"/>
-        </a>
-      </div>
-      <div class="footer_desc">
-        <div class="descColumn">
-          <span class="descColumnTitle">购物指南</span>
-          <span><a href="#">免费注册</a></span>
-          <span><a href="#">开通支付宝</a></span>
-          <span><a href="#">支付宝充值</a></span>
-        </div>
-        <div class="descColumn">
-          <span class="descColumnTitle">天猫保障</span>
-          <span><a href="#">发票保障</a></span>
-          <span><a href="#">售后规则</a></span>
-          <span><a href="#">缺货赔付</a></span>
-        </div>
-        <div class="descColumn">
-          <span class="descColumnTitle">支付方式</span>
-          <span><a href="#">快捷支付</a></span>
-          <span><a href="#">信用卡</a></span>
-          <span><a href="#">蚂蚁花呗</a></span>
-          <span><a href="#">货到付款</a></span>
-        </div>
-        <div class="descColumn">
-          <span class="descColumnTitle">商家服务</span>
-          <span><a href="#">商家入驻</a></span>
-          <span><a href="#">商家中心</a></span>
-          <span><a href="#">天猫智库</a></span>
-          <span><a href="#">天猫规则</a></span>
-          <span><a href="#">物流服务</a></span>
-          <span><a href="#">喵言喵语</a></span>
-          <span><a href="#">运营服务</a></span>
-        </div>
-        <div class="descColumn">
-          <span class="descColumnTitle">手机天猫</span>
-          <a href="#">
-            <img id="ma" class="ma" src="../static/img/site/ma.png" height="105" width="105"/>
-          </a>
-        </div>
-      </div>
-    </div>
-
-    <!--这里是版权部分-->
-    <div class="copyright" id="copyright">
-      <div class="copyrightMiddle">
-        <div class="white_link">
-          <span><a href="#">关于天猫</a></span>
-          <span><a href="#">帮助中心</a></span>
-          <span><a href="#">开放平台</a></span>
-          <span><a href="#">诚聘英才</a></span>
-          <span><a href="#">联系我们</a></span>
-          <span><a href="#">网站合作</a></span>
-          <span><a href="#">法律声明</a></span>
-          <span><a href="#">知识产权</a></span>
-          <span><a href="#">廉政举报</a></span>
-        </div>
-        <div class="white_link">
-          <span><a href="#">阿里巴巴</a><span>|</span></span>
-          <span><a href="#">淘宝网</a><span>|</span></span>
-          <span><a href="#">天猫</a><span>|</span></span>
-          <span><a href="#">聚划算</a><span>|</span></span>
-          <span><a href="#">全球速卖通</a><span>|</span></span>
-          <span><a href="#">阿里巴巴国际交易市场</a><span>|</span></span>
-          <span><a href="#">1688</a><span>|</span></span>
-          <span><a href="#">阿里妈妈</a><span>|</span></span>
-          <span><a href="#">飞猪</a><span>|</span></span>
-          <span><a href="#">阿里云计算</a><span>|</span></span>
-          <span><a href="#">AliOS</a><span>|</span></span>
-          <span><a href="#">阿里通信</a><span>|</span></span>
-          <span><a href="#">万网</a><span>|</span></span>
-          <span><a href="#">高德</a><span>|</span></span>
-          <span><a href="#">UC</a><span>|</span></span>
-          <span><a href="#">友盟</a><span>|</span></span>
-          <span><a href="#">虾米</a><span>|</span></span>
-          <span><a href="#">钉钉</a><span>|</span></span>
-          <span><a href="#">支付宝</a><span>|</span></span>
-          <span><a href="#">阿里安全</a></span>
-        </div>
-        <div class="gray_text">
-          <span>增值电信业务经营许可证：浙B2-20110446</span>
-          <span>市场名称登记证：工商网市字3301004119号</span>
-          <span>出版物网络交易平台服务经营备案证： 新出发浙备字第2019002号</span>
-        </div>
-        <div class="gray_text">
-          <div>
-            <span>互联网违法和不良信息举报电话：0571-81683755 blxxjb@alibaba-inc.com</span>
-            <span> 互联网药品信息服务资质证书编号：浙-（经营性）-2017-0005</span>
-            <span>
-                    <a href="#">
-                        <img src="../static/img/site/jingHui.png" height="20" width="20"/>
-                        <span>浙公网安备 33010002000120号</span>
-                    </a>
-                </span>
-          </div>
-          <div>
-            <span>医疗器械网络交易服务第三方平台备案：（浙）网械平台备字[2018]第00002号</span>
-          </div>
-          <div>
-            <span>浙江省网络食品销售第三方平台提供者备案：浙网食A33010002</span>
-            <span>12318举报</span>
-          </div>
-        </div>
-        <div class="copyrightMark">
-          <span>© 2003-2020 TMALL.COM 版权所有</span>
-        </div>
-        <div class="footerImgLink">
-          <a href="#">
-            <img src="../static/img/site/wangLuoGongShang.gif" height="2%" width="2%"/>
-          </a>
-          <a href="#">
-            <img src="../static/img/site/copyRight2.jpg" height="30" width="80"/>
-          </a>
+          <img src="~/assets/img/site/end.png" height="53" width="82"/>
         </div>
       </div>
     </div>
@@ -1553,12 +1374,57 @@
 </template>
 
 <script>
-// import logoGif from '@/assets/images/site/logo.gif';
-// export default {
-//   data() {
-//     return {
-//       logoGif: logoGif,
-//     }
-//   }
-// }
+  import search from "../layouts/search";
+  export default {
+    components: {search},
+    data() {
+      return {
+          productId: 123,
+          categoryId: 231,
+      }
+    },
+    created() {
+      this.$nextTick(function () {
+        this.floatMenuHidden()
+      })
+    },
+    methods: {
+      // 隐藏浮动菜单
+      floatMenuHidden() {
+        $(".categoryWithCarousel>.rightFloatMenu").css("display", "none");
+        $(".carousel-indicators").css("z-index","2");
+      },
+      // 显示浮动菜单
+      floatMenuBlock() {
+        this.floatMenuHidden();
+        let menus =  $(".rightFloatMenu");
+        let links = $(".leftMenu>.link");
+        console.log(menus)
+        console.log(links)
+        switch (this) {  // TODO 不显示的原因是这个this，this不再是dom对象，后续改
+          case links[0]: menus[0].style.display = "block";break;
+          case links[1]: menus[1].style.display = "block";break;
+          case links[2]: menus[2].style.display = "block";break;
+          case links[3]: menus[3].style.display = "block";break;
+          case links[4]: menus[4].style.display = "block";break;
+          case links[5]: menus[5].style.display = "block";break;
+          case links[6]: menus[6].style.display = "block";break;
+          case links[7]: menus[7].style.display = "block";break;
+          case links[8]: menus[8].style.display = "block";break;
+          case links[9]: menus[9].style.display = "block";break;
+          case links[10]: menus[10].style.display = "block";break;
+          case links[11]: menus[11].style.display = "block";break;
+          case links[12]: menus[12].style.display = "block";break;
+          case links[13]: menus[13].style.display = "block";break;
+          case links[14]: menus[14].style.display = "block";break;
+          case links[15]: menus[15].style.display = "block";break;
+          case links[16]: menus[16].style.display = "block";break;
+        }
+        $(".carousel-indicators").css("z-index","0");
+        console.log(menus[0].style.display)
+      }
+
+    }
+  }
+
 </script>

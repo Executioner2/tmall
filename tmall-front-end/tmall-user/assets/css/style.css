@@ -33,7 +33,7 @@ nav.top a{
 nav.top a:hover{
     color: #C40000;
 }
-nav .redColor{
+nav.top .redColor{
     color: #C40000
 }
 
@@ -735,6 +735,9 @@ nav .redColor{
     background-color: #C40000;
     color: white;
 }
+#productBasicInformation .buyAndJoinShopping #joinShopping span{
+  margin-right: 10px;
+}
 #productBasicInformation .buyAndJoinShopping #buy{
     background-color: #FFEDED;
     color: #C40000;
@@ -1237,12 +1240,17 @@ nav .redColor{
 }
 
 .myOrderItem .myOrderProductItem .evaluate a{
+    display: block;
     padding: 5px 10px;
     background-color: white;
     font-weight: bold;
     border: 1px #DCDCDC solid;
-    border-radius: 2px;
+    border-radius: 3px;
     color: black;
+    text-decoration: none;
+    margin: 5px auto;
+    width: 50px;
+    height: 30px;
 }
 .myOrderItem .myOrderProductItem .evaluate a:hover{
     border: 1px #C40000 solid;
@@ -1250,11 +1258,15 @@ nav .redColor{
 }
 .myOrderItem .myOrderProductItem .waitTake a{
     padding: 5px 10px;
+    display: block;
     background-color: #66B6FF;
     font-weight: bold;
     border: none;
-    border-radius: 2px;
+    border-radius: 3px;
     color: white;
+    margin: 5px auto;
+    width: 70px;
+    text-decoration: none;
 }
 .myOrderItem .myOrderProductItem .waitTake a:hover{
     background-color: #118ADB;
@@ -1263,20 +1275,27 @@ nav .redColor{
     padding: 5px 9px;
     background-color: #5BC0DE;
     font-weight: bold;
+    display: block;
     border: none;
-    border-radius: 2px;
+    margin: 5px auto;
+    border-radius: 3px;
     color: white;
+    text-decoration: none;
 }
 .myOrderItem .myOrderProductItem .waitDeliver a:hover{
     background-color: #31B0D5;
 }
 .myOrderItem .myOrderProductItem .waitPay a{
     padding: 5px 10px;
+    margin: 5px auto;
     background-color: #66B6FF;
     font-weight: bold;
+    display: block;
     border: none;
-    border-radius: 2px;
+    border-radius: 3px;
     color: white;
+    width: 50px;
+    text-decoration: none;
 }
 .myOrderItem .myOrderProductItem .waitPay a:hover{
     background-color: #118ADB;
