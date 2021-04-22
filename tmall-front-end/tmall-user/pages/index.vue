@@ -3,27 +3,7 @@
     <!-- 搜索框 -->
     <search/>
 
-    <!-- 导航栏 -->
-    <!-- 轮播和导航的js -->
-    <script>
-      $(function () {
-        $(".rightMenu:first span").mouseenter(catearShow);
-        $(".rightMenu:first span").mouseleave(catearNone);
-      });
-
-      function catearNone(){
-        $("#catear").css("display","none");
-      }
-
-      function catearShow(){
-        var width = parseInt($(this).css("width"))/2+3;
-        var left = $(this).position().left+width;
-        var top = $(this).position().top-20;
-        var catear = $("#catear");
-        catear.css({"left":""+left+"px","top":""+top+"px"});
-        catear.fadeIn(500);
-      }
-    </script>
+    <!-- 轮播和导航-->
     <div id="searchAndNav" class="searchAndNav">
       <img id="catear" src="~/assets/img/site/catear.png" style="left: 500px; top: 38px; display: none"/>   <!--间隔120px-->
       <div class="navAndRotDiv" id="navAndRotDiv">
@@ -33,26 +13,25 @@
             <span id="text">商品分类</span>
           </div>
           <div class="rightMenu">
-                    <span>
-                        <a href="#"><img src="~/assets/img/site/chaoshi.png" height="72" width="180"/></a>
-                    </span>
-            <span>
-                        <a href="#"><img src="~/assets/img/site/guoji.png" height="72" width="180"/></a>
-                    </span>
-            <span>
-                        <a href="#">平板电视</a>
-                    </span>
-            <span>
-                        <a href="#">马桶</a>
-                    </span>
-            <span>
-                        <a href="#">沙发</a>
-                    </span>
-            <span>
-                        <a href="#">电热水器</a>
-                    </span>
+            <span ref="snr1" @mouseenter="catearShow($refs.snr1)" @mouseleave="catearNone">
+                <a href="#"><img src="~/assets/img/site/chaoshi.png" height="72" width="180"/></a>
+            </span>
+            <span ref="snr2" @mouseenter="catearShow($refs.snr2)" @mouseleave="catearNone">
+              <a href="#"><img src="~/assets/img/site/guoji.png" height="72" width="180"/></a>
+            </span>
+            <span ref="snr3" @mouseenter="catearShow($refs.snr3)" @mouseleave="catearNone">
+              <a href="#">平板电视</a>
+            </span>
+            <span ref="snr4" @mouseenter="catearShow($refs.snr4)" @mouseleave="catearNone">
+              <a href="#">马桶</a>
+            </span>
+            <span ref="snr5" @mouseenter="catearShow($refs.snr5)" @mouseleave="catearNone">
+              <a href="#">沙发</a>
+            </span>
+            <span ref="snr6" @mouseenter="catearShow($refs.snr6)" @mouseleave="catearNone">
+              <a href="#">电热水器</a>
+            </span>
           </div>
-
         </div>
       </div>
 
@@ -89,11 +68,11 @@
 <!--    </script>-->
     <div class="categoryWithCarousel" @mouseleave="floatMenuHidden" id="categoryWithCarousel">
       <div class="leftMenu">
-        <div class="link" @mouseenter="floatMenuBlock">
+        <div class="link" ref="link" @mouseenter="floatMenuBlock($refs.link)">
           <span class="glyphicon glyphicon-link"></span>
           <a href="#">平板电视</a>
         </div>
-        <div class="link">
+        <div class="link" ref="link" @mouseenter="floatMenuBlock($refs.link)">
           <span class="glyphicon glyphicon-link"></span>
           <a href="#">马桶</a>
         </div>
@@ -1395,13 +1374,14 @@
         $(".carousel-indicators").css("z-index","2");
       },
       // 显示浮动菜单
-      floatMenuBlock() {
+      floatMenuBlock(val) {
+        console.log(val)
         this.floatMenuHidden();
         let menus =  $(".rightFloatMenu");
         let links = $(".leftMenu>.link");
         console.log(menus)
         console.log(links)
-        switch (this) {  // TODO 不显示的原因是这个this，this不再是dom对象，后续改
+        switch (val) {  // TODO 不显示的原因是这个this，this不再是dom对象，后续改
           case links[0]: menus[0].style.display = "block";break;
           case links[1]: menus[1].style.display = "block";break;
           case links[2]: menus[2].style.display = "block";break;
@@ -1422,6 +1402,21 @@
         }
         $(".carousel-indicators").css("z-index","0");
         console.log(menus[0].style.display)
+      },
+
+      // 导航栏浮动图片隐藏
+      catearNone(){
+        $("#catear").css("display","none");
+      },
+
+      // 导航栏浮动图片显示
+      catearShow(val){
+        let width = parseInt($(val).css("width"))/2+3;
+        let left = $(val).position().left+width;
+        let top = $(val).position().top-20;
+        let catear = $("#catear");
+        catear.css({"left":""+left+"px","top":""+top+"px"});
+        catear.fadeIn(500);
       }
 
     }
