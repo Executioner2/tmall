@@ -156,6 +156,7 @@
   <el-dialog
     title="编辑分类"
     :visible.sync="dialogVisible"
+    @close="editObj.imageUrl = null"
     width="450px">
       <!-- 编辑分类 -->
       <el-form style="width:400px; margin:0 auto;"
@@ -229,6 +230,7 @@
         this.uploadHint = "只能上传jpg/png文件，且不超过10MB"
         this.categoryObj = {}
         this.searchObj = {}
+        this.editObj = {}
         this.delDisable = true // 设置按钮不可用
         this.dialogVisible = false // 隐藏模态窗口
       },
@@ -240,7 +242,7 @@
           return
         }
         // 填充上传文件列表
-        if (this.editObj != {} || this.editObj != null){ // 如果编辑对象不为空则说明在编辑框，那就更新编辑对象的imageUrl
+        if (this.editObj.imageUrl != null){ // 如果编辑对象不为空则说明在编辑框，那就更新编辑对象的imageUrl
           this.editObj.imageUrl = response.data.imageUrl
         } else { // 否则是在添加框提交的图片上传
           this.categoryObj.imageUrl = response.data.imageUrl
@@ -323,6 +325,7 @@
         this.editObj = {}
         this.editObj.id = id
         this.editObj.name = name
+        this.editObj.imageUrl = "" // 给imageUrl设一个空串，代表有可能再编辑框进行图片上传
         this.dialogVisible = true
       },
 

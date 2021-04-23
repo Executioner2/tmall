@@ -21,6 +21,7 @@ import org.springframework.util.StringUtils;
 import javax.annotation.Resource;
 import java.math.BigDecimal;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Copyright@1205878539@qq.com
@@ -165,6 +166,53 @@ public class ProductInfoServiceImpl extends ServiceImpl<ProductInfoMapper, Produ
             list.add(productInfo);
         });
         return list;
+    }
+
+    /**
+     * 返回商品小标题集合  内部调用
+     * @param idList
+     * @return
+     */
+    @Override
+    public Map<String, List<ProductInfo>> listProductInfoSubTitle(List<String> idList) {
+        List<ProductInfo> productInfoList = baseMapper.listProductInfoSubTitle(idList);
+        if (productInfoList == null) {
+            return null;
+        }
+        // 对查询出来的结果按categoryId进行分组
+        Map<String, List<ProductInfo>> collect = productInfoList.stream().collect(Collectors.groupingBy(ProductInfo::getCategoryId));
+        return collect;
+    }
+
+    /**
+     * 显示每个分类前五个热销商品（内部调用）
+     * @param idList
+     * @return
+     */
+    @Override
+    public Map<String, List<ProductInfo>> listProductInfoHot(List<String> idList) {
+        // 查询五条记录
+        Page<ProductInfo> page = new Page<>(1, 5);
+        QueryWrapper<ProductInfo> wrapper = new QueryWrapper<>();
+
+        // 放入到map集合中，分类id作为key，查询结果的Records作为value
+        Map<String, List<ProductInfo>> map = new HashMap<>();
+        for (String str : idList) {
+            // 按月销量进行降序排序
+            wrapper.eq("category_id", str);
+            wrapper.orderByDesc("monthly_sales");
+            IPage<ProductInfo> pageModule = baseMapper.selectPage(page, wrapper);
+            wrapper.clear(); // 清空条件
+            // 对商品数据再进行处理
+            pageModule.getRecords().stream().forEach(item -> {
+                // 把第一张缩略图封装进去
+                this.packImage(item);
+                // 把每个商品的名称缩短，方便前端显示（显示商品名称的前25个字符）
+                item.setName(item.getName().substring(0, 25));
+            });
+            map.put(str, pageModule.getRecords());
+        }
+        return map;
     }
 
     // 把第一张缩略图装进去

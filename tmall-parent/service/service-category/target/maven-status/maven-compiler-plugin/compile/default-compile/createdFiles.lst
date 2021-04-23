@@ -1,5 +1,6 @@
 com\study\tmall\category\controller\PropertyController.class
 com\study\tmall\category\service\CategoryInfoService.class
+com\study\tmall\category\api\CategoryInfoApi.class
 com\study\tmall\category\config\CategoryConfig.class
 com\study\tmall\category\mapper\CategoryInfoMapper.class
 com\study\tmall\category\service\impl\PropertyServiceImpl.class

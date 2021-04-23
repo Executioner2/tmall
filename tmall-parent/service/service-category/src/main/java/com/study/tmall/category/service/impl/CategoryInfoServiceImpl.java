@@ -9,6 +9,8 @@ import com.study.tmall.category.service.CategoryInfoService;
 import com.study.tmall.category.service.PropertyService;
 import com.study.tmall.exception.TmallException;
 import com.study.tmall.model.category.CategoryInfo;
+import com.study.tmall.model.product.ProductInfo;
+import com.study.tmall.product.client.ProductInfoFeignClient;
 import com.study.tmall.result.ResultCodeEnum;
 import com.study.tmall.util.FastDFSUtil;
 import com.study.tmall.util.ImageUtil;
@@ -32,6 +34,8 @@ import java.util.*;
 public class CategoryInfoServiceImpl extends ServiceImpl<CategoryInfoMapper, CategoryInfo> implements CategoryInfoService {
     @Resource
     private PropertyService propertyService;
+    @Resource
+    private ProductInfoFeignClient productInfoFeignClient;
 
     /**
      * 分页条件显示分类
@@ -162,5 +166,73 @@ public class CategoryInfoServiceImpl extends ServiceImpl<CategoryInfoMapper, Cat
             e.printStackTrace();
             return null;
         }
+    }
+
+    /**
+     * 首页显示分类列表和热销商品
+     */
+    @Override
+    public List<CategoryInfo> homeListCategoryInfo() {
+        // 查询出所有分类
+        List<CategoryInfo> categoryInfos = baseMapper.selectList(null);
+
+        if (categoryInfos == null) {
+            return null;
+        }
+
+        // 为了减少后面的远程调用次数，把所有分类的id封装到一个list集合中
+        List<String> idList = new ArrayList<>();
+        categoryInfos.stream().forEach(item -> {
+            idList.add(item.getId());
+        });
+
+        // 根据分类分别按销量查询出热销的前5个商品信息，包含第一张缩略图url（远程调用）
+        Map<String, List<ProductInfo>> hotMap = productInfoFeignClient.listProductInfoHot(idList);
+
+        // 根据分类分别按销量排序查询出前64个商品的小标题和id（远程调用）
+        Map<String, List<ProductInfo>> productInfoSubTitleList = productInfoFeignClient.listProductInfoSubTitle(idList);
+
+        // 封装数据
+        for (int x = 0; x < idList.size(); x++) {
+            String id = idList.get(x);
+
+            // 热销产品
+            List<ProductInfo> hotList = hotMap.get(id);
+            categoryInfos.get(x).getParams().put("hotList", hotList);
+
+            // 把这64个商品的小标题做包装，以 8*8 的方式存储
+            List<ProductInfo> productInfoList = productInfoSubTitleList.get(id);
+            // 如果查询出来 productInfoList 为空则说明该分类没有商品，那么就跳过则此循环
+            if (productInfoList == null) {
+                continue;
+            }
+            // 浮动菜单
+            List<List<Map<String, String>>> floatMenu = new ArrayList<>();
+            List<Map<String, String>> rows = null; // 行
+            for (int i = 0; i < productInfoList.size(); i++) {
+                ProductInfo productInfo = productInfoList.get(i);
+                if (i % 8 == 0) { // 一行8个，循环到8个就new一个新的行
+                    rows = new ArrayList<>(); // 新的行
+                    floatMenu.add(rows);
+                }
+                String pid = productInfo.getId(); // productId
+                String subTitle = productInfo.getSubTitle(); // 小标题
+                // 把小标题进行拆分，取首段
+                if (StringUtils.isEmpty(subTitle)) { // 如果为空则直接置为空字符串
+                    subTitle = "";
+                } else {
+                    subTitle = subTitle.split(" ")[0]; // 取第一段
+                }
+                // 存入rows的map中
+                Map<String, String> item = new HashMap<>();
+                item.put("id", pid);
+                item.put("subTitle", subTitle);
+                rows.add(item);
+            }
+            // 封装到 categoryInfos
+            categoryInfos.get(x).getParams().put("floatMenu", floatMenu);
+        }
+
+        return categoryInfos;
     }
 }

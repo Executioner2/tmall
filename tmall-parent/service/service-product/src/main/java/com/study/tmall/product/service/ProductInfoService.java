@@ -7,6 +7,7 @@ import com.study.tmall.model.product.ProductInfo;
 import com.study.tmall.vo.product.ProductQueryVo;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Copyright@1205878539@qq.com
@@ -30,4 +31,10 @@ public interface ProductInfoService extends IService<ProductInfo> {
 
     // 根据id查询商品（内部调用）
     List<ProductInfo> listProductInfoById(List<String> idList);
+
+    // 返回商品小标题集合  内部调用
+    Map<String, List<ProductInfo>> listProductInfoSubTitle(List<String> idList);
+
+    // 显示每个分类前五个热销商品（内部调用）
+    Map<String, List<ProductInfo>> listProductInfoHot(List<String> idList);
 }

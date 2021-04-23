@@ -32,4 +32,7 @@ public interface CategoryInfoService extends IService<CategoryInfo> {
 
     // 添加分类图片
     Map<String, String> saveImage(MultipartFile file);
+
+    // 首页显示分类列表和热销商品
+    List<CategoryInfo> homeListCategoryInfo();
 }
