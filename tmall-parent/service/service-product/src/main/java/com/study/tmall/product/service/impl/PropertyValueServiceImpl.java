@@ -2,8 +2,9 @@ package com.study.tmall.product.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.study.tmall.category.client.PropertyFeignClient;
+import com.study.tmall.category.client.CategoryClient;
 import com.study.tmall.exception.TmallException;
+import com.study.tmall.model.category.CategoryInfo;
 import com.study.tmall.model.category.Property;
 import com.study.tmall.model.product.ProductInfo;
 import com.study.tmall.model.product.PropertyValue;
@@ -30,7 +31,7 @@ public class PropertyValueServiceImpl extends ServiceImpl<PropertyValueMapper, P
     @Resource
     private ProductInfoService productInfoService;
     @Resource
-    private PropertyFeignClient propertyFeignClient;
+    private CategoryClient categoryClient;
 
     /**
      * 显示商品属性值
@@ -46,7 +47,7 @@ public class PropertyValueServiceImpl extends ServiceImpl<PropertyValueMapper, P
         }
 
         // 用openFeign查询属性
-        List<Property> propertyList = propertyFeignClient.showByCid(productInfo.getCategoryId());
+        List<Property> propertyList = categoryClient.showByCid(productInfo.getCategoryId());
         if (propertyList == null) {
             throw new TmallException(ResultCodeEnum.PROPERTY_NULL); // 未录入属性
         }

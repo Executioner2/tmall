@@ -1,4 +1,5 @@
 com\study\tmall\model\order\RefundInfo.class
+com\study\tmall\vo\product\ProductInfoEeVo.class
 com\study\tmall\model\base\BaseEntity.class
 com\study\tmall\model\order\PaymentInfo.class
 com\study\tmall\vo\product\ProductQueryVo.class

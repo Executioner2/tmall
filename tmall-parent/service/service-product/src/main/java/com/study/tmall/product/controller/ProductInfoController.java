@@ -10,8 +10,10 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 /**
@@ -98,5 +100,26 @@ public class ProductInfoController {
             @RequestBody List<String> idList){
 
         return productInfoService.listProductInfoById(idList);
+    }
+
+    // 根据上传的excel文档添加商品数据到数据库
+    @ApiOperation(value = "利用excel批量添加商品信息")
+    @PostMapping("/importData")
+    public Result batchSave(
+            @ApiParam(name = "file", value = "excel文件", required = true)
+            @RequestBody MultipartFile file) {
+
+        productInfoService.importData(file);
+        return Result.ok();
+    }
+
+    // 把商品信息导出到excel文件中
+    @ApiOperation(value = "把商品信息导出到excel文件中", produces="application/octet-stream")
+    @GetMapping("/exportData")
+    public void exportDict(
+            @ApiParam(name = "response", value = "响应包")
+            HttpServletResponse response){
+
+        productInfoService.exportDictData(response);
     }
 }

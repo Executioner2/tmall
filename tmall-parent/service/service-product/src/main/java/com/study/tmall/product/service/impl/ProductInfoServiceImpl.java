@@ -1,25 +1,35 @@
 package com.study.tmall.product.service.impl;
 
+import com.alibaba.excel.EasyExcel;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.study.tmall.category.client.PropertyFeignClient;
+import com.study.tmall.category.client.CategoryClient;
 import com.study.tmall.exception.TmallException;
+import com.study.tmall.model.category.CategoryInfo;
 import com.study.tmall.model.category.Property;
 import com.study.tmall.model.product.ProductInfo;
 import com.study.tmall.model.product.PropertyValue;
+import com.study.tmall.product.listener.ProductInfoListener;
 import com.study.tmall.product.mapper.ProductInfoMapper;
 import com.study.tmall.product.service.ProductImageService;
 import com.study.tmall.product.service.ProductInfoService;
 import com.study.tmall.product.service.PropertyValueService;
 import com.study.tmall.result.ResultCodeEnum;
+import com.study.tmall.vo.product.ProductInfoEeVo;
 import com.study.tmall.vo.product.ProductQueryVo;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
+import java.net.URLEncoder;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -35,9 +45,9 @@ public class ProductInfoServiceImpl extends ServiceImpl<ProductInfoMapper, Produ
     @Resource
     private ProductImageService productImageService;
     @Resource
-    private PropertyFeignClient propertyFeignClient;
-    @Resource
     private PropertyValueService propertyValueService;
+    @Resource
+    private CategoryClient categoryClient;
 
     /**
      * 批量删除商品
@@ -111,7 +121,7 @@ public class ProductInfoServiceImpl extends ServiceImpl<ProductInfoMapper, Produ
 
         // 根据分类属性创建商品属性值，默认值空字符串
         // 远程调用category查询分类属性
-        List<Property> propertyList = propertyFeignClient.showByCid(productInfo.getCategoryId());
+        List<Property> propertyList = categoryClient.showByCid(productInfo.getCategoryId());
         propertyList.stream().forEach(item -> {
             // 调用 PropertyValueService 保存商品属性值
             PropertyValue propertyValue = new PropertyValue();
@@ -213,6 +223,51 @@ public class ProductInfoServiceImpl extends ServiceImpl<ProductInfoMapper, Produ
             map.put(str, pageModule.getRecords());
         }
         return map;
+    }
+
+    /**
+     * 根据上传的excel文档添加商品数据到数据库
+     * @param file
+     */
+    @Override
+    public void importData(MultipartFile file) {
+        try {
+            EasyExcel.read(file.getInputStream(), ProductInfoEeVo.class, new ProductInfoListener(baseMapper)).sheet().doRead();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * 把商品信息导出到excel文件中
+     * @param response
+     */
+    @Override
+    public void exportDictData(HttpServletResponse response) {
+        response.setContentType("application/vnd.ms-excel");
+        response.setCharacterEncoding("utf-8");
+        try {
+            // 设置文件名
+            String fileName = URLEncoder.encode("商品信息表", "utf-8");
+            // 参数1：设置头信息以下载方式打开
+            // 参数2：文件名
+            response.setHeader("Content-disposition", "attachment;filename="+ fileName + ".xlsx");
+            // 根据分类id查询商品信息
+            QueryWrapper<ProductInfo> wrapper = new QueryWrapper<>();
+            List<ProductInfo> productInfoList = baseMapper.selectList(wrapper);
+            List<ProductInfoEeVo> productInfoEeVos = new ArrayList<>();
+            for (ProductInfo productInfo : productInfoList) {
+                ProductInfoEeVo productInfoEeVo = new ProductInfoEeVo();
+                BeanUtils.copyProperties(productInfo, productInfoEeVo);
+                productInfoEeVos.add(productInfoEeVo);
+            }
+            EasyExcel.write(response.getOutputStream(), ProductInfoEeVo.class).sheet("productInfo").doWrite(productInfoEeVos);
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
     }
 
     // 把第一张缩略图装进去

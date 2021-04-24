@@ -12,4 +12,5 @@ com\study\tmall\product\service\ProductInfoService.class
 com\study\tmall\product\mapper\PropertyValueMapper.class
 com\study\tmall\product\service\ProductImageService.class
 com\study\tmall\product\api\ProductInfoApi.class
+com\study\tmall\product\listener\ProductInfoListener.class
 com\study\tmall\product\service\impl\ProductImageServiceImpl.class

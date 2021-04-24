@@ -102,4 +102,13 @@ public class CategoryInfoController {
         categoryInfoService.updateCategoryById(categoryInfo);
         return Result.ok();
     }
+
+    // 根据分类id获得分类信息（内部调用）
+    @ApiOperation(value = "根据分类id获得分类信息（内部调用）")
+    @GetMapping("/inner/get/{id}")
+    public CategoryInfo getById(
+            @ApiParam(name = "id", value = "分类id", required = true)
+            @PathVariable String id) {
+        return categoryInfoService.getById(id);
+    }
 }

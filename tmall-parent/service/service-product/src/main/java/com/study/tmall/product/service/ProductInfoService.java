@@ -5,7 +5,9 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.study.tmall.model.product.ProductInfo;
 import com.study.tmall.vo.product.ProductQueryVo;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 import java.util.Map;
 
@@ -37,4 +39,10 @@ public interface ProductInfoService extends IService<ProductInfo> {
 
     // 显示每个分类前五个热销商品（内部调用）
     Map<String, List<ProductInfo>> listProductInfoHot(List<String> idList);
+
+    // 根据上传的excel文档添加商品数据到数据库
+    void importData(MultipartFile file);
+
+    // 把商品信息导出到excel文件中
+    void exportDictData(HttpServletResponse response);
 }
