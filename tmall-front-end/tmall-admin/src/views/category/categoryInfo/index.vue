@@ -29,11 +29,22 @@
     <el-form-item>
       <el-button style="margin-left: 10px" type="primary" @click="findPageCategoryInfo(1)">查询</el-button>
     </el-form-item>
-    <!-- 批量删除按钮 -->
-    <div style="float: right; margin-right: 10px">
-      <el-button :disabled="delDisable" @click="batchRemove" type="danger" plain>批量删除</el-button>
-    </div>
   </el-form>
+  <div>
+    <!-- 批量删除按钮 -->
+    <el-button style="margin-left: 10px" :disabled="delDisable" @click="batchRemove" type="danger" plain>批量删除</el-button>
+    <span style="float: right; margin-right: 20px">
+      <!-- 导出商品信息 -->
+      <el-tooltip class="item" effect="dark" content="导出商品信息到excel文件" placement="top">
+        <el-button type="text" @click="importData"><i class="fa fa-plus"/>导出商品</el-button>
+      </el-tooltip>
+      <!-- 导入商品信息 -->
+      <el-tooltip class="item" effect="dark" content="从excel文件中导入商品信息到数据库" placement="top">
+        <el-button type="text" @click="exportData"><i class="fa fa-plus"/>导入商品</el-button>
+      </el-tooltip>
+    </span>
+  </div>
+
 
   <!-- 显示分类 -->
   <el-table
@@ -183,6 +194,33 @@
       </el-form>
   </el-dialog>
 
+  <!-- 商品导入模态框 -->
+  <el-dialog
+    title="商品导入"
+    @close="uploadHint = '只能上传jpg/png文件，且不超过10MB'"
+    :visible.sync="dialogImportVisible"
+    width="450px">
+    <!-- 商品导入 -->
+    <el-form style="width:400px; margin:0 auto;"
+             align="center"
+             label-width="80px">
+      <el-form-item label="商品导入" style="margin: 10px">
+        <el-upload
+          style="float: left"
+          class="avatar-uploader"
+          :action="excelUrl"
+          :show-file-list="false"
+          :on-success="onExcelUploadSuccess"
+          :on-error="onExcelUploadError">
+          <el-button size="small" type="Info">点击上传</el-button>
+          <span style="margin-left: 10px" slot="tip" class="el-upload__tip">{{ uploadHint }}</span>
+        </el-upload>
+      </el-form-item>
+      <!--提交按钮-->
+      <el-button @click="dialogImportVisible = false">取 消</el-button>
+    </el-form>
+  </el-dialog>
+
 </div>
 </template>
 
@@ -191,6 +229,8 @@
   import strUtil from "@/utils/myUtil/strUtil"
   import cookies from 'js-cookie'
 
+  const fileUrl = 'http://localhost/admin/category/categoryInfo/saveImage' // 添加图片的url地址;
+  const excelUrl = 'http://localhost/admin/product/productInfo/importData' // excel文件上传地址
   export default {
     data() {
       return {
@@ -199,13 +239,15 @@
         current: 1, //起始页默认为1
         limit: 5, // 每页显示数据条数，默认5条
         total: null, // 总记录数
-        fileUrl: 'http://localhost/admin/category/categoryInfo/saveImage', // 添加图片的url地址
         categoryObj: {}, //要添加的分类对象
         uploadHint: "只能上传jpg/png文件，且不超过10MB", // 文件上传提示
         multipleSelection: [], // 选择数组
         delDisable: true, // 删除按钮是否可用  :disable 内的true 和 false 参数是字符串
         dialogVisible: false, // 模态框默认不显示
-        editObj: {} // 分类编辑对象
+        editObj: {}, // 分类编辑对象
+        dialogImportVisible: false, // 模态框初始值，隐藏状态
+        fileUrl: fileUrl, // 添加图片的url地址;
+        excelUrl: excelUrl // excel文件上传地址
       }
     },
 
@@ -350,6 +392,31 @@
       // 保存分类名，做面包屑导航
       saveName(name) {
         cookies.set("categoryName", name)
+      },
+
+      // 批量导入商品
+      exportData() {
+        this.uploadHint = "只能上传xls文件，且不超过500kb"
+        this.dialogImportVisible = true
+      },
+
+      // 上传成功后
+      onExcelUploadSuccess(){
+        // 关闭弹窗
+        this.dialogImportVisible = false
+        this.uploadHint = "只能上传jpg/png文件，且不超过10MB"
+        this.$message.success("商品信息导入成功！")
+      },
+
+      // 上传失败
+      onExcelUploadError() {
+        this.$message.error("商品信息导入失败！")
+      },
+
+      // 导出商品
+      importData() {
+        // 直接调用product模块的导出接口
+        window.location.href = 'http://localhost/admin/product/productInfo/exportData'
       }
 
     }

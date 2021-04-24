@@ -45,6 +45,6 @@ export default {
       method: "put",
       data: productInfo
     })
-  }
+  },
 
 }
