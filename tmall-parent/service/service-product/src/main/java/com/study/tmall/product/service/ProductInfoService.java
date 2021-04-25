@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.study.tmall.model.product.ProductInfo;
+import com.study.tmall.vo.product.ProductInfoFrontQueryVo;
 import com.study.tmall.vo.product.ProductQueryVo;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -45,4 +46,7 @@ public interface ProductInfoService extends IService<ProductInfo> {
 
     // 把商品信息导出到excel文件中
     void exportDictData(HttpServletResponse response);
+
+    // 分类页，根据分类id和查询条件显示商品
+    IPage<ProductInfo> listProductInfo(Page<ProductInfo> page, ProductInfoFrontQueryVo productInfoFrontQueryVo);
 }

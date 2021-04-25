@@ -30,7 +30,6 @@ public interface ProductInfoFeignClient {
     Map<String, List<ProductInfo>> listProductInfoSubTitle(@RequestBody List<String> idList);
 
     // 显示每个分类前五个热销商品（内部调用）
-    @ApiModelProperty(value = "显示每个分类前五个热销商品（内部调用）")
     @PostMapping("/api/product/productInfo/inner/list/hot")
     Map<String, List<ProductInfo>> listProductInfoHot(@RequestBody List<String> idList);
 }

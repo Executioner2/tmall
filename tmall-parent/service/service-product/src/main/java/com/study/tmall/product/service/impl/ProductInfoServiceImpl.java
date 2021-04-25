@@ -6,18 +6,22 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.study.tmall.category.client.CategoryClient;
+import com.study.tmall.enums.ProductSortStatusEnum;
+import com.study.tmall.enums.SortTypeEnum;
 import com.study.tmall.exception.TmallException;
-import com.study.tmall.model.category.CategoryInfo;
 import com.study.tmall.model.category.Property;
 import com.study.tmall.model.product.ProductInfo;
 import com.study.tmall.model.product.PropertyValue;
+import com.study.tmall.model.product.Review;
 import com.study.tmall.product.listener.ProductInfoListener;
 import com.study.tmall.product.mapper.ProductInfoMapper;
 import com.study.tmall.product.service.ProductImageService;
 import com.study.tmall.product.service.ProductInfoService;
 import com.study.tmall.product.service.PropertyValueService;
+import com.study.tmall.product.service.ReviewService;
 import com.study.tmall.result.ResultCodeEnum;
 import com.study.tmall.vo.product.ProductInfoEeVo;
+import com.study.tmall.vo.product.ProductInfoFrontQueryVo;
 import com.study.tmall.vo.product.ProductQueryVo;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
@@ -48,6 +52,8 @@ public class ProductInfoServiceImpl extends ServiceImpl<ProductInfoMapper, Produ
     private PropertyValueService propertyValueService;
     @Resource
     private CategoryClient categoryClient;
+    @Resource
+    private ReviewService reviewService;
 
     /**
      * 批量删除商品
@@ -268,6 +274,70 @@ public class ProductInfoServiceImpl extends ServiceImpl<ProductInfoMapper, Produ
             e.printStackTrace();
         }
 
+    }
+
+    /**
+     * 分类页，根据分类id和查询条件显示商品
+     * @param page
+     * @param productInfoFrontQueryVo
+     * @return
+     */
+    @Override
+    public IPage<ProductInfo> listProductInfo(Page<ProductInfo> page, ProductInfoFrontQueryVo productInfoFrontQueryVo) {
+        String categoryId = productInfoFrontQueryVo.getCategoryId(); // 分类id
+        BigDecimal lowPrice = productInfoFrontQueryVo.getLowPrice(); // 最低价格
+        BigDecimal highPrice = productInfoFrontQueryVo.getHighPrice(); // 最高价格
+        Integer sortField = productInfoFrontQueryVo.getSortField(); // 排序字段
+        Integer lostSortField = productInfoFrontQueryVo.getLostSortField(); // 上一次排序字段
+        Integer sortType = productInfoFrontQueryVo.getSortType(); // 排序方式
+
+        String typeBySort = SortTypeEnum.getTypeBySort(sortType); // 取得排序方式的字符
+        String sortFieldStr = ProductSortStatusEnum.getFieldByNumber(sortField); // 取得本次排序字段
+        String lostSortFieldStr = ProductSortStatusEnum.getFieldByNumber(lostSortField); // 取得上次排序字段
+
+        QueryWrapper<ProductInfo> wrapper = new QueryWrapper<>();
+        wrapper.eq("category_id", categoryId);
+        // 设置价格区间
+        if (lowPrice != null) {
+            wrapper.ge("promote_price", lowPrice);
+        }
+        if (highPrice != null) {
+            wrapper.ge("promote_price", highPrice);
+        }
+        // 定义排序条件
+        if (!StringUtils.isEmpty(sortFieldStr) &&  // 首要条件是本次排序字段不为空 并且 不是默认排序
+                sortField != ProductSortStatusEnum.DEFAULT.getNumber()) {
+
+            if (SortTypeEnum.ASC.getType().equals(typeBySort)) { // 是升序排序
+                wrapper.orderByAsc(sortFieldStr);
+            } else { // 否则就是降序排序
+                wrapper.orderByDesc(sortFieldStr);
+            }
+        } else if(!StringUtils.isEmpty(lostSortFieldStr) && // 如果本次排序条件为空，上次排序条件不为空也不是默认排序，则按上次排序条件排序
+                lostSortField != ProductSortStatusEnum.DEFAULT.getNumber()) {
+
+            if (SortTypeEnum.ASC.getType().equals(typeBySort)) { // 是升序排序
+                wrapper.orderByAsc(lostSortFieldStr);
+            } else { // 否则就是降序排序
+                wrapper.orderByDesc(lostSortFieldStr);
+            }
+        }
+
+        IPage<ProductInfo> productInfoIPage = baseMapper.selectPage(page, wrapper);
+
+        // 对商品数据再进行处理
+        productInfoIPage.getRecords().stream().forEach(item -> {
+            // 把第一张缩略图封装进去
+            this.packImage(item);
+            // 把每个商品的名称缩短，方便前端显示（显示商品名称的前25个字符）
+            item.setName(item.getName().substring(0, 25));
+            // 评价数量
+            QueryWrapper<Review> queryWrapper = new QueryWrapper<>();
+            queryWrapper.eq("product_id", item.getId());
+            int count = reviewService.count(queryWrapper);
+            item.getParams().put("reviewNumber", count);
+        });
+        return productInfoIPage;
     }
 
     // 把第一张缩略图装进去

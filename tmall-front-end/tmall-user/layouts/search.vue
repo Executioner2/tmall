@@ -1,7 +1,7 @@
 <template>
   <div>
     <div id="searchAndNav" class="searchAndNav">
-    <div id="searchBoxDiv">
+      <div id="searchBoxDiv">
       <a href="#">
         <img class="logo" src="../static/img/site/logo.gif" height="130" width="290" id="logo"/>
       </a>
@@ -17,7 +17,6 @@
       </div>
     </div>
     </div>
-    <div style="height: 50px; clear: both"></div>
 
   </div>
 </template>

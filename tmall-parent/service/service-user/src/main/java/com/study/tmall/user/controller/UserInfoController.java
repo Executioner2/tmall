@@ -34,10 +34,10 @@ public class UserInfoController {
     @GetMapping("/list/{current}/{limit}")
     public Result findPageUserInfo(
             @ApiParam(name = "current", value = "起始页", required = true)
-            @PathVariable Integer current,
+            @PathVariable Long current,
 
             @ApiParam(name = "limit", value = "每页记录数", required = true)
-            @PathVariable Integer limit,
+            @PathVariable Long limit,
 
             @ApiParam(name = "userQueryVo", value = "查询条件vo", required = true)
             UserQueryVo userQueryVo){

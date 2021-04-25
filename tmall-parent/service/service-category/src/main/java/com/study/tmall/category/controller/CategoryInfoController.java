@@ -35,10 +35,10 @@ public class CategoryInfoController {
     @GetMapping("/list/{current}/{limit}")
     public Result findPageCategoryInfo(
             @ApiParam(name = "current", value = "起始页", required = true)
-            @PathVariable Integer current,
+            @PathVariable Long current,
 
             @ApiParam(name = "limit", value = "每页记录数", required = true)
-            @PathVariable Integer limit,
+            @PathVariable Long limit,
 
             @ApiParam(name = "categoryQueryVo", value = "前端分类查询对象")
             CategoryQueryVo categoryQueryVo){

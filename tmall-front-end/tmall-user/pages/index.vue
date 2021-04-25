@@ -4,7 +4,7 @@
     <search/>
 
     <!-- 轮播和导航-->
-    <div id="searchAndNav" class="searchAndNav">
+    <div id="menuDiv" class="menuDiv">
       <img id="catear" src="~/assets/img/site/catear.png" style="left: 500px; top: 38px; display: none"/>   <!--间隔120px-->
       <div class="navAndRotDiv" id="navAndRotDiv">
         <div class="navDiv">
@@ -34,45 +34,46 @@
           </div>
         </div>
       </div>
+      <div id="centerMenu" class="centerMenu">
+        <div id="lunBoDiv">
+          <div id="carousel-of-product" class="carousel slide carousel-of-product" data-ride="carousel" data-interval="2000">
+            <ol class="carousel-indicators">
+              <li data-target="#carousel-of-product" data-slide-to="0" class="active"></li>
+              <li data-target="#carousel-of-product" data-slide-to="1"></li>
+              <li data-target="#carousel-of-product" data-slide-to="2"></li>
+              <li data-target="#carousel-of-product" data-slide-to="3"></li>
+              <li data-target="#carousel-of-product" data-slide-to="4"></li>
+            </ol>
+            <div class="carousel-inner" role="listbox">
+              <div class="item active"><img src="~/assets/img/lunbo/1.jpg"/></div>
+              <div class="item"><img src="~/assets/img/lunbo/2.jpg"/></div>
+              <div class="item"><img src="~/assets/img/lunbo/3.jpg"/></div>
+              <div class="item"><img src="~/assets/img/lunbo/4.jpg"/></div>
+              <div class="item"><img src="~/assets/img/lunbo/5.jpg"/></div>
+            </div>
+          </div>
+        </div>
 
-      <div id="lunBoDiv">
-        <div id="carousel-of-product" class="carousel slide carousel-of-product" data-ride="carousel" data-interval="2000">
-          <ol class="carousel-indicators">
-            <li data-target="#carousel-of-product" data-slide-to="0" class="active"></li>
-            <li data-target="#carousel-of-product" data-slide-to="1"></li>
-            <li data-target="#carousel-of-product" data-slide-to="2"></li>
-            <li data-target="#carousel-of-product" data-slide-to="3"></li>
-            <li data-target="#carousel-of-product" data-slide-to="4"></li>
-          </ol>
-          <div class="carousel-inner" role="listbox">
-            <div class="item active"><img src="~/assets/img/lunbo/1.jpg"/></div>
-            <div class="item"><img src="~/assets/img/lunbo/2.jpg"/></div>
-            <div class="item"><img src="~/assets/img/lunbo/3.jpg"/></div>
-            <div class="item"><img src="~/assets/img/lunbo/4.jpg"/></div>
-            <div class="item"><img src="~/assets/img/lunbo/5.jpg"/></div>
+        <!--这里放商品分类-->
+        <div class="categoryWithCarousel" @mouseleave="floatMenuHide" id="categoryWithCarousel">
+        <div class="leftMenu">
+          <div v-for="(item, index) in list" :key="index" class="link" @mouseenter="floatMenuBlock(item.id)">
+            <span class="glyphicon glyphicon-link"></span>
+            <a :href="'/category/' + item.id">{{item.name}}</a>
+          </div>
+        </div>
+        <div id="rightFloatMenu" class="rightFloatMenu">
+          <div class="row" v-for="(item, index) in floatMenu" :key="index">
+            <span v-for="(it) in item" :key="it.id" v-if="it.subTitle != '' && it.subTitle != null">
+                <!-- 随机上色 -->
+                <a :href="'/product/' + it.id" :style="Math.random() > 0.8 ? 'color: #87CEFA': '' ">{{it.subTitle}}</a>
+            </span>
           </div>
         </div>
       </div>
-    </div>
-    <div style="clear: both"></div>
-
-    <!--这里放商品分类-->
-    <div class="categoryWithCarousel" @mouseleave="floatMenuHide" id="categoryWithCarousel">
-      <div class="leftMenu">
-        <div v-for="(item, index) in list" :key="index" class="link" @mouseenter="floatMenuBlock(item.id)">
-          <span class="glyphicon glyphicon-link"></span>
-          <a :href="'/category/' + item.id">{{item.name}}</a>
-        </div>
-      </div>
-      <div id="rightFloatMenu" class="rightFloatMenu">
-        <div class="row" v-for="(item, index) in floatMenu" :key="index">
-          <span v-for="(it) in item" :key="it.id" v-if="it.subTitle != '' && it.subTitle != null">
-              <!-- 随机上色 -->
-              <a :href="'/product/' + it.id" :style="Math.random() > 0.8 ? 'color: #87CEFA': '' ">{{it.subTitle}}</a>
-          </span>
-        </div>
       </div>
     </div>
+    <div style="height: 10px"></div>
 
     <!--这里是商品主体部分-->
     <div id="productBody">

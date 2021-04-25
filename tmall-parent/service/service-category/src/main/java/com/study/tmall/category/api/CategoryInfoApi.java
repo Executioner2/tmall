@@ -5,7 +5,9 @@ import com.study.tmall.model.category.CategoryInfo;
 import com.study.tmall.result.Result;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -33,4 +35,15 @@ public class CategoryInfoApi {
         List<CategoryInfo> list = categoryInfoService.homeListCategoryInfo();
         return Result.ok(list);
     }
+
+    // 根据id查询出分类
+    @ApiOperation(value = "根据id查询出分类")
+    @GetMapping("/{id}")
+    public Result getCategoryInfo(
+            @ApiParam(name = "id", value = "分类id", required = true)
+            @PathVariable String id) {
+        CategoryInfo categoryInfo = categoryInfoService.getById(id);
+        return Result.ok(categoryInfo);
+    }
+
 }

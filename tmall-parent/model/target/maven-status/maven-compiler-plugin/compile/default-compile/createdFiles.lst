@@ -1,4 +1,5 @@
 com\study\tmall\model\order\RefundInfo.class
+com\study\tmall\vo\product\ProductInfoFrontQueryVo.class
 com\study\tmall\vo\product\ProductInfoEeVo.class
 com\study\tmall\model\base\BaseEntity.class
 com\study\tmall\model\order\PaymentInfo.class
@@ -13,6 +14,7 @@ com\study\tmall\model\category\Property.class
 com\study\tmall\model\user\UserLoginRecord.class
 com\study\tmall\enums\OrderStatusEnum.class
 com\study\tmall\vo\order\OrderQueryVo.class
+com\study\tmall\enums\SortTypeEnum.class
 com\study\tmall\model\user\UserInfo.class
 com\study\tmall\enums\ImageUrlEnum.class
 com\study\tmall\enums\PaymentTypeEnum.class
@@ -27,3 +29,4 @@ com\study\tmall\enums\RefundStatusEnum.class
 com\study\tmall\enums\ImageTypeEnum.class
 com\study\tmall\model\category\CategoryInfo.class
 com\study\tmall\model\product\Review.class
+com\study\tmall\enums\ProductSortStatusEnum.class

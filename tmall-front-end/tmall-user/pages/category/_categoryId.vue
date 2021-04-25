@@ -6,7 +6,7 @@
 
   <!--这里放排序和价格-->
   <div id="sortAndPrice">
-    <img src="~/assets/img/classify/72.jpg" height="110" width="1010"/>
+    <img :src="categoryInfo.imageUrl" height="110" width="1010"/>
     <div class="sortAndPriceDiv">
       <table class="sortTable">
         <tr class="grayColumn">
@@ -70,91 +70,16 @@
     }
   </script>
   <div class="productListInClassify" id="productListInClassify">
-    <div class="productItem" price="799.2">
-      <a href="#"><img class="productImage" src="~/assets/img/product/男士手拿包/7058.jpg" height="100"/></a>
-      <span class="price">￥799.20</span>
-      <a href="#">MAXFEEL休闲男士手包真皮手拿包大容量信封包手抓包夹包软韩版潮</a>
-      <a href="#">天猫专卖</a>
-      <div class="itemFooter">
-        <span class="monthMake">月成交<span class="monthMakeCount">16笔</span></span>
-        <span class="evaluate">评价<span class="evaluateCount">14</span></span>
-        <span class="wangWang"><a href="#"><img src="~/assets/img/site/wangwang.png" height="16" width="16"/></a></span>
+    <div class="productItem" v-for="(item, index) in list" :key="index">
+      <div style="height: 200px; text-align: center">
+        <a :href="'/product/' + item.id"><img class="productImage" :src="item.params.imageUrl" height="150"/></a>
       </div>
-    </div>
-    <div class="productItem" price="511.2">
-      <a href="#"><img class="productImage" src="~/assets/img/product/男士手拿包/7047.jpg" height="100"/></a>
-      <span class="price">￥511.20</span>
-      <a href="#">宾度 男士手包真皮大容量手拿包牛皮个性潮男包手抓包软皮信封包</a>
+      <span class="price">￥{{item.promotePrice}}</span>
+      <a :href="'/product/' + item.id">{{item.name}}</a>
       <a href="#">天猫专卖</a>
       <div class="itemFooter">
-        <span class="monthMake">月成交<span class="monthMakeCount">49笔</span></span>
-        <span class="evaluate">评价<span class="evaluateCount">18</span></span>
-        <span class="wangWang"><a href="#"><img src="~/assets/img/site/wangwang.png" height="16" width="16"/></a></span>
-      </div>
-    </div>
-    <div class="productItem" price="488.2">
-      <a href="#"><img class="productImage" src="~/assets/img/product/男士手拿包/7036.jpg" height="100"/></a>
-      <span class="price">￥488.20</span>
-      <a href="#">唯美诺新款男士手包男包真皮大容量小羊皮手拿包信封包软皮夹包潮</a>
-      <a href="#">天猫专卖</a>
-      <div class="itemFooter">
-        <span class="monthMake">月成交<span class="monthMakeCount">34笔</span></span>
-        <span class="evaluate">评价<span class="evaluateCount">16</span></span>
-        <span class="wangWang"><a href="#"><img src="~/assets/img/site/wangwang.png" height="16" width="16"/></a></span>
-      </div>
-    </div>
-    <div class="productItem" price="411.6">
-      <a href="#"><img class="productImage" src="~/assets/img/product/男士手拿包/7025.jpg" height="100"/></a>
-      <span class="price">￥411.60</span>
-      <a href="#">英伦邦纹男士手包牛皮大容量真皮手拿包手抓包双拉链商务正品软皮</a>
-      <a href="#">天猫专卖</a>
-      <div class="itemFooter">
-        <span class="monthMake">月成交<span class="monthMakeCount">25笔</span></span>
-        <span class="evaluate">评价<span class="evaluateCount">19</span></span>
-        <span class="wangWang"><a href="#"><img src="~/assets/img/site/wangwang.png" height="16" width="16"/></a></span>
-      </div>
-    </div>
-    <div class="productItem" price="157.25">
-      <a href="#"><img class="productImage" src="~/assets/img/product/男士手拿包/7047.jpg" height="100"/></a>
-      <span class="price">￥157.25</span>
-      <a href="#">劳迪莱斯男士手包休闲手拿包牛皮大容量钱包男包软面小包包手抓包</a>
-      <a href="#">天猫专卖</a>
-      <div class="itemFooter">
-        <span class="monthMake">月成交<span class="monthMakeCount">17笔</span></span>
-        <span class="evaluate">评价<span class="evaluateCount">16</span></span>
-        <span class="wangWang"><a href="#"><img src="~/assets/img/site/wangwang.png" height="16" width="16"/></a></span>
-      </div>
-    </div>
-    <div class="productItem" price="268.2">
-      <a href="#"><img class="productImage" src="~/assets/img/product/男士手拿包/7003.jpg" height="100"/></a>
-      <span class="price">￥268.20</span>
-      <a href="#">帕朗尼男士手拿包真皮手包商务休闲头层牛皮软牛皮大容量休闲钱包</a>
-      <a href="#">天猫专卖</a>
-      <div class="itemFooter">
-        <span class="monthMake">月成交<span class="monthMakeCount">5笔</span></span>
-        <span class="evaluate">评价<span class="evaluateCount">19</span></span>
-        <span class="wangWang"><a href="#"><img src="~/assets/img/site/wangwang.png" height="16" width="16"/></a></span>
-      </div>
-    </div>
-    <div class="productItem" price="233.4">
-      <a href="#"><img class="productImage" src="~/assets/img/product/男士手拿包/6992.jpg" height="100"/></a>
-      <span class="price">￥233.40</span>
-      <a href="#">编织手包手拿包男信封大容量手抓包真皮韩版潮商务休闲牛皮男包</a>
-      <a href="#">天猫专卖</a>
-      <div class="itemFooter">
-        <span class="monthMake">月成交<span class="monthMakeCount">8笔</span></span>
-        <span class="evaluate">评价<span class="evaluateCount">19</span></span>
-        <span class="wangWang"><a href="#"><img src="~/assets/img/site/wangwang.png" height="16" width="16"/></a></span>
-      </div>
-    </div>
-    <div class="productItem" price="952">
-      <a href="#"><img class="productImage" src="~/assets/img/product/男士手拿包/6981.jpg" height="100"/></a>
-      <span class="price">￥952.00</span>
-      <a href="#">犟牛男士手包真皮手拿包头层牛皮商务大容量手抓包软皮夹包信封包</a>
-      <a href="#">天猫专卖</a>
-      <div class="itemFooter">
-        <span class="monthMake">月成交<span class="monthMakeCount">20笔</span></span>
-        <span class="evaluate">评价<span class="evaluateCount">16</span></span>
+        <span class="monthMake">月成交<span class="monthMakeCount">{{item.monthlySales}}笔</span></span>
+        <span class="evaluate">评价<span class="evaluateCount">{{item.reviewNumber == null ? 0 : item.reviewNumber}}</span></span>
         <span class="wangWang"><a href="#"><img src="~/assets/img/site/wangwang.png" height="16" width="16"/></a></span>
       </div>
     </div>
@@ -164,11 +89,49 @@
 
 <script>
 import search from "../../layouts/search";
+import category from "../../api/category";
+
 export default {
   components: {
     search
   },
-  name: "_categoryId"
+  data() {
+    return {
+      list: [], // 产品集合
+      current: 1, // 起始页
+      limit: 20, // 每页大小
+      total: null, // 总记录数
+      searchObj: {} , // 查询对象
+      categoryInfo: {}, // 分类对象
+      categoryId: null, // 分类id
+    }
+  },
+  created() {
+    this.categoryId = this.$route.params.categoryId
+    this.searchObj.categoryId = this.categoryId
+    this.getCategoryInfo()
+    this.listProductInfo(1)
+  },
+  methods: {
+    // 根据分类id查询分类
+    getCategoryInfo() {
+      category.getCategoryInfo(this.categoryId)
+        .then(response => {
+          this.categoryInfo = response.data
+        })
+    },
+
+    // 根据分类id和查询条件显示商品
+    listProductInfo(val) {
+      this.current = val
+      category.listProductInfo(this.current, this.limit, this.searchObj)
+        .then(response => {
+          this.list = response.data.records
+          this.total = response.data.total
+        })
+    }
+
+  }
 }
 </script>
 
