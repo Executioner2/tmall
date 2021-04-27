@@ -1,6 +1,7 @@
 E:\JavaProject\study\tmall-v1.0\tmall-parent\model\src\main\java\com\study\tmall\model\order\RefundInfo.java
 E:\JavaProject\study\tmall-v1.0\tmall-parent\model\src\main\java\com\study\tmall\vo\product\ProductImageReturnVo.java
 E:\JavaProject\study\tmall-v1.0\tmall-parent\model\src\main\java\com\study\tmall\model\user\UserInfo.java
+E:\JavaProject\study\tmall-v1.0\tmall-parent\model\src\main\java\com\study\tmall\vo\product\ProductInfoFrontQueryVo.java
 E:\JavaProject\study\tmall-v1.0\tmall-parent\model\src\main\java\com\study\tmall\enums\ImageUrlEnum.java
 E:\JavaProject\study\tmall-v1.0\tmall-parent\model\src\main\java\com\study\tmall\model\product\PropertyValue.java
 E:\JavaProject\study\tmall-v1.0\tmall-parent\model\src\main\java\com\study\tmall\enums\AuthStatusEnum.java
@@ -16,6 +17,7 @@ E:\JavaProject\study\tmall-v1.0\tmall-parent\model\src\main\java\com\study\tmall
 E:\JavaProject\study\tmall-v1.0\tmall-parent\model\src\main\java\com\study\tmall\model\category\CategoryInfo.java
 E:\JavaProject\study\tmall-v1.0\tmall-parent\model\src\main\java\com\study\tmall\vo\product\ProductInfoEeVo.java
 E:\JavaProject\study\tmall-v1.0\tmall-parent\model\src\main\java\com\study\tmall\model\product\ProductImage.java
+E:\JavaProject\study\tmall-v1.0\tmall-parent\model\src\main\java\com\study\tmall\enums\SortTypeEnum.java
 E:\JavaProject\study\tmall-v1.0\tmall-parent\model\src\main\java\com\study\tmall\model\base\BaseEntity.java
 E:\JavaProject\study\tmall-v1.0\tmall-parent\model\src\main\java\com\study\tmall\vo\category\CategoryQueryVo.java
 E:\JavaProject\study\tmall-v1.0\tmall-parent\model\src\main\java\com\study\tmall\enums\UserLockStatusEnum.java
@@ -24,6 +26,7 @@ E:\JavaProject\study\tmall-v1.0\tmall-parent\model\src\main\java\com\study\tmall
 E:\JavaProject\study\tmall-v1.0\tmall-parent\model\src\main\java\com\study\tmall\vo\order\OrderQueryVo.java
 E:\JavaProject\study\tmall-v1.0\tmall-parent\model\src\main\java\com\study\tmall\model\product\Review.java
 E:\JavaProject\study\tmall-v1.0\tmall-parent\model\src\main\java\com\study\tmall\enums\OrderStatusEnum.java
+E:\JavaProject\study\tmall-v1.0\tmall-parent\model\src\main\java\com\study\tmall\enums\ProductSortStatusEnum.java
 E:\JavaProject\study\tmall-v1.0\tmall-parent\model\src\main\java\com\study\tmall\model\user\UserLoginRecord.java
 E:\JavaProject\study\tmall-v1.0\tmall-parent\model\src\main\java\com\study\tmall\vo\product\PropertyAndValueVo.java
 E:\JavaProject\study\tmall-v1.0\tmall-parent\model\src\main\java\com\study\tmall\enums\ImageTypeEnum.java

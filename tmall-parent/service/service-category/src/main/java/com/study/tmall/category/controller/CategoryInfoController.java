@@ -9,6 +9,7 @@ import com.study.tmall.vo.category.CategoryQueryVo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -51,6 +52,7 @@ public class CategoryInfoController {
     // 添加分类
     @ApiOperation(value = "添加分类")
     @PostMapping("/save")
+    @CacheEvict(value = "categoryInfo", allEntries = true) // 添加操作，清空redis缓存
     public Result save(
             @ApiParam(name = "categoryInfo", value = "分类", required = true)
             @RequestBody CategoryInfo categoryInfo){ // 应该有分类名和分类图片的地址

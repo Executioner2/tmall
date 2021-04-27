@@ -17,6 +17,17 @@ spring:
   jackson:
     date-format: yyyy-MM-dd
     time-zone: GMT+8
+  redis:
+    host: 192.168.123.130
+    port: 6379
+    database: 0
+    lettuce:
+      shutdown-timeout: 1800000
+      pool:
+        max-active: 20
+        # 最大阻塞等待时间（负数表示没有限制）
+        max-idle: 5
+        min-idle: 0
 
 # 指定mapper的.xml文件路径
 mybatis-plus:

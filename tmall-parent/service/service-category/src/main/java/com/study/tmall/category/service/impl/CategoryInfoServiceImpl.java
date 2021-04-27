@@ -15,6 +15,8 @@ import com.study.tmall.result.ResultCodeEnum;
 import com.study.tmall.util.FastDFSUtil;
 import com.study.tmall.util.ImageUtil;
 import com.study.tmall.vo.category.CategoryQueryVo;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
@@ -44,6 +46,7 @@ public class CategoryInfoServiceImpl extends ServiceImpl<CategoryInfoMapper, Cat
      * @return
      */
     @Override
+    @Cacheable(value = "categoryInfo", keyGenerator = "keyGeneratorPage") // 使用spring cache 底层存入到了redis中去
     public IPage<CategoryInfo> findPageCategoryInfo(Page<CategoryInfo> page, CategoryQueryVo categoryQueryVo) {
         QueryWrapper<CategoryInfo> wrapper = new QueryWrapper<>();
         String name = categoryQueryVo.getName();
@@ -73,6 +76,7 @@ public class CategoryInfoServiceImpl extends ServiceImpl<CategoryInfoMapper, Cat
      * @param id
      */
     @Override
+    @CacheEvict(value = "categoryInfo", allEntries = true) // 删除操作，清空redis缓存
     public void removeCategoryById(String id) {
         // 根据id查询出分类
         CategoryInfo categoryInfo = this.getById(id);
@@ -114,6 +118,7 @@ public class CategoryInfoServiceImpl extends ServiceImpl<CategoryInfoMapper, Cat
      * @param idList
      */
     @Override
+    @CacheEvict(value = "categoryInfo", allEntries = true) // 删除操作，清空redis缓存
     public void batchRemoveCategory(List<String> idList) {
         idList.stream().forEach(item-> {
             this.removeCategoryById(item);
@@ -126,6 +131,7 @@ public class CategoryInfoServiceImpl extends ServiceImpl<CategoryInfoMapper, Cat
      *
      */
     @Override
+    @CacheEvict(value = "categoryInfo", allEntries = true) // 编辑 操作，清空redis缓存
     public void updateCategoryById(CategoryInfo categoryInfo) {
         // 从数据库中取得分类
         CategoryInfo original = this.getById(categoryInfo);
@@ -172,6 +178,7 @@ public class CategoryInfoServiceImpl extends ServiceImpl<CategoryInfoMapper, Cat
      * 首页显示分类列表和热销商品
      */
     @Override
+    @Cacheable(value = "categoryInfo", keyGenerator = "keyGenerator") // 使用spring cache 底层存入到了redis中去
     public List<CategoryInfo> homeListCategoryInfo() {
         // 查询出所有分类
         List<CategoryInfo> categoryInfos = baseMapper.selectList(null);

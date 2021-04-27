@@ -31,4 +31,32 @@
                 #{cid}
             </foreach>
     </select>
+
+    <select id="selectProductInfoPageOrderBy" resultMap="productInfoBean">
+        SELECT
+            id,
+            category_id,
+            name,
+            sub_title,
+            orignal_price,
+            promote_price,
+            stock,
+            sales_volume,
+            monthly_sales,
+            create_time,
+            update_time,
+            is_deleted
+        FROM
+            product_info p
+        LEFT JOIN (
+            SELECT
+                product_id,
+                count(*) AS reviews
+            FROM
+                review
+            GROUP BY
+                product_id
+        ) r ON r.product_id = p.id
+        ${ew.customSqlSegment}
+    </select>
 </mapper>

@@ -3,7 +3,7 @@
     <!--这里放nav-->
     <nav class="top">
       <div class="navTopDiv">
-        <a href="#">
+        <a href="/">
           <span class="glyphicon glyphicon-home redColor"></span>天猫首页
         </a>
         <span>喵，欢迎来天猫</span>
