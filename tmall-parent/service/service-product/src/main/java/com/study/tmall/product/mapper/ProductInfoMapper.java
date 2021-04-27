@@ -1,7 +1,11 @@
 package com.study.tmall.product.mapper;
 
+import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.core.toolkit.Constants;
 import com.study.tmall.model.product.ProductInfo;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -15,4 +19,7 @@ import java.util.List;
 public interface ProductInfoMapper extends BaseMapper<ProductInfo> {
     // 传入分类id集合，返回商品小标题
     List<ProductInfo> listProductInfoSubTitle(List<String> idList);
+
+    // 查询出所有商品以及按指定方式排序，因为要查询出评价数所以自己写多表查询语句
+    IPage<ProductInfo> selectProductInfoPageOrderBy(IPage<ProductInfo> page, @Param(Constants.WRAPPER) Wrapper<ProductInfo> queryWrapper);
 }

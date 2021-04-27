@@ -4,7 +4,10 @@ E:\JavaProject\study\tmall-v1.0\tmall-parent\service\service-product\src\main\ja
 E:\JavaProject\study\tmall-v1.0\tmall-parent\service\service-product\src\main\java\com\study\tmall\product\service\PropertyValueService.java
 E:\JavaProject\study\tmall-v1.0\tmall-parent\service\service-product\src\main\java\com\study\tmall\product\controller\PropertyValueController.java
 E:\JavaProject\study\tmall-v1.0\tmall-parent\service\service-product\src\main\java\com\study\tmall\product\service\impl\ProductImageServiceImpl.java
+E:\JavaProject\study\tmall-v1.0\tmall-parent\service\service-product\src\main\java\com\study\tmall\product\mapper\ReviewMapper.java
+E:\JavaProject\study\tmall-v1.0\tmall-parent\service\service-product\src\main\java\com\study\tmall\product\service\impl\ReviewServiceImpl.java
 E:\JavaProject\study\tmall-v1.0\tmall-parent\service\service-product\src\main\java\com\study\tmall\product\controller\ProductInfoController.java
+E:\JavaProject\study\tmall-v1.0\tmall-parent\service\service-product\src\main\java\com\study\tmall\product\service\ReviewService.java
 E:\JavaProject\study\tmall-v1.0\tmall-parent\service\service-product\src\main\java\com\study\tmall\product\mapper\ProductImageMapper.java
 E:\JavaProject\study\tmall-v1.0\tmall-parent\service\service-product\src\main\java\com\study\tmall\product\config\ProductConfig.java
 E:\JavaProject\study\tmall-v1.0\tmall-parent\service\service-product\src\main\java\com\study\tmall\product\mapper\ProductInfoMapper.java

@@ -302,7 +302,7 @@ public class ProductInfoServiceImpl extends ServiceImpl<ProductInfoMapper, Produ
             wrapper.ge("promote_price", lowPrice);
         }
         if (highPrice != null) {
-            wrapper.ge("promote_price", highPrice);
+            wrapper.le("promote_price", highPrice);
         }
         // 定义排序条件
         if (!StringUtils.isEmpty(sortFieldStr) &&  // 首要条件是本次排序字段不为空 并且 不是默认排序
@@ -322,8 +322,7 @@ public class ProductInfoServiceImpl extends ServiceImpl<ProductInfoMapper, Produ
                 wrapper.orderByDesc(lostSortFieldStr);
             }
         }
-
-        IPage<ProductInfo> productInfoIPage = baseMapper.selectPage(page, wrapper);
+        IPage<ProductInfo> productInfoIPage = baseMapper.selectProductInfoPageOrderBy(page, wrapper);
 
         // 对商品数据再进行处理
         productInfoIPage.getRecords().stream().forEach(item -> {
