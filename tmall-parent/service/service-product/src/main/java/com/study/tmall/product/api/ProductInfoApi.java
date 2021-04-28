@@ -67,4 +67,14 @@ public class ProductInfoApi {
         return Result.ok(pageModule);
     }
 
+    // 根据商品id查询出商品信息
+    @ApiOperation(value = "根据商品id查询出商品信息")
+    @GetMapping("/{id}")
+    public Result getProductInfoById(
+            @ApiParam(name = "id", value = "商品id", required = true)
+            @PathVariable String id) {
+        ProductInfo productInfo = productInfoService.getProductInfoById(id);
+        return Result.ok(productInfo);
+    }
+
 }

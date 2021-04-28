@@ -1,5 +1,7 @@
 package com.study.tmall.product.service;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.study.tmall.model.product.Review;
 
@@ -11,4 +13,6 @@ import com.study.tmall.model.product.Review;
  * Description:
  */
 public interface ReviewService extends IService<Review> {
+    // 根据商品id分页查询商品评价
+    IPage listReviewByProductId(Page<Review> page, String productId);
 }

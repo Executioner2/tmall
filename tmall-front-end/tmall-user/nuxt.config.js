@@ -48,7 +48,7 @@ module.exports = {
     }
   },
   plugins: [
-    { src: '~/plugins/myPlugin.js', ssr: false }
+    { src: '~/plugins/element-ui.js', ssr: false }
   ]
 }
 

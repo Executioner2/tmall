@@ -49,4 +49,7 @@ public interface ProductInfoService extends IService<ProductInfo> {
 
     // 分类页，根据分类id和查询条件显示商品
     IPage<ProductInfo> listProductInfo(Page<ProductInfo> page, ProductInfoFrontQueryVo productInfoFrontQueryVo);
+
+    // 根据商品id查询出商品信息
+    ProductInfo getProductInfoById(String id);
 }

@@ -2,51 +2,20 @@
   <div>
 
     <!--这里放简单搜索栏-->
-    <div class="simpleSearchBox" id="simpleSearchBox">
-      <a href="#">
-        <img class="logo" id="simpelLogo" src="~/assets/img/site/simpleLogo.png"/>
-      </a>
-      <div class="pull-right">
-        <div class="searchDiv">
-          <input type="text" name="keyword" placeholder="平衡车 原汁机">
-          <button class="searchButton">搜天猫</button>
-        </div>
-        <div class="searchBelow">
-          <span><a href="#">冰箱</a><span>|</span></span>
-          <span><a href="#">空调</a><span>|</span></span>
-          <span><a href="#">女表</a><span>|</span></span>
-          <span><a href="#">男表</a></span>
-        </div>
-      </div>
-    </div>
+    <simple-search/>
 
     <!--这里放titleImage-->
     <div id="titleImage" class="titleImage">
-      <img src="~/assets/img/product/品牌女装/129668/titleImage/68.jpg"/>
+      <img :src="categoryInfo.imageUrl" height="110" width="1010"/>
     </div>
 
     <!--这里是把产品图片和基本信息装起来的div-->
     <div class="productImageAndProductBasicInformationDiv" id="productImageAndProductBasicInformationDiv">
       <!--这里放产品图片-->
-      <script>
-        $(function () {
-          $("#productImage .productImageList img").mouseenter(setShowImage);
-        });
-
-        function setShowImage() {
-          $("#showImage")[0].src = $(this)[0].src;
-
-        }
-
-      </script>
       <div id="productImage">
-        <img id="showImage" src="~/assets/img/product/品牌女装/129668/proudctShowImage/8620.jpg"/>
+        <img id="showImage" :src="showImage.url"/>
         <div class="productImageList">
-          <img src="~/assets/img/product/品牌女装/129668/proudctShowImage/8620.jpg"/>
-          <img src="~/assets/img/product/品牌女装/129668/proudctShowImage/8619.jpg"/>
-          <img src="~/assets/img/product/品牌女装/129668/proudctShowImage/8618.jpg"/>
-          <img src="~/assets/img/product/品牌女装/129668/proudctShowImage/8617.jpg"/>
-          <img src="~/assets/img/product/品牌女装/129668/proudctShowImage/8616.jpg"/>
+          <img v-for="(item, index) in productImage.thumbnail" @mouseenter="showImage = item" :key="index" :src="item.url"/>
         </div>
       </div>
 
@@ -89,14 +58,10 @@
       </script>
       <div id="productBasicInformation" class="productBasicInformation">
         <div class="biTitle">
-          名媛2016新款女装夏两件套裤韩版雪纺七分裤阔腿裤休闲时尚套装女
+          {{productInfo.name}}
         </div>
         <div class="sketchDiv">
-          <span>高档定制</span>
-          <span>高档棉麻</span>
-          <span>现货即发</span>
-          <span>加购物车</span>
-          <span>领优惠券</span>
+          <span>{{productInfo.subTitle}}</span>
         </div>
         <div class="juHuaSuanCountDown">
           <span>聚划算</span>
@@ -109,17 +74,17 @@
           </div>
           <div>
             <span>价格</span>
-            <span><del>￥399.00</del></span>
+            <span><del>￥{{productInfo.orignalPrice}}</del></span>
           </div>
           <div>
             <span>促销价</span>
             <span>￥</span>
-            <span>379.05</span>
+            <span>{{productInfo.promotePrice}}</span>
           </div>
         </div>
         <div class="salesAndReviews">
-          <span>销量 <span class="sales">50</span></span>
-          <span>累计评价 <span class="reviews">19</span></span>
+          <span>销量 <span class="sales">{{productInfo.salesVolume}}</span></span>
+          <span>累计评价 <span class="reviews">{{countReview}}</span></span>
         </div>
         <div class="numberDiv">
           <span>数量</span>
@@ -138,7 +103,7 @@
                 </a>
             </span>
 
-          <span>件 库存<span class="inventory">75</span>件</span>
+          <span>件 库存<span class="inventory">{{productInfo.stock}}</span>件</span>
         </div>
         <div class="commitment">
           <span>服务承诺</span>
@@ -155,38 +120,27 @@
     </div>
 
     <!--这里放产品详情-->
-    <div id="productParticulars" class="productParticulars">
+    <div id="productParticulars" v-show="reviewShow == false" class="productParticulars">
       <div class="productDetailTopPart">
-        <a href="#nowhere" class="productDetailTopPartSelectedLink">商品详情</a>
-        <a href="#nowhere" class="productDetailTopReviewLink">累计评价 <span class="evaluateNumber">19</span></a>
+        <a href="#nowhere" @click="reviewShow = false" class="productDetailTopPartSelectedLink">商品详情</a>
+        <a href="#nowhere" @click="selectReview"  class="productDetailTopReviewLink">累计评价 <span class="evaluateNumber">{{countReview}}</span></a>
       </div>
       <div class="productParameterDiv">
         <div class="titleDiv">产品参数：</div>
         <div class="productParamterList">
-          <span>材质成分: 聚酯纤维100%</span>
-          <span>品牌: Emyche/艾米秋</span>
-          <span>货号: 129668</span>
-          <span>尺码: L M S XL X</span>
-          <span>上市年份季节: 2016年夏季</span>
-          <span>颜色分类: 白色 黑色 浅蓝</span>
-          <span>适用年龄: 18-25周岁</span>
+          <span v-for="(item, index) in propertyAndValueVoList" :key="index">{{item.propertyName}}: {{item.propertyValue}}</span>
         </div>
       </div>
       <div class="productDescribeImageDiv">
-        <img src="~/assets/img/product/品牌女装/129668/productDescribeImage/8626.jpg"/>
-        <img src="~/assets/img/product/品牌女装/129668/productDescribeImage/8625.jpg"/>
-        <img src="~/assets/img/product/品牌女装/129668/productDescribeImage/8624.jpg"/>
-        <img src="~/assets/img/product/品牌女装/129668/productDescribeImage/8623.jpg"/>
-        <img src="~/assets/img/product/品牌女装/129668/productDescribeImage/8622.jpg"/>
-        <img src="~/assets/img/product/品牌女装/129668/productDescribeImage/8621.jpg"/>
+        <img v-for="(item, index) in productImage.details" :key="index" :src="item.url"/>
       </div>
     </div>
 
     <!--这里放积累评价-->
-    <div id="productCumulativeAssessment" class="productCumulativeAssessment">
+    <div id="productCumulativeAssessment" v-show="reviewShow == true" class="productCumulativeAssessment">
       <div class="productDetailTopPart">
-        <a href="#nowhere" class="productDetailTopPartSelectedLink">商品详情</a>
-        <a href="#nowhere" class="productDetailTopReviewLink">累计评价 <span class="evaluateNumber">19</span></a>
+        <a href="#nowhere" @click="reviewShow = false" class="productDetailTopPartSelectedLink">商品详情</a>
+        <a href="#nowhere" @click="selectReview" class="productDetailTopReviewLink">累计评价 <span class="evaluateNumber">{{countReview}}</span></a>
       </div>
       <div class="cumulativeAssessmentDiv">
         <div class="productEvaluateItem">
@@ -460,7 +414,7 @@
     </div>
 
     <!--产品详情与积累评价切换的js-->
-    <script>
+    <!--<script>
       $(function () {
         $(".productDetailTopPartSelectedLink").click(productParticularsShow);
         $(".productDetailTopReviewLink").click(productCumulativeAssessmentShow);
@@ -475,17 +429,69 @@
         $(".productCumulativeAssessment").css("display","block");
         $(".productParticulars").css("display","none");
       }
-    </script>
-
-    <!--footer-->
-
+    </script>-->
 
   </div>
 </template>
 
 <script>
+import SimpleSearch from "../../layouts/simpleSearch";
+import category from "../../api/category";
+import productInfo from "../../api/productInfo";
+
 export default {
-  name: "_productId"
+  name: "_productId",
+  components: {SimpleSearch},
+  data() {
+    return {
+      categoryInfo: {}, // 分类对象
+      productId: null, // 商品id
+      productInfo: {}, // 商品信息
+      countReview: 0, // 商品评价数
+      propertyAndValueVoList: [], // 商品属性和属性值
+      productImage: {thumbnail: [], details: []}, //商品图片
+      showImage: {}, // 展示图
+      reviewShow: false, // 评价框是否显示
+
+    }
+  },
+  created() {
+    this.productId = this.$route.params.productId
+    this.getProductInfoById()
+    // this.getCategoryInfo()
+  },
+  methods:{
+    // 根据分类id查询分类
+    getCategoryInfo() {
+      category.getCategoryInfo(this.productInfo.categoryId)
+        .then(response => {
+          this.categoryInfo = response.data
+        })
+    },
+
+    // 根据商品id查询出商品信息
+    getProductInfoById() {
+      productInfo.getProductInfoById(this.productId)
+        .then(response => {
+          this.productInfo = response.data
+          this.countReview = response.data.params.countReview
+          this.productImage = response.data.params.productImage
+          this.propertyAndValueVoList = response.data.params.propertyAndValueVoList
+          this.showImage = this.productImage.thumbnail[0]
+          this.getCategoryInfo() // 查询分类
+        })
+    },
+
+    // 查询商品评价
+    selectReview() {
+      if (this.reviewShow) { // 如果当前已在评价div则不查询直接返回
+        return
+      }
+
+    }
+
+
+  }
 }
 </script>
 

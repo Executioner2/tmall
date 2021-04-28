@@ -20,9 +20,7 @@ import com.study.tmall.product.service.ProductInfoService;
 import com.study.tmall.product.service.PropertyValueService;
 import com.study.tmall.product.service.ReviewService;
 import com.study.tmall.result.ResultCodeEnum;
-import com.study.tmall.vo.product.ProductInfoEeVo;
-import com.study.tmall.vo.product.ProductInfoFrontQueryVo;
-import com.study.tmall.vo.product.ProductQueryVo;
+import com.study.tmall.vo.product.*;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -337,6 +335,35 @@ public class ProductInfoServiceImpl extends ServiceImpl<ProductInfoMapper, Produ
             item.getParams().put("reviewNumber", count);
         });
         return productInfoIPage;
+    }
+
+    /**
+     * 根据商品id查询出商品信息
+     * @param id
+     * @return
+     */
+    @Override
+    public ProductInfo getProductInfoById(String id) {
+        ProductInfo productInfo = baseMapper.selectById(id);
+        if (productInfo == null) { // 如果查询出来为空，则说明传入的商品id不正确
+            throw new TmallException(ResultCodeEnum.PARAM_ERROR);
+        }
+        String pid = productInfo.getId();
+
+        // 查询评价数
+        Integer countReview = reviewService.count(new QueryWrapper<Review>().eq("product_id", pid));
+
+        // 根据商品id查询商品属性值和分类属性（在后台管理系统中已经实现，这里直接用）
+        List<PropertyAndValueVo> propertyAndValueVoList = propertyValueService.show(pid);
+
+        // 根据商品id查询出商品图片
+        Map<String, List<ProductImageReturnVo>> productImage = productImageService.showByProductId(pid);
+
+        productInfo.getParams().put("countReview", countReview);
+        productInfo.getParams().put("propertyAndValueVoList", propertyAndValueVoList);
+        productInfo.getParams().put("productImage", productImage);
+
+        return productInfo;
     }
 
     // 把第一张缩略图装进去
