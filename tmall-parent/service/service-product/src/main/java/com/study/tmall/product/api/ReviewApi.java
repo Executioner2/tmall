@@ -43,8 +43,8 @@ public class ReviewApi {
             @ApiParam(name = "productId", value = "商品id", required = true)
             @PathVariable String productId) {
 
-        Page<Review> page = new Page<>(current, limit);
+        Page<ProductReviewReturnVo> page = new Page<>(current, limit);
         IPage pageModule = reviewService.listReviewByProductId(page, productId);
-        return Result.ok();
+        return Result.ok(pageModule);
     }
 }

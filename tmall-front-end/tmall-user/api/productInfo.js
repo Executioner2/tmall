@@ -12,5 +12,11 @@ export default {
     })
   },
 
-  // 查询商品评价
+  // 根据商品id分页查询商品评价
+  listReviewByProductId(current, limit, productId) {
+    return request({
+      url: `${api_review_url}/list/${current}/${limit}/${productId}`,
+      method: "get"
+    })
+  }
 }

@@ -20,7 +20,7 @@ spring:
   redis:
     host: 192.168.123.130
     port: 6379
-    database: 0
+    database: 0 # product存入到 0 库
     lettuce:
       shutdown-timeout: 1800000
       pool:

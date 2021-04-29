@@ -5,11 +5,17 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.study.tmall.model.product.Review;
+import com.study.tmall.model.user.UserInfo;
 import com.study.tmall.product.mapper.ReviewMapper;
 import com.study.tmall.product.service.ReviewService;
+import com.study.tmall.user.client.UserInfoFeignClient;
 import com.study.tmall.vo.front.ProductReviewReturnVo;
+import org.springframework.beans.BeanUtils;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
+import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,6 +28,8 @@ import java.util.List;
  */
 @Service
 public class ReviewServiceImpl extends ServiceImpl<ReviewMapper, Review> implements ReviewService {
+    @Resource
+    private UserInfoFeignClient userInfoFeignClient;
 
     /**
      * 根据商品id分页查询商品评价
@@ -30,18 +38,60 @@ public class ReviewServiceImpl extends ServiceImpl<ReviewMapper, Review> impleme
      * @return
      */
     @Override
-    public IPage listReviewByProductId(Page<Review> page, String productId) {
-        // 查询条件
-        QueryWrapper<Review> wrapper = new QueryWrapper<>();
-        wrapper.eq("product_id", productId);
+    @Cacheable(value = "product", keyGenerator = "keyGeneratorPage") // 缓存到redis
+    public IPage listReviewByProductId(Page<ProductReviewReturnVo> page, String productId) {
         // 分页查询
-        IPage<Review> reviewPage = baseMapper.selectPage(page, wrapper);
-        // 设置自己的records
-        List<ProductReviewReturnVo> reviewReturnVos = new ArrayList<>();
+        IPage<ProductReviewReturnVo> reviewPage = baseMapper.selectProductReviewByProductId(page, productId);
+        // idList，用户id集合，降低远程调用次数
+        List<String> idList = new ArrayList<>();
         reviewPage.getRecords().forEach(item -> {
-
+            ProductReviewReturnVo vo = new ProductReviewReturnVo();
+            BeanUtils.copyProperties(item, vo);
+            idList.add(item.getUserId());
         });
 
-        return null;
+        // 远程调用查询用户信息
+        List<UserInfo> userInfoList = userInfoFeignClient.listUserInfoOfInner(idList);
+        reviewPage.getRecords().forEach(item -> {
+            // TODO 后续给用户提供匿名可选，不匿名则显示全名称
+            // 封装匿名用户名称
+            this.packUserName(item, userInfoList);
+        });
+
+        return reviewPage;
+    }
+
+    // 封装匿名用户名称
+    private void packUserName(ProductReviewReturnVo item, List<UserInfo> userInfoList) {
+        for (int i = 0; i < userInfoList.size(); i++) {
+            UserInfo userInfo = userInfoList.get(i);
+            if (item.getUserId().equals(userInfo.getId())) {
+                // 取得用户名，nick_name > openid > email
+                StringBuilder name = new StringBuilder();
+                if (!StringUtils.isEmpty(userInfo.getNickName())) { // 昵称
+                    name.append(userInfo.getNickName());
+                } else if(!StringUtils.isEmpty(userInfo.getOpenid())) { // 微信名
+                    name.append(userInfo.getOpenid());
+                } else if(!StringUtils.isEmpty(userInfo.getEmail())) { // 邮箱号
+                    name.append(userInfo.getEmail());
+                }
+                // 把用户名处理为星星
+                // 例如：张（*） 张三（张*） 张小三（张*三） 张小小三（张**三）
+                if (name.length() <= 1) {
+                    name.delete(0, 1);
+                    name.append("*");
+                } else if(name.length() <= 2) {
+                    name.delete(1, 2);
+                    name.append("*");
+                } else {
+                    Integer length = name.length() - 2;
+                    for (int j = 1; j <= length; j++) {
+                        name.replace(j, j + 1, "*");
+                    }
+                }
+                item.setAnonymity(name.toString());
+                break;
+            }
+        }
     }
 }

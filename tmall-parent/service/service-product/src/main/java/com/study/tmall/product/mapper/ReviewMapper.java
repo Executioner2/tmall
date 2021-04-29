@@ -1,7 +1,12 @@
 package com.study.tmall.product.mapper;
 
+import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.core.toolkit.Constants;
 import com.study.tmall.model.product.Review;
+import com.study.tmall.vo.front.ProductReviewReturnVo;
+import org.apache.ibatis.annotations.Param;
 
 /**
  * Copyright@1205878539@qq.com
@@ -11,4 +16,6 @@ import com.study.tmall.model.product.Review;
  * Description:
  */
 public interface ReviewMapper extends BaseMapper<Review> {
+    // 分页查询商品评价
+    IPage<ProductReviewReturnVo> selectProductReviewByProductId(IPage<ProductReviewReturnVo> page, @Param("productId") String productId);
 }

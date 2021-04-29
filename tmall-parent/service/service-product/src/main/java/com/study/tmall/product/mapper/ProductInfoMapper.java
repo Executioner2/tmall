@@ -21,5 +21,6 @@ public interface ProductInfoMapper extends BaseMapper<ProductInfo> {
     List<ProductInfo> listProductInfoSubTitle(List<String> idList);
 
     // 查询出所有商品以及按指定方式排序，因为要查询出评价数所以自己写多表查询语句
+    // TODO ${ew.customSqlSegment} 有sql注入的风险，后续改成手写条件
     IPage<ProductInfo> selectProductInfoPageOrderBy(IPage<ProductInfo> page, @Param(Constants.WRAPPER) Wrapper<ProductInfo> queryWrapper);
 }

@@ -1,8 +1,11 @@
 package com.study.tmall.vo.front;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+
+import java.util.Date;
 
 /**
  * Copyright@1205878539@qq.com
@@ -28,4 +31,8 @@ public class ProductReviewReturnVo {
 
     @ApiModelProperty(value = "用户名")
     private String username;
+
+    @ApiModelProperty(value = "评价日期")
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    private Date createTime;
 }

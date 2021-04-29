@@ -13,6 +13,17 @@ spring:
     url: jdbc:mysql://192.168.123.130:3306/tmall_product?useUnicode=true&characterEncoding=UTF-8&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=GMT%2B8
     username: root
     password: 123321
+  redis:
+    host: 192.168.123.130
+    port: 6379
+    database: 1 # product存入到 1 库
+    lettuce:
+      shutdown-timeout: 1800000
+      pool:
+        max-active: 20
+        # 最大阻塞等待时间（负数表示没有限制）
+        max-idle: 5
+        min-idle: 0
 
 # 指定mapper的.xml文件路径
 mybatis-plus:

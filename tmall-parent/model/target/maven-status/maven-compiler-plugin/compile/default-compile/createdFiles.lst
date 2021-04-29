@@ -22,6 +22,7 @@ com\study\tmall\vo\category\PropertyQueryVo.class
 com\study\tmall\model\order\OrderItem.class
 com\study\tmall\model\product\ProductImage.class
 com\study\tmall\vo\product\PropertyAndValueVo.class
+com\study\tmall\vo\front\ProductReviewReturnVo.class
 com\study\tmall\model\product\PropertyValue.class
 com\study\tmall\vo\category\CategoryQueryVo.class
 com\study\tmall\enums\AuthStatusEnum.class

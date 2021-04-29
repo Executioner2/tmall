@@ -17,6 +17,11 @@
             <artifactId>service_category_client</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
+        <dependency>
+            <groupId>com.study.tmall</groupId>
+            <artifactId>service_user_client</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
         <!-- https://mvnrepository.com/artifact/com.alibaba/easyexcel -->
         <dependency>
             <groupId>com.alibaba</groupId>
