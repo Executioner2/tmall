@@ -22,6 +22,7 @@ import com.study.tmall.product.service.ReviewService;
 import com.study.tmall.result.ResultCodeEnum;
 import com.study.tmall.vo.product.*;
 import org.springframework.beans.BeanUtils;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
@@ -324,18 +325,25 @@ public class ProductInfoServiceImpl extends ServiceImpl<ProductInfoMapper, Produ
 
         // 对商品数据再进行处理
         productInfoIPage.getRecords().stream().forEach(item -> {
-            // 把第一张缩略图封装进去
-            this.packImage(item);
-            // 把每个商品的名称缩短，方便前端显示（显示商品名称的前25个字符）
-            item.setName(item.getName().substring(0, 25));
-            // 评价数量
-            QueryWrapper<Review> queryWrapper = new QueryWrapper<>();
-            queryWrapper.eq("product_id", item.getId());
-            int count = reviewService.count(queryWrapper);
-            item.getParams().put("reviewNumber", count);
+            // 封装商品参数
+            this.packParams(item);
         });
         return productInfoIPage;
     }
+
+    // 封装商品参数
+    private void packParams(ProductInfo item) {
+        // 把第一张缩略图封装进去
+        this.packImage(item);
+        // 把每个商品的名称缩短，方便前端显示（显示商品名称的前25个字符）
+        item.setName(item.getName().substring(0, 25));
+        // 评价数量
+        QueryWrapper<Review> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("product_id", item.getId());
+        int count = reviewService.count(queryWrapper);
+        item.getParams().put("reviewNumber", count);
+    }
+
 
     /**
      * 根据商品id查询出商品信息
@@ -364,6 +372,34 @@ public class ProductInfoServiceImpl extends ServiceImpl<ProductInfoMapper, Produ
         productInfo.getParams().put("productImage", productImage);
 
         return productInfo;
+    }
+
+    /**
+     * 商品搜索，分页显示
+     * TODO 后续用搜索引擎 elastic search 实现
+     * @param page
+     * @param keyword
+     * @return
+     */
+    @Override
+    @Cacheable(value = "product", keyGenerator = "keyGeneratorPage") // redis缓存
+    public IPage<ProductInfo> searchProductInfo(Page<ProductInfo> page, String keyword) {
+        // 如果查询的关键字为空则直接返回空
+        if (StringUtils.isEmpty(keyword)) {
+            return null;
+        }
+        // 查询条件
+        QueryWrapper<ProductInfo> wrapper = new QueryWrapper<>();
+        wrapper.like("name", keyword).or().like("sub_title", keyword);
+        IPage<ProductInfo> productInfoPage = baseMapper.selectPage(page, wrapper);
+
+        // 封装商品首张缩略图 评价数
+        productInfoPage.getRecords().stream().forEach(item -> {
+            // 封装商品参数
+            this.packParams(item);
+        });
+
+        return productInfoPage;
     }
 
     // 把第一张缩略图装进去

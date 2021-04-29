@@ -73,8 +73,27 @@ public class ProductInfoApi {
     public Result getProductInfoById(
             @ApiParam(name = "id", value = "商品id", required = true)
             @PathVariable String id) {
+
         ProductInfo productInfo = productInfoService.getProductInfoById(id);
         return Result.ok(productInfo);
+    }
+
+    // 商品搜索，分页显示
+    @ApiOperation(value = "商品搜索，分页显示")
+    @GetMapping("/search/productInfo/{current}/{limit}/{keyword}")
+    public Result searchProductInfo(
+            @ApiParam(name = "current", value = "起始页", required = true)
+            @PathVariable Long current,
+
+            @ApiParam(name = "limit", value = "每页大小", required = true)
+            @PathVariable Long limit,
+
+            @ApiParam(name = "keyword", value = "商品搜索关键字", required = true)
+            @PathVariable String keyword) {
+
+        Page<ProductInfo> page = new Page<>(current, limit);
+        IPage<ProductInfo> pageModule= productInfoService.searchProductInfo(page, keyword);
+        return Result.ok(pageModule);
     }
 
 }

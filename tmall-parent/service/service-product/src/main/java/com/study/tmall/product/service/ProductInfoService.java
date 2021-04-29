@@ -52,4 +52,7 @@ public interface ProductInfoService extends IService<ProductInfo> {
 
     // 根据商品id查询出商品信息
     ProductInfo getProductInfoById(String id);
+
+    // 商品搜索，分页显示
+    IPage<ProductInfo> searchProductInfo(Page<ProductInfo> page, String keyword);
 }
