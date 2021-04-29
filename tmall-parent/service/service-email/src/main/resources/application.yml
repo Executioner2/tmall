@@ -1,0 +1,27 @@
+server:
+  port: 8205
+
+spring:
+  application:
+    name: service-email
+#  #声明thymeleaf使用非严格的html。
+#  thymeleaf:
+#    content-type: text/html
+#    mode: LEGACYHTML5
+#    cache: false
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 192.168.123.130
+  mail:
+    host: smtp.qq.com
+    port: 587
+    username: 1205878539@qq.com
+    password: xhuahrwqohznjggc
+
+logging:
+  level:
+    org:
+      springframework:
+        boot:
+          autoconfigure: error

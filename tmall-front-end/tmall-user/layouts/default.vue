@@ -2,7 +2,7 @@
   <div>
     <div id="main">
       <!-- header -->
-      <myheader/>
+      <myheader v-if="$route.fullPath.indexOf('login') != 1"/>
       <div class="main-container">
         <el-scrollbar class='page-component__scroll'>
           <!-- 内容区域 -->
@@ -22,6 +22,6 @@
 export default {
   components: {
     myheader, myfooter
-  }
+  },
 }
 </script>

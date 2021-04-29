@@ -7,7 +7,7 @@
           <span class="glyphicon glyphicon-home redColor"></span>天猫首页
         </a>
         <span>喵，欢迎来天猫</span>
-        <a href="#">请登录</a>
+        <a href="/login">请登录</a>
         <span class="pull-right">
             <a :href="'/order/' + userId">我的订单</a>
             <a href="#">

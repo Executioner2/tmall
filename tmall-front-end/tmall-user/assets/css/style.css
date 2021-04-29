@@ -1986,22 +1986,23 @@ nav.top .redColor{
     float: left;
 }
 #loginPage .mainBodyDiv{
-    margin: 20px auto;
-    position: relative;
+  margin: 20px auto;
+  height: 600px;
+  width: 1190px;
+  background:url(../img/site/loginBackground.png) no-repeat 4px 5px;
 }
 #loginPage .mainBodyDiv .loginBackground{
-    display: block;
-    margin: 0 auto;
+  display: block;
+  margin: 0 auto;
 }
 #loginPage .loginInputBox{
-    width: 330px;
-    height: 400px;
-    background-color: white;
-    position: absolute;
-    z-index: 1;
-    margin-top: -500px;
-    margin-left: 950px;
-    padding: 0px 20px;
+  width: 330px;
+  height: 400px;
+  background-color: white;
+  float: right;
+  margin-top: 100px;
+  margin-right: 50px;
+  padding: 0px 20px;
 }
 #loginPage .mainBodyDiv .errorHint{
     margin-top: 20px;
@@ -2057,6 +2058,9 @@ nav.top .redColor{
 }
 #loginPage .otherOperating span:nth-child(2){
     float: right;
+}
+#loginPage .otherOperating .wechat_login{
+    margin-right: 10px;
 }
 #loginPage .mainBodyDiv button{
     margin-top: 20px;
