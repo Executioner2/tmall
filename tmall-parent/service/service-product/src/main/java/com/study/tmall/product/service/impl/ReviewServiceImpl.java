@@ -66,14 +66,14 @@ public class ReviewServiceImpl extends ServiceImpl<ReviewMapper, Review> impleme
         for (int i = 0; i < userInfoList.size(); i++) {
             UserInfo userInfo = userInfoList.get(i);
             if (item.getUserId().equals(userInfo.getId())) {
-                // 取得用户名，nick_name > openid > email
+                // 取得用户名，nick_name > openid > name
                 StringBuilder name = new StringBuilder();
                 if (!StringUtils.isEmpty(userInfo.getNickName())) { // 昵称
                     name.append(userInfo.getNickName());
-                } else if(!StringUtils.isEmpty(userInfo.getOpenid())) { // 微信名
+                } else if(!StringUtils.isEmpty(userInfo.getOpenid())) { // 微信号
                     name.append(userInfo.getOpenid());
-                } else if(!StringUtils.isEmpty(userInfo.getEmail())) { // 邮箱号
-                    name.append(userInfo.getEmail());
+                } else if(!StringUtils.isEmpty(userInfo.getName())) { // 用户名
+                    name.append(userInfo.getName());
                 }
                 // 把用户名处理为星星
                 // 例如：张（*） 张三（张*） 张小三（张*三） 张小小三（张**三）

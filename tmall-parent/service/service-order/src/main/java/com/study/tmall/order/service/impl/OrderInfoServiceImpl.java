@@ -144,8 +144,10 @@ public class OrderInfoServiceImpl extends ServiceImpl<OrderInfoMapper, OrderInfo
                 if (orderInfo.getUserId().equals(userInfo.getId())) {
                     if (!StringUtils.isEmpty(userInfo.getNickName())) { // 如果昵称不为空就把昵称做userName
                         orderInfo.getParams().put("customerName", userInfo.getNickName());
-                    } else if (!StringUtils.isEmpty(userInfo.getPhone())) { // 如果手机号不为空就把昵称做手机号
+                    } else if (!StringUtils.isEmpty(userInfo.getPhone())) { // 如果手机号不为空就把手机号做userName
                         orderInfo.getParams().put("customerName", userInfo.getPhone());
+                    } else { // 否则把用户名做userName
+                        orderInfo.getParams().put("customerName", userInfo.getName());
                     }
                     break;
                 }

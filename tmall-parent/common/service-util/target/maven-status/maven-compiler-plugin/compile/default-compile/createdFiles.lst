@@ -1,4 +1,5 @@
 com\study\tmall\config\MybatisPlusConfig.class
+com\study\tmall\util\Base64.class
 com\study\tmall\config\RedisConfig$1.class
 com\study\tmall\util\FastDFSUtil.class
 com\study\tmall\util\MD5.class

@@ -33,7 +33,7 @@ public class UserInfo extends BaseEntity {
     @TableField("nick_name")
     private String nickName;
 
-    @ApiModelProperty(value = "用户认证姓名")
+    @ApiModelProperty(value = "用户名")
     @TableField("name")
     private String name;
 

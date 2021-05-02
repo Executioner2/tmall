@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.study.tmall.model.user.UserInfo;
+import com.study.tmall.vo.user.UserLoginVo;
 import com.study.tmall.vo.user.UserQueryVo;
 
 import java.util.List;
@@ -27,4 +28,7 @@ public interface UserInfoService extends IService<UserInfo> {
 
     // 获取用户基本信息，内部调用
     List<UserInfo> listUserInfo(List<String> idList);
+
+    // 发送邮箱验证码
+    void sendEmailCode(UserLoginVo userLoginVo);
 }

@@ -2037,6 +2037,7 @@ nav.top .redColor{
     width: 100%;
     height: 40px;
     border: none;
+    font-size: 14px;
 }
 #loginPage .mainBodyDiv table td{
     border: 1px #CBCBCB solid;
@@ -2062,7 +2063,31 @@ nav.top .redColor{
 #loginPage .otherOperating .wechat_login{
     margin-right: 10px;
 }
-#loginPage .mainBodyDiv button{
+#loginPage .mainBodyDiv #email_code {
+  margin-top: 20px;
+  width: 100%;
+}
+#loginPage .mainBodyDiv #email_code input{
+  border-radius: 3px;
+  border: 1px #CBCBCB solid;
+  height: 35px;
+  width: 160px;
+  font-size: 14px;
+}
+#loginPage .mainBodyDiv #email_code button{
+  border-radius: 3px;
+  border: 1px #CBCBCB solid;
+  height: 35px;
+  font-size: 14px;
+  /*background-color: #C40000;*/
+  background-color: #CBCBCB;
+  font-weight: bold;
+  /*color: white;*/
+  color: #333333;
+  float: right;
+  padding: 0px 15px 0;
+}
+#loginPage .mainBodyDiv #login_btn{
     margin-top: 20px;
     width: 100%;
     height: 34px;
@@ -2073,7 +2098,10 @@ nav.top .redColor{
     font-weight: bold;
     color: white;
 }
-#loginPage .mainBodyDiv button:hover{
+#loginPage .mainBodyDiv #login_btn:hover{
+    color: #333333;
+}
+#loginPage .mainBodyDiv #send_code_btn:hover{
     color: #333333;
 }
 
@@ -2163,6 +2191,11 @@ nav.top .redColor{
     padding: 5px;
     visibility: hidden;
 }
+
+.loginInputBox #email_code{
+
+}
+
 .loginInputBox .title{
     font-size: 16px;
     font-weight: bold;
@@ -2209,7 +2242,7 @@ nav.top .redColor{
 .loginInputBox .otherOperating span:nth-child(2){
     float: right;
 }
-.loginInputBox button{
+.loginInputBox #login_btn{
     margin-top: 20px;
     width: 100%;
     height: 34px;
@@ -2220,7 +2253,7 @@ nav.top .redColor{
     font-weight: bold;
     color: white;
 }
-.loginInputBox button:hover{
+.loginInputBox #login_btn:hover{
     color: #333333;
 }
 

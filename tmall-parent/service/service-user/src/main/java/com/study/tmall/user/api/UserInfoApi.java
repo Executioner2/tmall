@@ -1,9 +1,12 @@
 package com.study.tmall.user.api;
 
+import com.study.tmall.result.Result;
 import com.study.tmall.user.service.UserInfoService;
+import com.study.tmall.vo.user.UserLoginVo;
 import io.swagger.annotations.Api;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 
@@ -20,5 +23,16 @@ import javax.annotation.Resource;
 public class UserInfoApi {
     @Resource
     private UserInfoService userInfoService;
+
+    // 发送邮箱验证码
+    @ApiOperation("发送邮箱验证码")
+    @PostMapping("/login/send/emailCode")
+    private Result sendEmailCode(
+            @ApiParam(value = "userLoginVo", name = "用户登录信息", required = true)
+            @RequestBody UserLoginVo userLoginVo) {
+
+        userInfoService.sendEmailCode(userLoginVo);
+        return Result.ok();
+    }
 
 }
