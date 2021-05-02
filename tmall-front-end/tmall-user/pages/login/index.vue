@@ -82,6 +82,7 @@ export default {
       login.userLogin(this.userLogin)
         .then(response => {
           this.token = response.data
+          // TODO token以能正常获取，接着做跳转
           alert(this.token)
           console.log(this.token)
         })
