@@ -8,5 +8,9 @@ package com.study.tmall.email.service;
  * Description:
  */
 public interface EmailService {
+    // 发送内容到目标邮箱
     void send(String to, String subject, String text);
+
+    // 发送验证码到目标邮箱
+    void sendCode(String to);
 }

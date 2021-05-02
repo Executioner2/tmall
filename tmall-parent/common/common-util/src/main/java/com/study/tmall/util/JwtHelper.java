@@ -20,15 +20,15 @@ public class JwtHelper {
     /**
      * 根据参数生成token
      * @param userId
-     * @param userName
+     * @param password
      * @return
      */
-    public static String createToken(String userId, String userName) {
+    public static String createToken(String userId, String password) {
         String token = Jwts.builder()
                 .setSubject("TMALL-USER") // 组名
                 .setExpiration(new Date(System.currentTimeMillis() + tokenExpiration)) // 设置token过期时间，毫秒单位
                 .claim("userId", userId)
-                .claim("userName", userName)
+                .claim("password", password)
                 .signWith(SignatureAlgorithm.HS512, tokenSignKey)
                 .compressWith(CompressionCodecs.GZIP)
                 .compact();
@@ -48,14 +48,14 @@ public class JwtHelper {
     }
 
     /**
-     * 根据token取出userName
+     * 根据token取出password
      * @param token
      * @return
      */
-    public static String getUserName(String token) {
+    public static String getPassword(String token) {
         if(StringUtils.isEmpty(token)) return "";
         Jws<Claims> claimsJws = Jwts.parser().setSigningKey(tokenSignKey).parseClaimsJws(token);
         Claims claims = claimsJws.getBody();
-        return (String)claims.get("userName");
+        return (String)claims.get("password");
     }
 }

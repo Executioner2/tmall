@@ -35,4 +35,15 @@ public class UserInfoApi {
         return Result.ok();
     }
 
+    // 用户登录
+    @ApiOperation("用户登录")
+    @PostMapping("/login")
+    private Result userLogin(
+            @ApiParam(value = "userLoginVo", name = "用户登录信息", required = true)
+            @RequestBody UserLoginVo userLoginVo) {
+
+        String token = userInfoService.userLogin(userLoginVo);
+        return Result.ok(token);
+    }
+
 }

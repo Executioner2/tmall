@@ -2079,13 +2079,12 @@ nav.top .redColor{
   border: 1px #CBCBCB solid;
   height: 35px;
   font-size: 14px;
-  /*background-color: #C40000;*/
   background-color: #CBCBCB;
   font-weight: bold;
-  /*color: white;*/
   color: #333333;
   float: right;
-  padding: 0px 15px 0;
+  padding: 0px 10px 0;
+  width: 105px;
 }
 #loginPage .mainBodyDiv #login_btn{
     margin-top: 20px;

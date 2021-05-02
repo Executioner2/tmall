@@ -31,4 +31,7 @@ public interface UserInfoService extends IService<UserInfo> {
 
     // 发送邮箱验证码
     void sendEmailCode(UserLoginVo userLoginVo);
+
+    // 用户登录
+    String userLogin(UserLoginVo userLoginVo);
 }

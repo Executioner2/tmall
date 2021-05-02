@@ -30,10 +30,10 @@
           </table>
           <div id="email_code">
               <span>
-                <input type="text" placeholder="请输入验证码">
+                <input type="text" v-model="userLogin.emailCode" placeholder="请输入验证码">
               </span>
               <span>
-                <button id="send_code_btn" :disabled="isDisabled" @click="sendEmailCode">发送验证码</button>
+                <button id="send_code_btn" :disabled="isDisabled" @click="sendEmailCode" v-text="sendBtnText"></button>
               </span>
           </div>
           <div style="clear: both"></div>
@@ -46,7 +46,7 @@
             </span>
             <div style="clear: both"></div>
           </div>
-          <button id="login_btn">登录</button>
+          <button id="login_btn" @click="login">登录</button>
         </div>
       </div>
     </div>
@@ -66,14 +66,29 @@ export default {
       isDisabled: true, // 发送验证码按钮不可用
       account: null, // 用户名
       password: null, // 密码
+      sendBtnText: "发送验证码", // 发送按钮文本
+      isSend: false, // 验证码是否已发送
+      token: null, // token
     }
   },
   created() {
 
   },
   methods: {
-    // 发送邮箱验证码
-    sendEmailCode() {
+    // 用户登录
+    login() {
+      // 封装登录信息
+      this.packLoginInfo()
+      login.userLogin(this.userLogin)
+        .then(response => {
+          this.token = response.data
+          alert(this.token)
+          console.log(this.token)
+        })
+    },
+
+    // 封装登录信息
+    packLoginInfo() {
       let account = this.account
       let password = this.password
       if (account == null || password == null) {
@@ -89,17 +104,45 @@ export default {
       this.userLogin.account = base64Util.encode(account)
       // 对用户密码进行MD5加密
       this.userLogin.password = md5Util.encrypt(password)
-      // 用户名解码
-      base64Util.decode(this.userLogin.account)
+    },
+
+    // 发送邮箱验证码
+    sendEmailCode() {
+      // 封装登录信息
+      this.packLoginInfo()
       login.sendEmailCode(this.userLogin)
         .then(response => {
-          console.log(response)
+          // 设置发送状态为已发送
+          this.isSend = true
+          // 发送成功，提示发送成功
+          this.$message.success("验证码已发送，有效时间十分钟，请注意查收！")
+          // 发送按钮不可用
+          this.isDisabled = true
+          $("#send_code_btn").css({"background-color": "#CBCBCB", "color": "#333333"})
+          // 发送按钮显示倒计时
+          let i = 60
+          this.sendBtnText = "已发邮箱 " + i
+          let time = setInterval(() => {
+            i--
+            this.sendBtnText = "已发邮箱 " + i
+            if (i == 0) {
+              this.isSend = false
+              this.isDisabled = false
+              this.sendBtnText = "重新发送"
+              $("#send_code_btn").css({"background-color": "#C40000", "color": "white"})
+              clearInterval(time)
+            }
+          }, 1000)
         })
 
     },
 
     // 检测发送验证码按钮是否可用
     checkSendBtn() {
+      // 如果发了验证码，这个方法就不可用
+      if (this.isSend) {
+        return
+      }
       let account = this.account
       let password = this.password
       if (account == null || password == null) {

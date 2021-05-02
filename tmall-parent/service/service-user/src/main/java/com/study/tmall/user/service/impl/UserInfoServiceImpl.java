@@ -13,14 +13,23 @@ import com.study.tmall.result.ResultCodeEnum;
 import com.study.tmall.user.mapper.UserInfoMapper;
 import com.study.tmall.user.service.UserInfoService;
 import com.study.tmall.util.Base64;
+import com.study.tmall.util.JwtHelper;
 import com.study.tmall.util.MD5;
 import com.study.tmall.vo.user.UserLoginVo;
 import com.study.tmall.vo.user.UserQueryVo;
+import org.springframework.cloud.stream.annotation.EnableBinding;
+import org.springframework.cloud.stream.messaging.Source;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.messaging.MessageChannel;
+import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.regex.Pattern;
 
 /**
@@ -31,7 +40,12 @@ import java.util.regex.Pattern;
  * Description:
  */
 @Service
+@EnableBinding(Source.class)
 public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> implements UserInfoService {
+    @Resource
+    private MessageChannel output;
+    @Resource
+    private StringRedisTemplate stringRedisTemplate;
 
     /**
      * 分页条件显示用户
@@ -204,7 +218,68 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
 
         // 获得用户绑定的邮箱，用于发登录验证码
         String email = userInfo.getEmail();
-        // TODO rabbitMQ
+        // 发送消息到rabbitMQ队列，内容为邮箱地址
+        output.send(MessageBuilder.withPayload(email).build());
+    }
 
+    /**
+     * 用户登录
+     * @param userLoginVo
+     */
+    @Override
+    public String userLogin(UserLoginVo userLoginVo) {
+        String password = userLoginVo.getPassword();
+        String account = userLoginVo.getAccount();
+        String emailCode = userLoginVo.getEmailCode();
+
+        // 对account进行base64解码，这个是前端的base64编码后的，需要知道前端的编码后加密的方式
+        String accountDecry = Base64.getAccount(account);
+        // 对密码再进行MD5加密（前端进行了一次加密，后端还要进行加密，数据库中存入的密码是两次加密后的）
+        String passwordEncrypt = MD5.encrypt(password);
+
+        // 通过account格式识别出用户以什么方式登录的，已进行相应的数据库查询
+        QueryWrapper<UserInfo> wrapper = new QueryWrapper<>();
+        wrapper.eq("password", passwordEncrypt);
+        UserInfo userInfo;
+        if (Pattern.matches(RegularEnum.USER_NAME_LOGIN.getRegex(), accountDecry)) {
+            // 是用户名登录，就 用户名+密码 查询数据库
+            wrapper.eq("name", accountDecry);
+            userInfo = baseMapper.selectOne(wrapper);
+            if (userInfo == null) {
+                throw new TmallException(ResultCodeEnum.LOGIN_NAME_FAIL);
+            }
+        } else if(Pattern.matches(RegularEnum.USER_PHONE_LOGIN.getRegex(), accountDecry)) {
+            // 是手机号登录，就 手机号+密码 查询数据库
+            wrapper.eq("phone", accountDecry);
+            userInfo = baseMapper.selectOne(wrapper);
+            if (userInfo == null) {
+                throw new TmallException(ResultCodeEnum.LOGIN_PHONE_FAIL);
+            }
+        } else if(Pattern.matches(RegularEnum.USER_EMAIL_LOGIN.getRegex(), accountDecry)) {
+            // 是邮箱登录，就 邮箱+密码 查询数据库
+            wrapper.eq("email", accountDecry);
+            userInfo = baseMapper.selectOne(wrapper);
+            if (userInfo == null) {
+                throw new TmallException(ResultCodeEnum.LOGIN_EMAIL_FAIL);
+            }
+        } else {
+            // 如果都不满足，就用户名和密码错误
+            throw new TmallException(ResultCodeEnum.LOGIN_NAME_FAIL);
+        }
+
+        // 从redis中查询出验证码
+        String code = (String) stringRedisTemplate.opsForValue().get(userInfo.getEmail());
+        if (StringUtils.isEmpty(code) || !code.equals(emailCode)) {
+            throw new TmallException(ResultCodeEnum.CODE_ERROR);
+        }
+
+        // 查看用户是否被锁定
+        if (userInfo.getStatus() == UserLockStatusEnum.LOCK.getStatus()) {
+            throw new TmallException(ResultCodeEnum.LOGIN_DISABLED_ERROR);
+        }
+
+        // 创建token
+        String token = JwtHelper.createToken(userInfo.getId(), userInfo.getPassword());
+        return token;
     }
 }

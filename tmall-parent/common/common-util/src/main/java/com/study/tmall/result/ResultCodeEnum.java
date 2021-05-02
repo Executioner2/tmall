@@ -43,9 +43,9 @@ public enum ResultCodeEnum {
     REGISTER_EMAIL_ERROR(514, "邮箱已被使用"),
     LOGIN_AURH(515, "需要登录"),
     LOGIN_ACL(516, "没有权限"),
-    LOGIN_NAME_FAIL(517, "登陆失败，用户名或密码错误"),
-    LOGIN_PHONE_FAIL(518, "登陆失败，手机号或密码错误"),
-    LOGIN_EMAIL_FAIL(519, "登陆失败，邮箱或密码错误")
+    LOGIN_NAME_FAIL(517, "用户名或密码错误"),
+    LOGIN_PHONE_FAIL(518, "手机号或密码错误"),
+    LOGIN_EMAIL_FAIL(519, "邮箱或密码错误")
     ;
 
     private Integer code;

@@ -10,5 +10,14 @@ export default {
       method: "post",
       data: userLogin
     });
+  },
+
+  // 登录
+  userLogin(userLogin) {
+    return request({
+      url: `${api_userInfo_url}/login`,
+      method: "post",
+      data: userLogin
+    });
   }
 }
