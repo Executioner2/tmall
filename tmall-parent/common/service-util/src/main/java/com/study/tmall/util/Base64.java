@@ -25,5 +25,4 @@ public class Base64 {
         account = new String(base64.decode(account));
         return account;
     }
-
 }

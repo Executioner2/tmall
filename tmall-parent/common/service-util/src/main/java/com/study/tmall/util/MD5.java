@@ -14,7 +14,7 @@ import java.security.NoSuchAlgorithmException;
  */
 public final class MD5 {
     /**
-     * MD5加盐转码
+     * MD5转码
      * @param strSrc
      * @return
      */
