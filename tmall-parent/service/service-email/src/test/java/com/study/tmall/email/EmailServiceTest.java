@@ -1,6 +1,6 @@
 package com.study.tmall.email;
 
-import com.study.tmall.email.service.MailService;
+import com.study.tmall.email.service.EmailService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -18,9 +18,9 @@ import java.util.UUID;
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = {ServiceEmailApplication.class})
-public class MailServiceTest {
+public class EmailServiceTest {
     @Resource
-    private MailService mailService;
+    private EmailService mailService;
 
     @Test
     public void testSend() {

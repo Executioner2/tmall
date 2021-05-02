@@ -7,6 +7,6 @@ package com.study.tmall.email.service;
  * Versions:1.0.0
  * Description:
  */
-public interface MailService {
+public interface EmailService {
     void send(String to, String subject, String text);
 }

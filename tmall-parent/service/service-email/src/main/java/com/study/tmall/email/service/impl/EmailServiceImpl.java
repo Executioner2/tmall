@@ -1,6 +1,6 @@
 package com.study.tmall.email.service.impl;
 
-import com.study.tmall.email.service.MailService;
+import com.study.tmall.email.service.EmailService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -20,7 +20,7 @@ import javax.mail.internet.MimeMessage;
  * Description:
  */
 @Service
-public class MailServiceImpl implements MailService {
+public class EmailServiceImpl implements EmailService {
     @Resource
     private JavaMailSender mailSender;
 
