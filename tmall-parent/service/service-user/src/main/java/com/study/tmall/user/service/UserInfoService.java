@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.study.tmall.model.user.UserInfo;
 import com.study.tmall.vo.user.UserLoginVo;
 import com.study.tmall.vo.user.UserQueryVo;
+import com.study.tmall.vo.user.UserRegisterVo;
 
 import java.util.List;
 
@@ -32,6 +33,18 @@ public interface UserInfoService extends IService<UserInfo> {
     // 发送邮箱验证码
     void sendEmailCode(UserLoginVo userLoginVo);
 
+    // 发送邮箱验证码
+    void sendEmailCode(String email);
+
     // 用户登录
     String userLogin(UserLoginVo userLoginVo);
+
+    // 用户名重复检测
+    Boolean userNameRepeatCheck(String name);
+
+    // 检测邮箱是否被使用
+    Boolean userEmailRepeatCheck(String email);
+
+    // 用户注册
+    void userRegister(UserRegisterVo userRegisterVo);
 }

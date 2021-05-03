@@ -2120,14 +2120,13 @@ nav.top .redColor{
     line-height: 50px;
     text-align: center;
     margin: 0 auto;
-    visibility: hidden;
     border-radius: 5px;
     border-color: #EBCCD1;
     color: #A94442;
 }
 #registerPage{
     width: 330px;
-    margin: 50px auto 0px;
+    margin: 30px auto 30px;
 }
 #registerPage .hint{
     font-weight: bold;
@@ -2143,6 +2142,9 @@ nav.top .redColor{
 #registerPage table tr:nth-child(3){
     height: 60px;
 }
+#registerPage table tr:nth-child(7){
+  height: 60px;
+}
 #registerPage table input{
     font-size: 14px;
     width: 210px;
@@ -2155,12 +2157,31 @@ nav.top .redColor{
 #registerPage table tr:last-child{
     text-align: center;
 }
-#registerPage table button{
+#registerPage table #submitBtn{
     height: 35px;
     width: 170px;
-    background-color: #C40000;
-    color: white;
     border: none;
+    font-size: 12px;
+    font-weight: bold;
+    background-color: #CBCBCB;
+    color: #333333;
+}
+#registerPage table #send_code_tr button {
+  border-radius: 3px;
+  border: 1px #CBCBCB solid;
+  height: 35px;
+  font-size: 12px;
+  background-color: #CBCBCB;
+  font-weight: bold;
+  color: #333333;
+  padding: 0px 10px 0;
+  width: 90px;
+}
+#registerPage table #submitBtn:hover {
+  color: #333333;
+}
+#registerPage table #send_code_tr button:hover {
+  color: #333333;
 }
 
 /*=======================分割线==========================*/
@@ -2189,10 +2210,6 @@ nav.top .redColor{
     color: #A94442;
     padding: 5px;
     visibility: hidden;
-}
-
-.loginInputBox #email_code{
-
 }
 
 .loginInputBox .title{

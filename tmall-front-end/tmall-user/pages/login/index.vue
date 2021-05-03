@@ -13,7 +13,7 @@
                 <span class="glyphicon glyphicon-user"></span>
               </td>
               <td>
-                <input type="text" v-model="account" @keyup="checkSendBtn" placeholder="用户名/手机号/电子邮箱">
+                <input type="text" v-model="account" @keyup="checkSendBtn" placeholder="会员名/手机号/电子邮箱">
               </td>
             </tr>
             <tr>
@@ -30,7 +30,7 @@
           </table>
           <div id="email_code">
               <span>
-                <input type="text" v-model="userLogin.emailCode" placeholder="请输入验证码">
+                <input type="text" v-model="emailCode" placeholder="请输入验证码">
               </span>
               <span>
                 <button id="send_code_btn" :disabled="isDisabled" @click="sendEmailCode" v-text="sendBtnText"></button>
@@ -42,7 +42,7 @@
             <span class="forgetLoginPassword"><a href="#">忘记登录密码</a></span>
             <span>
               <span class="wechat_login"><a href="#">微信登录</a></span>
-              <span class="freeRegister"><a href="#">免费注册</a></span>
+              <span class="freeRegister"><a href="/regist">免费注册</a></span>
             </span>
             <div style="clear: both"></div>
           </div>
@@ -69,6 +69,7 @@ export default {
       sendBtnText: "发送验证码", // 发送按钮文本
       isSend: false, // 验证码是否已发送
       token: null, // token
+      emailCode: null, // 邮箱验证码
     }
   },
   created() {
@@ -103,6 +104,8 @@ export default {
       }
       // 对用户名进行base64编码
       this.userLogin.account = base64Util.encode(account)
+      // 对验证码进行base64编码
+      this.userLogin.emailCode = base64Util.encode(this.emailCode)
       // 对用户密码进行MD5加密
       this.userLogin.password = md5Util.encrypt(password)
     },

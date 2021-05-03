@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.study.tmall.enums.AuthStatusEnum;
+import com.study.tmall.enums.EmailCodeTypeEnum;
 import com.study.tmall.enums.RegularEnum;
 import com.study.tmall.enums.UserLockStatusEnum;
 import com.study.tmall.exception.TmallException;
@@ -15,11 +16,12 @@ import com.study.tmall.user.service.UserInfoService;
 import com.study.tmall.util.Base64;
 import com.study.tmall.util.JwtHelper;
 import com.study.tmall.util.MD5;
+import com.study.tmall.vo.front.EmailCodeVo;
 import com.study.tmall.vo.user.UserLoginVo;
 import com.study.tmall.vo.user.UserQueryVo;
+import com.study.tmall.vo.user.UserRegisterVo;
 import org.springframework.cloud.stream.annotation.EnableBinding;
 import org.springframework.cloud.stream.messaging.Source;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.support.MessageBuilder;
@@ -29,7 +31,6 @@ import org.springframework.util.StringUtils;
 import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 import java.util.regex.Pattern;
 
 /**
@@ -173,43 +174,13 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
      */
     @Override
     public void sendEmailCode(UserLoginVo userLoginVo) {
-        String password = userLoginVo.getPassword();
-        String account = userLoginVo.getAccount();
-
         // 对account进行base64解码，这个是前端的base64编码后的，需要知道前端的编码后加密的方式
-        String accountDecry = Base64.getAccount(account);
+        String account = Base64.decode(userLoginVo.getAccount());
         // 对密码再进行MD5加密（前端进行了一次加密，后端还要进行加密，数据库中存入的密码是两次加密后的）
-        String passwordEncrypt = MD5.encrypt(password);
+        String password = MD5.encrypt(userLoginVo.getPassword());
 
         // 通过account格式识别出用户以什么方式登录的，已进行相应的数据库查询
-        QueryWrapper<UserInfo> wrapper = new QueryWrapper<>();
-        wrapper.eq("password", passwordEncrypt);
-        UserInfo userInfo;
-        if (Pattern.matches(RegularEnum.USER_NAME_LOGIN.getRegex(), accountDecry)) {
-            // 是用户名登录，就 用户名+密码 查询数据库
-            wrapper.eq("name", accountDecry);
-            userInfo = baseMapper.selectOne(wrapper);
-            if (userInfo == null) {
-                throw new TmallException(ResultCodeEnum.LOGIN_NAME_FAIL);
-            }
-        } else if(Pattern.matches(RegularEnum.USER_PHONE_LOGIN.getRegex(), accountDecry)) {
-            // 是手机号登录，就 手机号+密码 查询数据库
-            wrapper.eq("phone", accountDecry);
-            userInfo = baseMapper.selectOne(wrapper);
-            if (userInfo == null) {
-                throw new TmallException(ResultCodeEnum.LOGIN_PHONE_FAIL);
-            }
-        } else if(Pattern.matches(RegularEnum.USER_EMAIL_LOGIN.getRegex(), accountDecry)) {
-            // 是邮箱登录，就 邮箱+密码 查询数据库
-            wrapper.eq("email", accountDecry);
-            userInfo = baseMapper.selectOne(wrapper);
-            if (userInfo == null) {
-                throw new TmallException(ResultCodeEnum.LOGIN_EMAIL_FAIL);
-            }
-        } else {
-            // 如果都不满足，就用户名和密码错误
-            throw new TmallException(ResultCodeEnum.LOGIN_NAME_FAIL);
-        }
+        UserInfo userInfo = this.getUserInfoOfLogin(account, password);
 
         // 查看用户是否被锁定
         if (userInfo.getStatus() == UserLockStatusEnum.LOCK.getStatus()) {
@@ -218,46 +189,40 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
 
         // 获得用户绑定的邮箱，用于发登录验证码
         String email = userInfo.getEmail();
+        EmailCodeVo emailCodeVo = new EmailCodeVo();
+        emailCodeVo.setEmail(email);
+        emailCodeVo.setType(EmailCodeTypeEnum.LOGIN_CODE.getNumber());
         // 发送消息到rabbitMQ队列，内容为邮箱地址
-        output.send(MessageBuilder.withPayload(email).build());
+        output.send(MessageBuilder.withPayload(emailCodeVo).build());
     }
 
     /**
-     * 用户登录
-     * @param userLoginVo
+     * 通过account格式识别出用户以什么方式登录的，已进行相应的数据库查询
+     * @param account
+     * @param password
+     * @return
      */
-    @Override
-    public String userLogin(UserLoginVo userLoginVo) {
-        String password = userLoginVo.getPassword();
-        String account = userLoginVo.getAccount();
-        String emailCode = userLoginVo.getEmailCode();
-
-        // 对account进行base64解码，这个是前端的base64编码后的，需要知道前端的编码后加密的方式
-        String accountDecry = Base64.getAccount(account);
-        // 对密码再进行MD5加密（前端进行了一次加密，后端还要进行加密，数据库中存入的密码是两次加密后的）
-        String passwordEncrypt = MD5.encrypt(password);
-
-        // 通过account格式识别出用户以什么方式登录的，已进行相应的数据库查询
+    private UserInfo getUserInfoOfLogin(String account, String password) {
         QueryWrapper<UserInfo> wrapper = new QueryWrapper<>();
-        wrapper.eq("password", passwordEncrypt);
+        wrapper.eq("password", password);
         UserInfo userInfo;
-        if (Pattern.matches(RegularEnum.USER_NAME_LOGIN.getRegex(), accountDecry)) {
+        if (Pattern.matches(RegularEnum.USER_NAME_LOGIN.getRegex(), account)) {
             // 是用户名登录，就 用户名+密码 查询数据库
-            wrapper.eq("name", accountDecry);
+            wrapper.eq("name", account);
             userInfo = baseMapper.selectOne(wrapper);
             if (userInfo == null) {
                 throw new TmallException(ResultCodeEnum.LOGIN_NAME_FAIL);
             }
-        } else if(Pattern.matches(RegularEnum.USER_PHONE_LOGIN.getRegex(), accountDecry)) {
+        } else if(Pattern.matches(RegularEnum.USER_PHONE_LOGIN.getRegex(), account)) {
             // 是手机号登录，就 手机号+密码 查询数据库
-            wrapper.eq("phone", accountDecry);
+            wrapper.eq("phone", account);
             userInfo = baseMapper.selectOne(wrapper);
             if (userInfo == null) {
                 throw new TmallException(ResultCodeEnum.LOGIN_PHONE_FAIL);
             }
-        } else if(Pattern.matches(RegularEnum.USER_EMAIL_LOGIN.getRegex(), accountDecry)) {
+        } else if(Pattern.matches(RegularEnum.USER_EMAIL_LOGIN.getRegex(), account)) {
             // 是邮箱登录，就 邮箱+密码 查询数据库
-            wrapper.eq("email", accountDecry);
+            wrapper.eq("email", account);
             userInfo = baseMapper.selectOne(wrapper);
             if (userInfo == null) {
                 throw new TmallException(ResultCodeEnum.LOGIN_EMAIL_FAIL);
@@ -266,9 +231,43 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
             // 如果都不满足，就用户名和密码错误
             throw new TmallException(ResultCodeEnum.LOGIN_NAME_FAIL);
         }
+        return userInfo;
+    }
+
+    /**
+     * 注册发送验证码到邮箱
+     * @param email
+     */
+    @Override
+    public void sendEmailCode(String email) {
+        // 对邮箱地址进行解码
+        String decode = Base64.decode(email);
+        EmailCodeVo emailCodeVo = new EmailCodeVo();
+        emailCodeVo.setEmail(decode);
+        emailCodeVo.setType(EmailCodeTypeEnum.REGISTER_CODE.getNumber());
+        // 发送到rabbitMQ中
+        output.send(MessageBuilder.withPayload(emailCodeVo).build());
+    }
+
+    /**
+     * 用户登录
+     * @param userLoginVo
+     */
+    @Override
+    public String userLogin(UserLoginVo userLoginVo) {
+        // 对account进行base64解码，这个是前端的base64编码后的，需要知道前端的编码后加密的方式
+        String account = Base64.decode(userLoginVo.getAccount());
+        // 对验证码进行base64解码
+        String emailCode = Base64.decode(userLoginVo.getEmailCode());
+        // 对密码再进行MD5加密（前端进行了一次加密，后端还要进行加密，数据库中存入的密码是两次加密后的）
+        String password = MD5.encrypt(userLoginVo.getPassword());
+
+        // 通过account格式识别出用户以什么方式登录的，已进行相应的数据库查询
+        UserInfo userInfo = this.getUserInfoOfLogin(account, password);
 
         // 从redis中查询出验证码
-        String code = (String) stringRedisTemplate.opsForValue().get(userInfo.getEmail());
+        String code = stringRedisTemplate.opsForValue()
+                .get(EmailCodeTypeEnum.LOGIN_CODE.getType() + userInfo.getEmail());
         if (StringUtils.isEmpty(code) || !code.equals(emailCode)) {
             throw new TmallException(ResultCodeEnum.CODE_ERROR);
         }
@@ -282,4 +281,75 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
         String token = JwtHelper.createToken(userInfo.getId(), userInfo.getPassword());
         return token;
     }
+
+    /**
+     * 用户名重复检测
+     * @param name
+     * @return
+     */
+    @Override
+    public Boolean userNameRepeatCheck(String name) {
+        // 前端传来的是经过了base64编码并加密了的，先对用户名进行解密解码
+        String account = Base64.decode(name);
+        // 查询数据库
+        QueryWrapper<UserInfo> wrapper = new QueryWrapper<>();
+        wrapper.eq("name", account);
+        Integer integer = baseMapper.selectCount(wrapper);
+        // 如果查询结果不为0，则用户名已经重复，返回true
+        if (integer != 0) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * 检测邮箱是否被使用
+     * @param email
+     * @return
+     */
+    @Override
+    public Boolean userEmailRepeatCheck(String email) {
+        // 前端传来的是经过了base64编码并加密了的，先对邮箱地址进行解密解码
+        String decodeEmail = Base64.decode(email);
+        // 查询数据库
+        QueryWrapper<UserInfo> wrapper = new QueryWrapper<>();
+        wrapper.eq("email", decodeEmail);
+        Integer integer = baseMapper.selectCount(wrapper);
+        // 如果查询结果不为0，则邮箱地址已经重复，返回true
+        if (integer != 0) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * 用户注册
+     * @param userRegisterVo
+     */
+    @Override
+    public void userRegister(UserRegisterVo userRegisterVo) {
+        // 对用户名，邮箱，验证码 进行解码
+        String name = Base64.decode(userRegisterVo.getName());
+        String email = Base64.decode(userRegisterVo.getEmail());
+        String emailCode = Base64.decode(userRegisterVo.getEmailCode());
+
+        // 从redis中查询验证码是否正确
+        String code = stringRedisTemplate.opsForValue()
+                .get(EmailCodeTypeEnum.REGISTER_CODE.getType() + email);
+        if (StringUtils.isEmpty(emailCode) || !emailCode.equals(code)) {
+            throw new TmallException(ResultCodeEnum.CODE_ERROR);
+        }
+
+        // 对密码再进行一次加密
+        String password = MD5.encrypt(userRegisterVo.getPassword());
+
+        // 设置实体类
+        UserInfo userInfo = new UserInfo();
+        userInfo.setName(name);
+        userInfo.setEmail(email);
+        userInfo.setPassword(password);
+        // 写入到数据库中去
+        baseMapper.insert(userInfo);
+    }
+
 }

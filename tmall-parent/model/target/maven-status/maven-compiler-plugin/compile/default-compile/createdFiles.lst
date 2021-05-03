@@ -1,6 +1,9 @@
 com\study\tmall\model\order\RefundInfo.class
 com\study\tmall\vo\product\ProductInfoFrontQueryVo.class
+com\study\tmall\enums\EmailCodeTypeEnum.class
 com\study\tmall\enums\RegularEnum.class
+com\study\tmall\vo\user\UserRegisterVo.class
+com\study\tmall\vo\front\EmailCodeVo.class
 com\study\tmall\vo\product\ProductInfoEeVo.class
 com\study\tmall\model\base\BaseEntity.class
 com\study\tmall\model\order\PaymentInfo.class

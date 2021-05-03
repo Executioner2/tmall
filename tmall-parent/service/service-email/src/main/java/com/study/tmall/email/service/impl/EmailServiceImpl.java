@@ -2,8 +2,9 @@ package com.study.tmall.email.service.impl;
 
 import cn.hutool.core.util.RandomUtil;
 import com.study.tmall.email.service.EmailService;
+import com.study.tmall.enums.EmailCodeTypeEnum;
+import com.study.tmall.vo.front.EmailCodeVo;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -71,12 +72,16 @@ public class EmailServiceImpl implements EmailService {
 
     /**
      * 发送验证码到目标邮箱
-     * @param to
+     * @param emailCodeVo
      */
     @Override
-    public void sendCode(String to) {
+    public void sendCode(EmailCodeVo emailCodeVo) {
+        // 获取邮箱
+        String to = emailCodeVo.getEmail();
+        // 获取验证码类型
+        String codeType = EmailCodeTypeEnum.getTypeByNumber(emailCodeVo.getType());
         // 先查询redis中是否已经有验证码了，有就返回
-        Object o = stringRedisTemplate.opsForValue().get(to);
+        Object o = stringRedisTemplate.opsForValue().get(codeType + to);
         if (o != null) {
             return;
         }
@@ -107,6 +112,6 @@ public class EmailServiceImpl implements EmailService {
         System.out.println("已经发送");
 
         // 写入到redis中去
-        stringRedisTemplate.opsForValue().set(to, code, 10, TimeUnit.MINUTES); // 验证码有效时间 十分钟
+        stringRedisTemplate.opsForValue().set(codeType + to, code, 10, TimeUnit.MINUTES); // 验证码有效时间 十分钟
     }
 }

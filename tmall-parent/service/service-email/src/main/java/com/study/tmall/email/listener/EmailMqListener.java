@@ -1,6 +1,7 @@
 package com.study.tmall.email.listener;
 
 import com.study.tmall.email.service.EmailService;
+import com.study.tmall.vo.front.EmailCodeVo;
 import org.springframework.cloud.stream.annotation.EnableBinding;
 import org.springframework.cloud.stream.annotation.StreamListener;
 import org.springframework.cloud.stream.messaging.Sink;
@@ -26,8 +27,8 @@ public class EmailMqListener {
      * 发送邮件
      */
     @StreamListener(Sink.INPUT)
-    public void sendEmail(Message<String> message) {
-        String email = message.getPayload();
-        emailService.sendCode(email);
+    public void sendEmail(Message<EmailCodeVo> message) {
+        EmailCodeVo emailCodeVo = message.getPayload();
+        emailService.sendCode(emailCodeVo);
     }
 }

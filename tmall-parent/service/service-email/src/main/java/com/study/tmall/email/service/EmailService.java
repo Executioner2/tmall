@@ -1,5 +1,7 @@
 package com.study.tmall.email.service;
 
+import com.study.tmall.vo.front.EmailCodeVo;
+
 /**
  * Copyright@1205878539@qq.com
  * Author:2Executioner
@@ -12,5 +14,5 @@ public interface EmailService {
     void send(String to, String subject, String text);
 
     // 发送验证码到目标邮箱
-    void sendCode(String to);
+    void sendCode(EmailCodeVo emailCodeVo);
 }

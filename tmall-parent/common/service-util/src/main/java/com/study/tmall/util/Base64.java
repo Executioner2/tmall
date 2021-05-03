@@ -18,11 +18,11 @@ public class Base64 {
 
     private Base64() {}
 
-    public static String getAccount(String account) {
+    public static String decode(String data) {
         org.apache.tomcat.util.codec.binary.Base64 base64 = new org.apache.tomcat.util.codec.binary.Base64();
-        account = new String(base64.decode(account));
-        account = account.substring(0, account.length() - slotEncrypt.length());
-        account = new String(base64.decode(account));
-        return account;
+        data = new String(base64.decode(data));
+        data = data.substring(0, data.length() - slotEncrypt.length());
+        data = new String(base64.decode(data));
+        return data;
     }
 }
