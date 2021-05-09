@@ -1,6 +1,7 @@
 import axios from 'axios'
 import { MessageBox, Message } from 'element-ui'
 import cookie from "js-cookie";
+import storage from "../assets/js/storage";
 
 // 创建axios实例
 const service = axios.create({
@@ -14,11 +15,18 @@ service.interceptors.request.use(
     // token 先不处理，后续使用时在完善
     // return config
 
-      // 判断cookie中是否有token
-      if(cookie.get('token')){
+      // // 判断cookie中是否有token
+      // if(cookie.get('token')){
+      //   // 把token放到config中
+      //   config.headers['token'] = cookie.get('token')
+      // }
+
+      // 判断localStorage中是否有token
+      let token = storage.getItem('token')
+      if(token){
         // 把token放到config中
-        config.headers['token'] = cookie.get('token')
-      }
+        config.headers['token'] = token
+    }
     return config
   },
   err => {

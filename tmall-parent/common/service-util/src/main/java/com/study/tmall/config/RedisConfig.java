@@ -70,7 +70,36 @@ public class RedisConfig {
                         sb.append("@page");
                         sb.append(":current=" + page.getCurrent());
                         sb.append(":limit=" + page.getSize());
-                        break;
+                    }
+                }
+                return sb.toString();
+            }
+        };
+    }
+
+    /**
+     * 只适用于产品查询且分页
+     * 根据类名，方法名，分页参数（current，limit），keyword 来区分key
+     * @return
+     */
+    @Bean
+    public KeyGenerator keyGeneratorKeywordPage() {
+        return new KeyGenerator() {
+            @Override
+            public Object generate(Object target, Method method, Object... params) {
+                StringBuilder sb = new StringBuilder();
+                sb.append(target.getClass().getName());
+                sb.append(method.getName());
+                for (Object obj : params) {
+                    if (obj instanceof Page) {
+                        Page page = (Page)obj;
+                        sb.append("@page");
+                        sb.append(":current=" + page.getCurrent());
+                        sb.append(":limit=" + page.getSize());
+                    }
+                    if (obj instanceof String) {
+                        String keyword = (String)obj;
+                        sb.append("@keyword=" + keyword);
                     }
                 }
                 return sb.toString();

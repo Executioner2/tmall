@@ -59,14 +59,16 @@
         <div class="leftMenu">
           <div v-for="(item, index) in list" :key="index" class="link" @mouseenter="floatMenuBlock(item.id)">
             <span class="glyphicon glyphicon-link"></span>
-            <a :href="'/category/' + item.id">{{item.name}}</a>
+<!--            <a :href="'/category/' + item.id">{{item.name}}</a>-->
+            <router-link :to="'/category/' + item.id">{{item.name}}</router-link>
           </div>
         </div>
         <div id="rightFloatMenu" class="rightFloatMenu">
           <div class="row" v-for="(item, index) in floatMenu" :key="index">
             <span v-for="(it) in item" :key="it.id" v-if="it.subTitle != '' && it.subTitle != null">
                 <!-- 随机上色 -->
-                <a :href="'/product/' + it.id" :style="Math.random() > 0.8 ? 'color: #87CEFA': '' ">{{it.subTitle}}</a>
+<!--                <a :href="'/product/' + it.id" :style="Math.random() > 0.8 ? 'color: #87CEFA': '' ">{{it.subTitle}}</a>-->
+              <router-link :to="'/product/' + it.id" :style="Math.random() > 0.8 ? 'color: #87CEFA': '' ">{{it.subTitle}}</router-link>
             </span>
           </div>
         </div>
@@ -81,12 +83,12 @@
         <div class="productDiv" v-for="(item, index) in list" :key="index">
           <div class="productTitle">{{item.name}}</div>
           <div class="productItem" v-for="(product) in item.params.hotList" :key="product.id">
-            <a href="#" class="product">
+            <router-link :to="'/product/' + product.id" class="product">
               <img :src="product.params.imageUrl"/>
-            </a>
-            <a href="#" class="productItemDescLink">
+            </router-link>
+            <router-link :to="'/product/' + product.id" class="productItemDescLink">
               <span class="productItemDesc">[热销] {{product.name}}</span>
-            </a>
+            </router-link>
             <span>{{product.promotePrice}}</span>
           </div>
         </div>

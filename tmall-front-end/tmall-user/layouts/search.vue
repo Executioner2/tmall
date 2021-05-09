@@ -37,7 +37,8 @@ export default {
         this.$message.warning("请输入商品查询关键字")
         return
       }
-      window.location.href = '/search/' + this.keyword
+      this.$router.push("/search/" + this.keyword)
+      this.keyword = null
     },
 
     // 搜索框按键按下

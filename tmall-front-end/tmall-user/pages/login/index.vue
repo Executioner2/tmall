@@ -70,6 +70,7 @@ import base64Util from "../../assets/js/base64Util";
 import login from "../../api/login";
 import qrcode from 'qrcodejs2'
 import cookie from "js-cookie"
+import storage from "../../assets/js/storage";
 
 export default {
   name: "index",
@@ -108,9 +109,8 @@ export default {
       login.userLogin(this.userLogin)
         .then(response => {
           this.token = response.data
-          // TODO token以能正常获取，接着做跳转
-          alert(this.token)
-          console.log(this.token)
+          storage.setItem("token", this.token, 30*60*1000)
+          window.location.href = "/"
         })
     },
 
@@ -242,12 +242,12 @@ export default {
               this.token = response.data.token
               clearInterval(this.interval)
               if (this.state == 520) { // 邮箱未绑定，跳转到注册页面
-                // storage.setItem("tempToken", this.token, 30*60*1000) // 设置为临时token
-                cookie.set("tempToken", this.token)
+                storage.setItem("tempToken", this.token, 30*60*1000) // 设置为临时token
+                // cookie.set("tempToken", this.token)
                 window.location.href = "/regist"
               } else { // 否则跳转到首页
-                // storage.setItem("token", this.token, 30*60*1000) // 设置token生命周期为半小时
-                cookie.set("token", this.token)
+                storage.setItem("token", this.token, 30*60*1000) // 设置token生命周期为半小时
+                // cookie.set("token", this.token)
                 window.location.href = "/"
               }
             }

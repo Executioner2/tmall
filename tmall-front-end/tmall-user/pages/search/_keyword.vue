@@ -6,10 +6,10 @@
     <!--这里放查询结果商品列表-->
     <div class="queryResultProductList" id="queryResultProductList">
       <div class="productItem" v-for="(item, index) in list" :key="index">
-        <a :href="'/product/' + item.id"><img class="productImage" :src="item.params.imageUrl"/></a>
+        <router-link :to="'/product/' + item.id"><img class="productImage" :src="item.params.imageUrl"/></router-link>
         <span class="price">￥{{item.promotePrice}}</span>
-        <span><a href="#">{{item.name}}</a></span>
-        <span><a href="">天猫专卖</a></span>
+        <span><router-link :to="'/product/' + item.id">{{item.name}}</router-link></span>
+        <span><a href="javascript:void(0)">天猫专卖</a></span>
         <div>
           <span>月成交 <span class="monthTurnover">{{item.monthlySales}} 笔</span></span>
           <span>评价<span class="evaluateNumber">  {{item.params.reviewNumber}}</span></span>
@@ -58,6 +58,13 @@ export default {
     this.keyword = this.$route.params.keyword
     // 搜索商品
     this.searchProductInfo(1)
+  },
+  watch: {
+    $route() {
+      this.keyword = this.$route.params.keyword
+      // 搜索商品
+      this.searchProductInfo(1)
+    }
   },
   methods: {
     // 向后端发送搜索请求

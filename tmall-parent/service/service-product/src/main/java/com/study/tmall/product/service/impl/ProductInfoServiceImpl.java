@@ -382,7 +382,8 @@ public class ProductInfoServiceImpl extends ServiceImpl<ProductInfoMapper, Produ
      * @return
      */
     @Override
-    @Cacheable(value = "product", keyGenerator = "keyGeneratorPage") // redis缓存
+//    @Cacheable(value = "product", keyGenerator = "keyGeneratorKeywordPage") // redis缓存
+    // 这里暂时不用redis缓存，因为不同的关键字会都会添加进redis中，这样增加了redis的负担
     public IPage<ProductInfo> searchProductInfo(Page<ProductInfo> page, String keyword) {
         // 如果查询的关键字为空则直接返回空
         if (StringUtils.isEmpty(keyword)) {
