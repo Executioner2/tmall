@@ -33,8 +33,7 @@ export default {
         return null
       }
     }
-
-    // 否则返回data的value
+    // 返回data的value
     return data.value
   },
 
@@ -54,6 +53,7 @@ export default {
     // 把json字符串转换为json对象
     data = JSON.parse(data)
     data.ttl = timestamp + ttl
+    data = JSON.stringify(data)
     localStorage.setItem(key, data)
   }
 

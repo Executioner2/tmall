@@ -77,7 +77,7 @@ import SimpleSearch from "../../layouts/simpleSearch";
 import base64Util from "../../assets/js/base64Util";
 import md5Util from "../../assets/js/md5Util";
 import register from "../../api/register";
-import storage from "../../assets/js/storage";
+import cookie from "js-cookie";
 
 export default {
   name: "index",
@@ -101,11 +101,8 @@ export default {
 
     }
   },
-  mounted() {
-    this.token = storage.getItem("tempToken");
-  },
   created() {
-
+    this.token = cookie.get("tempToken")
   },
   methods: {
     // 注册提交
@@ -136,8 +133,8 @@ export default {
           .then(response => {
               this.$message.success("绑定成功")
               setTimeout(() => {
-                storage.removeItem("tempToken") // 移除临时token
-                storage.setItem("token", response.data, 30*60*1000)
+                cookie.remove("tempToken") // 移除临时token
+                cookie.set("token", response.data)
                 window.location.href = "/"
               }, 2000)
             })

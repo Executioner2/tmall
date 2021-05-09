@@ -21,7 +21,7 @@
 
 <script>
 import header from "../api/header";
-import storage from "../assets/js/storage";
+import cookie from "js-cookie"
 
 export default {
   data() {
@@ -31,32 +31,43 @@ export default {
   },
   name: "myheader",
   mounted() {
-    if (storage.getItem("token")){
-      if (storage.getItem("userInfo")) {
-        // 如果可以从local Storage中取出userInfo那么就刷新token和userInfo的ttl
-        storage.updateTtl("token", 30*60*1000)
-        storage.updateTtl("userInfo", 30*60*1000)
-      } else {
-        this.getUserInfo()
-      }
-    }
+
+    // if (storage.getItem("token")){
+    //   if (storage.getItem("userInfo")) {
+    //     // 如果可以从local Storage中取出userInfo那么就刷新token和userInfo的ttl
+    //     this.userInfo = storage.getItem("userInfo")
+    //     storage.updateTtl("token", 30*60*1000)
+    //     storage.updateTtl("userInfo", 30*60*1000)
+    //   } else {
+    //     this.getUserInfo()
+    //   }
+    // }
 
   },
   created() {
-
+    this.getUserInfo()
   },
   methods: {
     // 获取用户信息
     getUserInfo() {
-      console.log("获取用户信息")
-      header.getUserInfo()
-        .then(response => {
-          this.userInfo = response.data
-          // 存入localStorage中
-          storage.setItem("userInfo", this.userInfo, 30*60*1000)
-        })
+      if (cookie.get("token")){
+        if (cookie.get("userInfo")) {
+          // 如果有就直接取出赋值
+          this.userInfo = cookie.get("userInfo")
+          return
+        } else {
+          // 如果没有就从后端获取
+          header.getUserInfo()
+            .then(response => {
+              this.userInfo = response.data
+              // // 存入localStorage中
+              // storage.setItem("userInfo", this.userInfo, 30*60*1000)
+              // 存入cookie
+              cookie.set("userInfo", this.userInfo)
+            })
+        }
+      }
     }
-
 
   }
 }
