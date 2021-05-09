@@ -35,6 +35,11 @@ export default {
 
     // 否则返回data的value
     return data.value
+  },
+
+  // 移除item
+  removeItem(key) {
+    localStorage.removeItem(key)
   }
 
 }

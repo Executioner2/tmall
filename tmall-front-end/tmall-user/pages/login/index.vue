@@ -69,6 +69,7 @@ import md5Util from "../../assets/js/md5Util";
 import base64Util from "../../assets/js/base64Util";
 import login from "../../api/login";
 import qrcode from 'qrcodejs2'
+import storage from "../../assets/js/storage";
 
 export default {
   name: "index",
@@ -241,10 +242,10 @@ export default {
               this.token = response.data.token
               clearInterval(this.interval)
               if (this.state == 520) { // 邮箱未绑定，跳转到注册页面
-                localStorage.setItem("tempToken", this.token) // 设置为临时token
+                storage.setItem("tempToken", this.token, 30*60*1000) // 设置为临时token
                 window.location.href = "/regist"
               } else { // 否则跳转到首页
-                localStorage.setItem("token", this.token) // 设置为token
+                storage.setItem("token", this.token, 30*60*1000) // 设置token生命周期为半小时
                 window.location.href = "/"
               }
             }

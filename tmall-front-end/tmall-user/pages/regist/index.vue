@@ -77,6 +77,7 @@ import SimpleSearch from "../../layouts/simpleSearch";
 import base64Util from "../../assets/js/base64Util";
 import md5Util from "../../assets/js/md5Util";
 import register from "../../api/register";
+import storage from "../../assets/js/storage";
 
 export default {
   name: "index",
@@ -101,7 +102,7 @@ export default {
     }
   },
   mounted() {
-    this.token = localStorage.getItem("tempToken");
+    this.token = storage.getItem("tempToken");
   },
   created() {
 
@@ -135,8 +136,8 @@ export default {
           .then(response => {
               this.$message.success("绑定成功")
               setTimeout(() => {
-                localStorage.removeItem("tempToken") // 移除临时token
-                localStorage.setItem("token", response.data)
+                storage.removeItem("tempToken") // 移除临时token
+                storage.setItem("token", response.data, 30*60*1000)
                 window.location.href = "/"
               }, 2000)
             })

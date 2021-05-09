@@ -1,5 +1,6 @@
 import axios from 'axios'
 import { MessageBox, Message } from 'element-ui'
+import storage from "../assets/js/storage";
 // 创建axios实例
 const service = axios.create({
   //baseURL: 'http://192.168.123.233',
@@ -13,9 +14,9 @@ service.interceptors.request.use(
     // return config
 
       // 判断localStorage中是否有token
-      if(localStorage.getItem('token')){
+      if(storage.getItem('token')){
         // 把token放到config中
-        config.headers['token'] = localStorage.getItem('token')
+        config.headers['token'] = storage.getItem('token')
       }
     return config
   },
