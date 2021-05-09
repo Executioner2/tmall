@@ -21,6 +21,7 @@
 
 <script>
 import header from "../api/header";
+import storage from "../assets/js/storage";
 
 export default {
   data() {
@@ -30,10 +31,16 @@ export default {
   },
   name: "myheader",
   mounted() {
-    console.log("token：" + localStorage.getItem("token"))
-    if (localStorage.getItem("token") != null){
-      this.getUserInfo()
+    if (storage.getItem("token")){
+      if (storage.getItem("userInfo")) {
+        // 如果可以从local Storage中取出userInfo那么就刷新token和userInfo的ttl
+        storage.updateTtl("token", 30*60*1000)
+        storage.updateTtl("userInfo", 30*60*1000)
+      } else {
+        this.getUserInfo()
+      }
     }
+
   },
   created() {
 
@@ -45,6 +52,8 @@ export default {
       header.getUserInfo()
         .then(response => {
           this.userInfo = response.data
+          // 存入localStorage中
+          storage.setItem("userInfo", this.userInfo, 30*60*1000)
         })
     }
 

@@ -20,7 +20,8 @@ export default {
     if (data == null) {
       return null
     }
-
+    // 把json字符串转换为json对象
+    data = JSON.parse(data)
     // 如果设置了ttl，则判断是否出于有效状态
     if (data.ttl != null) {
       // 当前时间戳
@@ -40,6 +41,20 @@ export default {
   // 移除item
   removeItem(key) {
     localStorage.removeItem(key)
+  },
+
+  // 更新ttl
+  updateTtl(key, ttl) {
+    // 当前时间戳
+    let timestamp = new Date().getTime()
+    let data = localStorage.getItem(key)
+    if (data == null) {
+      return null
+    }
+    // 把json字符串转换为json对象
+    data = JSON.parse(data)
+    data.ttl = timestamp + ttl
+    localStorage.setItem(key, data)
   }
 
 }
