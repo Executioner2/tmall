@@ -10,6 +10,13 @@ const service = axios.create({
 service.interceptors.request.use(
   config => {
     // token 先不处理，后续使用时在完善
+    // return config
+
+      // 判断localStorage中是否有token
+      if(localStorage.getItem('token')){
+        // 把token放到config中
+        config.headers['token'] = localStorage.getItem('token')
+      }
     return config
   },
   err => {

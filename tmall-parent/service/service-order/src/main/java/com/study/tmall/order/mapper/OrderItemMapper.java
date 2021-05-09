@@ -11,4 +11,6 @@ import com.study.tmall.model.order.OrderItem;
  * Description:
  */
 public interface OrderItemMapper extends BaseMapper<OrderItem> {
+    // 根据用户id获取购物车商品数量（内部调用）
+    Integer getProductNumberByUserId(String userId);
 }

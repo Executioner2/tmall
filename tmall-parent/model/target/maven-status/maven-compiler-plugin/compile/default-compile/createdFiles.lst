@@ -23,6 +23,7 @@ com\study\tmall\model\user\UserInfo.class
 com\study\tmall\enums\ImageUrlEnum.class
 com\study\tmall\enums\PaymentTypeEnum.class
 com\study\tmall\vo\category\PropertyQueryVo.class
+com\study\tmall\vo\front\UserInfoVo.class
 com\study\tmall\model\order\OrderItem.class
 com\study\tmall\model\product\ProductImage.class
 com\study\tmall\vo\product\PropertyAndValueVo.class

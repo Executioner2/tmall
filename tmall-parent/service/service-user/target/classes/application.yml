@@ -44,3 +44,10 @@ spring:
 # 指定mapper的.xml文件路径
 mybatis-plus:
   mapper-locations: classpath:com/study/tmall/user/mapper/xml/*.xml
+
+# 微信登录测试号相关信息
+wx:
+  open:
+    app_id: wxff5db53def71d004
+    app_secret: 59b0368ba1dd14266d389fab707fc331
+    redirect_url: http://dkxgmh.natappfree.cc/api/user/weChat/callback # 二维码扫码成功后的回调地址

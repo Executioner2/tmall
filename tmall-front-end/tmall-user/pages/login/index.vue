@@ -6,47 +6,58 @@
       <div style="clear: both"></div>
       <div class="mainBodyDiv">
         <div class="loginInputBox">
-          <div class="title">账户登录</div>
-          <table>
-            <tr>
-              <td>
-                <span class="glyphicon glyphicon-user"></span>
-              </td>
-              <td>
-                <input type="text" v-model="account" @keyup="checkSendBtn" placeholder="会员名/手机号/电子邮箱">
-              </td>
-            </tr>
-            <tr>
-              <td></td>
-            </tr>
-            <tr>
-              <td>
-                <span class="glyphicon glyphicon-lock"></span>
-              </td>
-              <td>
-                <input type="password" v-model="password" @keyup="checkSendBtn" placeholder="请输入用户密码">
-              </td>
-            </tr>
-          </table>
-          <div id="email_code">
-              <span>
-                <input type="text" v-model="emailCode" placeholder="请输入验证码">
-              </span>
-              <span>
-                <button id="send_code_btn" :disabled="isDisabled" @click="sendEmailCode" v-text="sendBtnText"></button>
-              </span>
-          </div>
-          <div style="clear: both"></div>
-          <div class="hint">不要输入真实的天猫账号密码</div>
-          <div class="otherOperating">
-            <span class="forgetLoginPassword"><a href="#">忘记登录密码</a></span>
-            <span>
-              <span class="wechat_login"><a href="#">微信登录</a></span>
-              <span class="freeRegister"><a href="/regist">免费注册</a></span>
-            </span>
+          <div class="title" v-text="loginTitle"></div>
+          <div id="account_login_div" v-if="loginWay">
+            <table>
+              <tr>
+                <td>
+                  <span class="glyphicon glyphicon-user"></span>
+                </td>
+                <td>
+                  <input type="text" v-model="account" @keyup="checkSendBtn" placeholder="会员名/手机号/电子邮箱">
+                </td>
+              </tr>
+              <tr>
+                <td></td>
+              </tr>
+              <tr>
+                <td>
+                  <span class="glyphicon glyphicon-lock"></span>
+                </td>
+                <td>
+                  <input type="password" v-model="password" @keyup="checkSendBtn" placeholder="请输入用户密码">
+                </td>
+              </tr>
+            </table>
+            <div id="email_code">
+                <span>
+                  <input type="text" v-model="emailCode" placeholder="请输入验证码">
+                </span>
+                <span>
+                  <button id="send_code_btn" :disabled="isDisabled" @click="sendEmailCode" v-text="sendBtnText"></button>
+                </span>
+            </div>
             <div style="clear: both"></div>
+            <div class="hint">不要输入真实的天猫账号密码</div>
+            <div class="otherOperating">
+              <span class="forgetLoginPassword"><a href="#">忘记登录密码</a></span>
+              <span>
+                <span class="wechat_login"><a href="javascript:void(0)" @click="creatQRCode">微信登录</a></span>
+                <span class="freeRegister"><a href="/regist">免费注册</a></span>
+              </span>
+              <div style="clear: both"></div>
+            </div>
+            <button id="login_btn" @click="login">登录</button>
           </div>
-          <button id="login_btn" @click="login">登录</button>
+          <div id="weChat_login_div" v-if="!loginWay">
+            <div>
+              <div style="margin: 0px auto;" class="qrcode" ref="qrCodeUrl"></div>
+            </div>
+            <div style="margin-top: 20px; padding-left: 20px; padding-right: 20px; width: 100%">
+              <span style="float:left;" class="freeRegister"><a href="/regist">免费注册</a></span>
+              <span style="float: right; " class="wechat_login"><a href="javascript:void(0)" @click="accountLogin">账号登录</a></span>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -57,6 +68,7 @@
 import md5Util from "../../assets/js/md5Util";
 import base64Util from "../../assets/js/base64Util";
 import login from "../../api/login";
+import qrcode from 'qrcodejs2'
 
 export default {
   name: "index",
@@ -70,6 +82,12 @@ export default {
       isSend: false, // 验证码是否已发送
       token: null, // token
       emailCode: null, // 邮箱验证码
+      loginTitle: "账户登录", // login title文本
+      loginWay: true, // 登录方式，true账号登录，false微信登录
+      uuid: null, // 拿取token的凭证
+      qrcodeUrl: null, // 二维码地址
+      state: null, // 账号状态
+      interval: null, // 微信登录轮询
     }
   },
   created() {
@@ -79,7 +97,13 @@ export default {
     // 用户登录
     login() {
       // 封装登录信息
-      this.packLoginInfo()
+      if (!this.packLoginInfo()) {
+        return
+      }
+      if (this.emailCode == null || this.emailCode == "") {
+        this.$message.warning("请输入验证码")
+        return
+      }
       login.userLogin(this.userLogin)
         .then(response => {
           this.token = response.data
@@ -95,12 +119,12 @@ export default {
       let password = this.password
       if (account == null || password == null) {
         this.$message.warning("请输入用户名和密码")
-        return
+        return false
       }
       account = account.trim()
       if(account === "") {
         this.$message.warning("请输入用户名和密码")
-        return
+        return false
       }
       // 对用户名进行base64编码
       this.userLogin.account = base64Util.encode(account)
@@ -108,12 +132,15 @@ export default {
       this.userLogin.emailCode = base64Util.encode(this.emailCode)
       // 对用户密码进行MD5加密
       this.userLogin.password = md5Util.encrypt(password)
+      return true
     },
 
     // 发送邮箱验证码
     sendEmailCode() {
       // 封装登录信息
-      this.packLoginInfo()
+      if (!this.packLoginInfo()) {
+        return
+      }
       login.sendEmailCode(this.userLogin)
         .then(response => {
           // 设置发送状态为已发送
@@ -162,6 +189,67 @@ export default {
       }
       this.isDisabled = false // 设置发送验证码按钮可用
       $("#send_code_btn").css({"background-color": "#C40000", "color": "white"})
+    },
+
+    // 账号登录
+    accountLogin() {
+      this.loginTitle = "账号登录"
+      this.loginWay = true
+      if (this.interval != null) {
+        clearInterval(this.interval)
+      }
+    },
+
+    // 获取二维码url
+    weChatQRCode() {
+      login.weChatQRCode()
+        .then(response => {
+          this.qrcodeUrl = response.data.QRCodeUrl
+          this.uuid = response.data.uuid
+          new qrcode(this.$refs.qrCodeUrl, {
+            text: this.qrcodeUrl, // 需要转换为二维码的内容
+            width: 100,
+            height: 100,
+          })
+        })
+    },
+
+    // 创建二维码
+    creatQRCode() {
+      this.loginTitle = "扫码登录"
+      this.loginWay = false
+      // 创建二维码
+      this.$nextTick(() => {
+        this.weChatQRCode()
+      })
+
+      let time = 60;
+      // 轮询
+      this.interval = setInterval(() => {
+        if (--time == 0) {
+          // 每隔60秒刷新一次二维码
+          this.$nextTick(() => {
+            this.weChatQRCode()
+          })
+          time = 60
+        }
+        // 向后端发送请求查询用户是否扫码
+        login.polling(this.uuid)
+          .then(response => {
+            if (response.data != null) {
+              this.state = response.data.state
+              this.token = response.data.token
+              clearInterval(this.interval)
+              if (this.state == 520) { // 邮箱未绑定，跳转到注册页面
+                localStorage.setItem("tempToken", this.token) // 设置为临时token
+                window.location.href = "/regist"
+              } else { // 否则跳转到首页
+                localStorage.setItem("token", this.token) // 设置为token
+                window.location.href = "/"
+              }
+            }
+          })
+      }, 1000)
     }
 
 

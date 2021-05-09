@@ -15,4 +15,7 @@ import java.util.List;
 public interface OrderItemService extends IService<OrderItem> {
     // 显示订单项
     List<OrderItem> showByOrderId(String orderId);
+
+    // 根据用户id获取购物车商品数量（内部调用）
+    Integer getProductNumberByUserId(String userId);
 }

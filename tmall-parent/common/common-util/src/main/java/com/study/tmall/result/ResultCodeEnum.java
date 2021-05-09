@@ -45,7 +45,10 @@ public enum ResultCodeEnum {
     LOGIN_ACL(516, "没有权限"),
     LOGIN_NAME_FAIL(517, "用户名或密码错误"),
     LOGIN_PHONE_FAIL(518, "手机号或密码错误"),
-    LOGIN_EMAIL_FAIL(519, "邮箱或密码错误")
+    LOGIN_EMAIL_FAIL(519, "邮箱或密码错误"),
+
+    EMAIL_UNBIND(520, "邮箱未绑定"),
+    EMAIL_BIND(521, " 邮箱已绑定")
     ;
 
     private Integer code;

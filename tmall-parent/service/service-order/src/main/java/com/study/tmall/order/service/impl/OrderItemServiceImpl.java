@@ -6,7 +6,7 @@ import com.study.tmall.model.order.OrderItem;
 import com.study.tmall.model.product.ProductInfo;
 import com.study.tmall.order.mapper.OrderItemMapper;
 import com.study.tmall.order.service.OrderItemService;
-import com.study.tmall.product.client.ProductInfoFeignClient;
+import com.study.tmall.product.client.ProductFeignClient;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -23,7 +23,7 @@ import java.util.List;
 @Service
 public class OrderItemServiceImpl extends ServiceImpl<OrderItemMapper, OrderItem> implements OrderItemService {
     @Resource
-    private ProductInfoFeignClient productInfoFeignClient;
+    private ProductFeignClient productFeignClient;
 
     /**
      * 显示订单项
@@ -44,7 +44,7 @@ public class OrderItemServiceImpl extends ServiceImpl<OrderItemMapper, OrderItem
         });
 
         // 传入list集合是为了减少远程调用，提高处理速度
-        List<ProductInfo> productInfoList = productInfoFeignClient.listProductInfoById(productInfoIdList);
+        List<ProductInfo> productInfoList = productFeignClient.listProductInfoById(productInfoIdList);
 
         // 把商品信息放到 orderItems 中
         for (int i = 0; i < orderItems.size(); i++) {
@@ -52,5 +52,16 @@ public class OrderItemServiceImpl extends ServiceImpl<OrderItemMapper, OrderItem
         }
 
         return orderItems;
+    }
+
+    /**
+     * 根据用户id获取购物车商品数量（内部调用）
+     * @param userId
+     * @return
+     */
+    @Override
+    public Integer getProductNumberByUserId(String userId) {
+
+        return baseMapper.getProductNumberByUserId(userId);
     }
 }

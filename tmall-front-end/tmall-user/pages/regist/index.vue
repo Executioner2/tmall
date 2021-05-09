@@ -96,8 +96,12 @@ export default {
       codeDisable: true, // 验证码输入框是否可用，初始不可用
       sendBtnText: "发送验证码", // 发送验证码按钮文本内容
       isSend: false, // 发送状态
+      token: null, // 根据token判断是否是微信扫码登录跳转到注册页面的，如果有值则说明是，最终提交就发送绑定请求
 
     }
+  },
+  mounted() {
+    this.token = localStorage.getItem("tempToken");
   },
   created() {
 
@@ -125,14 +129,27 @@ export default {
       this.userInfo.emailCode = base64Util.encode(this.emailCode)
       // 对密码进行MD5加密
       this.userInfo.password = md5Util.encrypt(this.password);
-      // 向后端发送注册请求
-      register.userRegister(this.userInfo)
-        .then(response => {
-          this.$message.success("注册成功")
-          setTimeout(() => {
-            window.location.href = "/login"
-          }, 2000)
-        })
+      // 向后端发送绑定请求
+      if (this.token != null) {
+        register.emailBinding(this.token, this.userInfo)
+          .then(response => {
+              this.$message.success("绑定成功")
+              setTimeout(() => {
+                localStorage.removeItem("tempToken") // 移除临时token
+                localStorage.setItem("token", response.data)
+                window.location.href = "/"
+              }, 2000)
+            })
+      } else {
+        // 向后端发送注册请求
+        register.userRegister(this.userInfo)
+          .then(response => {
+            this.$message.success("注册成功")
+            setTimeout(() => {
+              window.location.href = "/login"
+            }, 2000)
+          })
+      }
     },
 
     // 用户名合法性检测

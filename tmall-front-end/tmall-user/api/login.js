@@ -1,6 +1,7 @@
 import request from '@/utils/request'
 
 const api_userInfo_url = "/api/user/userInfo"
+const api_weChat_url = "/api/user/weChat"
 
 export default {
   // 发送登录验证码到邮箱
@@ -19,5 +20,23 @@ export default {
       method: "post",
       data: userLogin
     });
-  }
+  },
+
+  // 获取登录二维码
+  weChatQRCode() {
+    return request({
+      url: `${api_weChat_url}/get/QRCode`,
+      method: "get"
+    });
+  },
+
+  // 轮询
+  polling(state) {
+    return request({
+      url: `${api_weChat_url}/polling/${state}`,
+      method: "post"
+    });
+  },
+
+
 }

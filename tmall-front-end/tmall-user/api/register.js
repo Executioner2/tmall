@@ -27,6 +27,15 @@ export default {
     })
   },
 
+  // 邮箱绑定
+  emailBinding(token, userInfo) {
+    return request({
+      url: `${api_userInfo_url}/register/emailBinding/${token}`,
+      method: "post",
+      data: userInfo
+    })
+  },
+
   // 用户注册
   userRegister(userInfo) {
     return request({

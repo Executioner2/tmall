@@ -10,6 +10,7 @@ import com.study.tmall.enums.RegularEnum;
 import com.study.tmall.enums.UserLockStatusEnum;
 import com.study.tmall.exception.TmallException;
 import com.study.tmall.model.user.UserInfo;
+import com.study.tmall.order.client.OrderFeignClient;
 import com.study.tmall.result.ResultCodeEnum;
 import com.study.tmall.user.mapper.UserInfoMapper;
 import com.study.tmall.user.service.UserInfoService;
@@ -17,6 +18,7 @@ import com.study.tmall.util.Base64;
 import com.study.tmall.util.JwtHelper;
 import com.study.tmall.util.MD5;
 import com.study.tmall.vo.front.EmailCodeVo;
+import com.study.tmall.vo.front.UserInfoVo;
 import com.study.tmall.vo.user.UserLoginVo;
 import com.study.tmall.vo.user.UserQueryVo;
 import com.study.tmall.vo.user.UserRegisterVo;
@@ -47,6 +49,8 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
     private MessageChannel output;
     @Resource
     private StringRedisTemplate stringRedisTemplate;
+    @Resource
+    private OrderFeignClient orderFeignClient;
 
     /**
      * 分页条件显示用户
@@ -350,6 +354,101 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
         userInfo.setPassword(password);
         // 写入到数据库中去
         baseMapper.insert(userInfo);
+    }
+
+    /**
+     * 根据openid获取用户信息
+     * @param openid
+     * @return
+     */
+    @Override
+    public UserInfo getByOpenid(String openid) {
+        QueryWrapper<UserInfo> wrapper = new QueryWrapper<>();
+        wrapper.eq("openid", openid);
+        return baseMapper.selectOne(wrapper);
+    }
+
+    /**
+     * 用户邮箱绑定
+     * @param token
+     * @param userRegisterVo
+     */
+    @Override
+    public String emailBinding(String token, UserRegisterVo userRegisterVo) {
+        // 解析token
+        String userId = JwtHelper.getUserId(token);
+
+        // 对用户名，邮箱，验证码 进行解码
+        String name = Base64.decode(userRegisterVo.getName());
+        String email = Base64.decode(userRegisterVo.getEmail());
+        String emailCode = Base64.decode(userRegisterVo.getEmailCode());
+
+        // 从redis中查询验证码是否正确
+        String code = stringRedisTemplate.opsForValue()
+                .get(EmailCodeTypeEnum.REGISTER_CODE.getType() + email);
+        if (StringUtils.isEmpty(emailCode) || !emailCode.equals(code)) {
+            throw new TmallException(ResultCodeEnum.CODE_ERROR);
+        }
+
+        // 对密码再进行一次加密
+        String password = MD5.encrypt(userRegisterVo.getPassword());
+
+        // 设置实体类
+        UserInfo userInfo = new UserInfo();
+        userInfo.setId(userId);
+        userInfo.setName(name);
+        userInfo.setEmail(email);
+        userInfo.setPassword(password);
+        // 写入到数据库中去
+        baseMapper.updateById(userInfo);
+
+        // 返回一个全新的token
+        String newToken = JwtHelper.createToken(userId, password);
+        return newToken;
+    }
+
+    /**
+     * 根据token获取用户信息
+     * @param token
+     * @return
+     */
+    @Override
+    public UserInfoVo getUserInfoByToken(String token) {
+        // 获取用户id和用户密码
+        String userId = JwtHelper.getUserId(token);
+        String password = JwtHelper.getPassword(token);
+
+        // 根据id和密码进行查询
+        QueryWrapper<UserInfo> wrapper = new QueryWrapper<>();
+        wrapper.eq("id", userId);
+        wrapper.eq("password", password);
+        UserInfo userInfo = baseMapper.selectOne(wrapper);
+        if (userInfo == null) {
+            throw new TmallException(ResultCodeEnum.FETCH_USERINFO_ERROR);
+        }
+
+        // 对用户数据进行包装
+        UserInfoVo userInfoVo = new UserInfoVo();
+        userInfoVo.setId(userId);
+        // 拿取用户名称
+        String name = this.getName(userInfo);
+        userInfoVo.setName(name);
+        // 远程调用获得用户购物车商品数量
+        Integer number = orderFeignClient.getProductNumberByUserId(userId);
+        userInfoVo.setProductNumber(number);
+
+        return userInfoVo;
+    }
+
+    // 拿取用户名称
+    private String getName(UserInfo userInfo) {
+        if (!StringUtils.isEmpty(userInfo.getNickName())) {
+            // 如果昵称不为空则返回昵称
+            return userInfo.getNickName();
+        } else {
+            // 否则返回会员名
+            return userInfo.getName();
+        }
     }
 
 }

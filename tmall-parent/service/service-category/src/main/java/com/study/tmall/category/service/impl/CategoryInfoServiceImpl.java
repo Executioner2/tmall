@@ -10,7 +10,7 @@ import com.study.tmall.category.service.PropertyService;
 import com.study.tmall.exception.TmallException;
 import com.study.tmall.model.category.CategoryInfo;
 import com.study.tmall.model.product.ProductInfo;
-import com.study.tmall.product.client.ProductInfoFeignClient;
+import com.study.tmall.product.client.ProductFeignClient;
 import com.study.tmall.result.ResultCodeEnum;
 import com.study.tmall.util.FastDFSUtil;
 import com.study.tmall.util.ImageUtil;
@@ -37,7 +37,7 @@ public class CategoryInfoServiceImpl extends ServiceImpl<CategoryInfoMapper, Cat
     @Resource
     private PropertyService propertyService;
     @Resource
-    private ProductInfoFeignClient productInfoFeignClient;
+    private ProductFeignClient productFeignClient;
 
     /**
      * 分页条件显示分类
@@ -194,10 +194,10 @@ public class CategoryInfoServiceImpl extends ServiceImpl<CategoryInfoMapper, Cat
         });
 
         // 根据分类分别按销量查询出热销的前5个商品信息，包含第一张缩略图url（远程调用）
-        Map<String, List<ProductInfo>> hotMap = productInfoFeignClient.listProductInfoHot(idList);
+        Map<String, List<ProductInfo>> hotMap = productFeignClient.listProductInfoHot(idList);
 
         // 根据分类分别按销量排序查询出前64个商品的小标题和id（远程调用）
-        Map<String, List<ProductInfo>> productInfoSubTitleList = productInfoFeignClient.listProductInfoSubTitle(idList);
+        Map<String, List<ProductInfo>> productInfoSubTitleList = productFeignClient.listProductInfoSubTitle(idList);
 
         // 封装数据
         for (int x = 0; x < idList.size(); x++) {

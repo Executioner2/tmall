@@ -14,11 +14,10 @@ import com.study.tmall.order.mapper.OrderInfoMapper;
 import com.study.tmall.order.service.OrderInfoService;
 import com.study.tmall.order.service.OrderItemService;
 import com.study.tmall.result.ResultCodeEnum;
-import com.study.tmall.user.client.UserInfoFeignClient;
+import com.study.tmall.user.client.UserFeignClient;
 import com.study.tmall.vo.order.OrderQueryVo;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import javax.annotation.Resource;
 import java.math.BigDecimal;
@@ -37,7 +36,7 @@ import java.util.List;
 @Service
 public class OrderInfoServiceImpl extends ServiceImpl<OrderInfoMapper, OrderInfo> implements OrderInfoService {
     @Resource
-    private UserInfoFeignClient userInfoFeignClient;
+    private UserFeignClient userFeignClient;
     @Resource
     private OrderItemService orderItemService;
 
@@ -81,7 +80,7 @@ public class OrderInfoServiceImpl extends ServiceImpl<OrderInfoMapper, OrderInfo
             userIdList.add(item.getUserId());
         });
         // 通过远程调用获得用户信息集合
-        List<UserInfo> userInfoList = userInfoFeignClient.listUserInfoOfInner(userIdList);
+        List<UserInfo> userInfoList = userFeignClient.listUserInfoOfInner(userIdList);
 
         // 封装参数
         orderInfoIPage.getRecords().stream().forEach(item -> {

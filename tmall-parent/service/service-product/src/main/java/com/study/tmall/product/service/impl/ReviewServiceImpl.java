@@ -1,6 +1,5 @@
 package com.study.tmall.product.service.impl;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -8,7 +7,7 @@ import com.study.tmall.model.product.Review;
 import com.study.tmall.model.user.UserInfo;
 import com.study.tmall.product.mapper.ReviewMapper;
 import com.study.tmall.product.service.ReviewService;
-import com.study.tmall.user.client.UserInfoFeignClient;
+import com.study.tmall.user.client.UserFeignClient;
 import com.study.tmall.vo.front.ProductReviewReturnVo;
 import org.springframework.beans.BeanUtils;
 import org.springframework.cache.annotation.Cacheable;
@@ -29,7 +28,7 @@ import java.util.List;
 @Service
 public class ReviewServiceImpl extends ServiceImpl<ReviewMapper, Review> implements ReviewService {
     @Resource
-    private UserInfoFeignClient userInfoFeignClient;
+    private UserFeignClient userFeignClient;
 
     /**
      * 根据商品id分页查询商品评价
@@ -51,7 +50,7 @@ public class ReviewServiceImpl extends ServiceImpl<ReviewMapper, Review> impleme
         });
 
         // 远程调用查询用户信息
-        List<UserInfo> userInfoList = userInfoFeignClient.listUserInfoOfInner(idList);
+        List<UserInfo> userInfoList = userFeignClient.listUserInfoOfInner(idList);
         reviewPage.getRecords().forEach(item -> {
             // TODO 后续给用户提供匿名可选，不匿名则显示全名称
             // 封装匿名用户名称
@@ -66,12 +65,10 @@ public class ReviewServiceImpl extends ServiceImpl<ReviewMapper, Review> impleme
         for (int i = 0; i < userInfoList.size(); i++) {
             UserInfo userInfo = userInfoList.get(i);
             if (item.getUserId().equals(userInfo.getId())) {
-                // 取得用户名，nick_name > openid > name
+                // 取得用户名，nick_name > name
                 StringBuilder name = new StringBuilder();
                 if (!StringUtils.isEmpty(userInfo.getNickName())) { // 昵称
                     name.append(userInfo.getNickName());
-                } else if(!StringUtils.isEmpty(userInfo.getOpenid())) { // 微信号
-                    name.append(userInfo.getOpenid());
                 } else if(!StringUtils.isEmpty(userInfo.getName())) { // 用户名
                     name.append(userInfo.getName());
                 }

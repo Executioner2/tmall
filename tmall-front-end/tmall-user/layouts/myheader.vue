@@ -7,11 +7,11 @@
           <span class="glyphicon glyphicon-home redColor"></span>天猫首页
         </a>
         <span>喵，欢迎来天猫</span>
-        <a href="/login">请登录</a>
+        <a :href="userInfo == null ? '/login' : '#'">{{userInfo == null ? "请登录" : userInfo.name}}</a>
         <span class="pull-right">
-            <a :href="'/order/' + userId">我的订单</a>
-            <a href="#">
-                <span class="glyphicon glyphicon-shopping-cart redColor"></span>购物车<strong>0</strong>件
+            <a :href="userInfo == null ? '/login' : '/order/' + userInfo.id">我的订单</a>
+            <a :href="userInfo == null ? '#' : '/orderItem/' + userInfo.id">
+                <span class="glyphicon glyphicon-shopping-cart redColor"></span>购物车<strong>{{userInfo == null ? 0 : userInfo.productNumber == null ? 0 : userInfo.productNumber }}</strong>件
             </a>
         </span>
       </div>
@@ -20,13 +20,36 @@
 </template>
 
 <script>
+import header from "../api/header";
+
 export default {
   data() {
     return {
-      userId: 123,
+      userInfo: null, // 用户信息
     }
   },
-  name: "myheader"
+  name: "myheader",
+  mounted() {
+    console.log("token：" + localStorage.getItem("token"))
+    if (localStorage.getItem("token") != null){
+      this.getUserInfo()
+    }
+  },
+  created() {
+
+  },
+  methods: {
+    // 获取用户信息
+    getUserInfo() {
+      console.log("获取用户信息")
+      header.getUserInfo()
+        .then(response => {
+          this.userInfo = response.data
+        })
+    }
+
+
+  }
 }
 </script>
 

@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.study.tmall.model.user.UserInfo;
+import com.study.tmall.vo.front.UserInfoVo;
 import com.study.tmall.vo.user.UserLoginVo;
 import com.study.tmall.vo.user.UserQueryVo;
 import com.study.tmall.vo.user.UserRegisterVo;
@@ -47,4 +48,13 @@ public interface UserInfoService extends IService<UserInfo> {
 
     // 用户注册
     void userRegister(UserRegisterVo userRegisterVo);
+
+    // 根据openid获取用户信息
+    UserInfo getByOpenid(String openid);
+
+    // 用户邮箱绑定
+    String emailBinding(String token, UserRegisterVo userRegisterVo);
+
+    // 根据token获取用户信息
+    UserInfoVo getUserInfoByToken(String token);
 }
