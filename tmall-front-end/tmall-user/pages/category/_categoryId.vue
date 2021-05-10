@@ -79,6 +79,13 @@ export default {
       lastSortType: null, // 上一次排序方式
     }
   },
+  watch: {
+    current(val, oldVal) {
+      if (val != oldVal) {
+        window.scrollTo(0, 0) // 如果页数进行了跳转，就回到页面首部
+      }
+    }
+  },
   created() {
     this.categoryId = this.$route.params.categoryId
     this.searchObj.categoryId = this.categoryId

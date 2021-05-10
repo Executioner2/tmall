@@ -64,6 +64,11 @@ export default {
       this.keyword = this.$route.params.keyword
       // 搜索商品
       this.searchProductInfo(1)
+    },
+    current(val, oldVal) {
+      if (val != oldVal) {
+        window.scrollTo(0, 0) // 如果页数进行了跳转，就回到页面首部
+      }
     }
   },
   methods: {

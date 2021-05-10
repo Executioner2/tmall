@@ -3,11 +3,11 @@
     <!--这里放nav-->
     <nav class="top">
       <div class="navTopDiv">
-        <a href="/">
+        <router-link to="/">
           <span class="glyphicon glyphicon-home redColor"></span>天猫首页
-        </a>
+        </router-link>
         <span>喵，欢迎来天猫</span>
-        <router-link :to="userInfo == null ? '/login' : '#'">{{userInfo == null ? "请登录" : userInfo.name}}</router-link>
+        <router-link :to="userInfo == null ? '/login' : '/account_set'">{{userInfo == null ? "请登录" : userInfo.name}}</router-link>
         <a v-if="userInfo" @click="quit" href="javascript:void(0)">退出</a>
         <router-link v-if="!userInfo" to="/regist">免费注册</router-link>
         <span class="pull-right">

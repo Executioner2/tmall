@@ -110,7 +110,9 @@ public class UserInfoApi {
     // 根据token获取用户信息
     @ApiOperation("获取用户信息")
     @PostMapping("/auth/getUserInfo")
-    public Result getUserInfoByToken(HttpServletRequest request) {
+    public Result getUserInfoByToken(
+            @ApiParam(name = "request", value = "HttpServletRequest", required = true)
+            HttpServletRequest request) {
         String token = request.getHeader("token");
         UserInfoVo userInfoVo = userInfoService.getUserInfoByToken(token);
         return Result.ok(userInfoVo);
