@@ -37,7 +37,7 @@
             <div id="weChat_bind_div">
               <span class="account_security_set_title">微信号绑定</span>
               <span class="hint_red">微信号未绑定</span>
-              <a href="javascript:void(0)"><i class="el-icon-edit"></i></a>
+              <a @click="weChatQRCode" href="javascript:void(0)"><i class="el-icon-edit"></i></a>
             </div>
             <div class="security_question_div">
               <span class="account_security_set_title">密保问题</span>
@@ -47,35 +47,7 @@
           </div>
         </el-tab-pane>
         <el-tab-pane :disabled="true"/>
-        <el-tab-pane label="安全设置">
-<!--          <div id="account_security_set" class="right_panel">-->
-<!--            <div id="security_level">-->
-<!--              <span class="account_security_set_title">安全等级</span>-->
-<!--              <el-progress style="width: 70%; display: inline-block; margin-left: 20px" status="exception" :stroke-width="26" :percentage="25"></el-progress>-->
-<!--              <span id="security_point">25分</span>-->
-<!--            </div>-->
-<!--            <div id="pass_edit_div">-->
-<!--              <span class="account_security_set_title">密码修改</span>-->
-<!--              <span class="hint_red">建议亲每隔一段时间修改密码呢！</span>-->
-<!--              <a href="javascript:void(0)"><i class="el-icon-edit"></i></a>-->
-<!--            </div>-->
-<!--            <div id="email_bind_div">-->
-<!--              <span class="account_security_set_title">邮箱绑定</span>-->
-<!--              <span class="hint_green">已绑定邮箱：1205878539@qq.com</span>-->
-<!--              <a href="javascript:void(0)"><i class="el-icon-edit"></i></a>-->
-<!--            </div>-->
-<!--            <div id="phone_bind_div">-->
-<!--              <span class="account_security_set_title">手机号绑定</span>-->
-<!--              <span class="hint_red">手机号未绑定</span>-->
-<!--              <a href="javascript:void(0)"><i class="el-icon-edit"></i></a>-->
-<!--            </div>-->
-<!--            <div class="security_question_div">-->
-<!--              <span class="account_security_set_title">密保问题</span>-->
-<!--              <span class="hint_red">未设置密保</span>-->
-<!--              <a href="javascript:void(0)"><i class="el-icon-edit"></i></a>-->
-<!--            </div>-->
-<!--          </div>-->
-        </el-tab-pane>
+        <el-tab-pane label="安全设置">安全设置</el-tab-pane>
         <el-tab-pane :disabled="true"/>
         <el-tab-pane label="实名认证">实名认证</el-tab-pane>
         <el-tab-pane :disabled="true"/>
@@ -83,6 +55,18 @@
         <el-tab-pane :disabled="true"/>
       </el-tabs>
     </div>
+
+    <!-- 微信绑定模态框 -->
+    <el-dialog
+      title="微信绑定"
+      :visible.sync="weChatBindDialog"
+      width="30%"
+      :before-close="weChatBindDialogClose">
+      <div>
+        <!-- 获取微信登录二维码 -->
+        <div style="margin: 0px auto;" class="qrcode" ref="qrCodeUrl"></div>
+      </div>
+    </el-dialog>
 
     <!-- 邮箱绑定模态框 -->
     <el-dialog
@@ -122,12 +106,17 @@
 
 <script>
 
+import login from "../../api/login";
+import qrcode from "qrcodejs2";
+import storage from "../../assets/js/storage";
+
 export default {
   name: "index",
 
   data() {
     return {
       userInfo: {}, // 用户信息
+      weChatBindDialog: false, // 微信绑定模态框，默认不显示
       emailBindDialog: false, // 邮箱绑定模态框显示状态，默认不显示
       emailCode: null, // 邮箱验证码
       isSendCode: false, // 是否发送验证码，默认false
@@ -139,6 +128,7 @@ export default {
       emailCode2: null,
       sendBtnText2: "发送验证码",
       binding: true,
+      interval: null, // 轮询
     }
   },
   created() {
@@ -148,6 +138,67 @@ export default {
     this.userInfo.email = "1205878539@qq.com"
   },
   methods: {
+    // 微信绑定模态框关闭
+    weChatBindDialogClose() {
+      this.weChatBindDialog = false
+      clearInterval(this.interval)
+    },
+
+    // 获取二维码url
+    weChatQRCode() {
+      this.weChatBindDialog = true
+      login.weChatQRCode()
+        .then(response => {
+          this.qrcodeUrl = response.data.QRCodeUrl
+          this.uuid = response.data.uuid
+          new qrcode(this.$refs.qrCodeUrl, {
+            text: this.qrcodeUrl, // 需要转换为二维码的内容
+            width: 100,
+            height: 100,
+          })
+        })
+    },
+
+    // 创建二维码
+    creatQRCode() {
+      this.loginTitle = "扫码登录"
+      this.loginWay = false
+      // 创建二维码
+      this.$nextTick(() => {
+        this.weChatQRCode()
+      })
+
+      let time = 60;
+      // 轮询
+      this.interval = setInterval(() => {
+        if (--time == 0) {
+          // 每隔60秒刷新一次二维码
+          this.$nextTick(() => {
+            this.weChatQRCode()
+          })
+          time = 60
+        }
+        // 向后端发送请求查询用户是否扫码
+        login.polling(this.uuid)
+          .then(response => {
+            if (response.data != null) {
+              this.state = response.data.state
+              this.token = response.data.token
+              clearInterval(this.interval)
+              if (this.state == 520) { // 邮箱未绑定，跳转到注册页面
+                storage.setItem("tempToken", this.token, 30*60*1000) // 设置为临时token
+                // cookie.set("tempToken", this.token)
+                window.location.href = "/regist"
+              } else { // 否则跳转到首页
+                storage.setItem("token", this.token, 30*60*1000) // 设置token生命周期为半小时
+                // cookie.set("token", this.token)
+                window.location.href = "/"
+              }
+            }
+          })
+      }, 1000)
+    },
+
     // 邮箱绑定模态框
     emailBind() {
       // TODO 向后端发送邮箱绑定请求

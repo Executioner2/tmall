@@ -110,7 +110,8 @@ export default {
         .then(response => {
           this.token = response.data
           storage.setItem("token", this.token, 30*60*1000)
-          window.location.href = "/"
+          // window.location.href = "/"
+          this.$router.push("/")
         })
     },
 
