@@ -2,7 +2,7 @@
   <div>
     <div id="account_set_div">
       <el-tabs tab-position="left" value="1" style="height: 800px;">
-        <el-tab-pane disabled="true"/>
+        <el-tab-pane :disabled="true"/>
         <el-tab-pane name="1" label="基本信息">
           <div id="account_basic_info" class="right_panel">
             <div id="account_basic_info_head">
@@ -26,12 +26,17 @@
             </div>
             <div id="email_bind_div">
               <span class="account_security_set_title">邮箱绑定</span>
-              <span class="hint_green">已绑定邮箱：1205878539@qq.com</span>
-              <a href="javascript:void(0)"><i class="el-icon-edit"></i></a>
+              <span class="hint_green">已绑定邮箱：{{userInfo.email}}</span>
+              <a @click="emailBindDialog = true" href="javascript:void(0)"><i class="el-icon-edit"></i></a>
             </div>
             <div id="phone_bind_div">
               <span class="account_security_set_title">手机号绑定</span>
               <span class="hint_red">手机号未绑定</span>
+              <a href="javascript:void(0)"><i class="el-icon-edit"></i></a>
+            </div>
+            <div id="weChat_bind_div">
+              <span class="account_security_set_title">微信号绑定</span>
+              <span class="hint_red">微信号未绑定</span>
               <a href="javascript:void(0)"><i class="el-icon-edit"></i></a>
             </div>
             <div class="security_question_div">
@@ -41,7 +46,7 @@
             </div>
           </div>
         </el-tab-pane>
-        <el-tab-pane disabled="true"/>
+        <el-tab-pane :disabled="true"/>
         <el-tab-pane label="安全设置">
 <!--          <div id="account_security_set" class="right_panel">-->
 <!--            <div id="security_level">-->
@@ -71,13 +76,47 @@
 <!--            </div>-->
 <!--          </div>-->
         </el-tab-pane>
-        <el-tab-pane disabled="true"/>
+        <el-tab-pane :disabled="true"/>
         <el-tab-pane label="实名认证">实名认证</el-tab-pane>
-        <el-tab-pane disabled="true"/>
+        <el-tab-pane :disabled="true"/>
         <el-tab-pane label="其它设置">其它设置</el-tab-pane>
-        <el-tab-pane disabled="true"/>
+        <el-tab-pane :disabled="true"/>
       </el-tabs>
     </div>
+
+    <!-- 邮箱绑定模态框 -->
+    <el-dialog
+      title="邮箱绑定"
+      :visible.sync="emailBindDialog"
+      width="350px"
+      style="padding: 0px"
+      :before-close="handledClose">
+      <div v-if="!emailBindNew" style="width: 100%; margin: 0px auto; text-align: center">
+        <div style="height: 20px">
+          <div id="title" style="margin-bottom: 20px;font-size: 12px" v-if="isSendCode">已向邮箱{{userInfo.email}}发送验证码，请注意查收</div>
+        </div>
+        <el-input @input="emailCodeCheck(1)" style="width: 50%; margin-right: 30px" v-model.number="emailCode" placeholder="请输入验证码"></el-input>
+        <el-button style="width: 110px" id="send_code_btn" type="primary" :disabled="isSendCode" @click="sendEmailCodeToOld" v-text="sendBtnText"></el-button>
+      </div>
+      <div id="email_bind_new" v-if="emailBindNew">
+        <div>
+          <div style="height: 20px">
+            <div id="title2" style="margin-bottom: 20px;font-size: 12px" v-if="isSendCode2">已向邮箱{{email}}发送验证码，请注意查收</div>
+          </div>
+          <span style="font-size: 16px; font-weight: bold">电子邮箱：</span>
+          <el-input style="width: 69%;" v-model="email" placeholder="请输入绑定邮箱"></el-input>
+          <div style="margin-top: 20px">
+            <el-input @input="emailCodeCheck(2)" style="width: 50%; margin-right: 30px" v-model.number="emailCode2" placeholder="请输入验证码"></el-input>
+            <el-button style="width: 110px" type="primary" :disabled="isSendCode2" @click="sendEmailCodeToNew" v-text="sendBtnText2"></el-button>
+          </div>
+        </div>
+      </div>
+      <span slot="footer" class="dialog-footer">
+        <el-button v-if="!emailBindNew" type="primary" :disabled="next" @click="emailBindNew = true">下一步</el-button>
+        <el-button v-if="emailBindNew" type="primary" :disabled="binding" @click="emailBind">绑定</el-button>
+      </span>
+    </el-dialog>
+
   </div>
 </template>
 
@@ -89,12 +128,91 @@ export default {
   data() {
     return {
       userInfo: {}, // 用户信息
+      emailBindDialog: false, // 邮箱绑定模态框显示状态，默认不显示
+      emailCode: null, // 邮箱验证码
+      isSendCode: false, // 是否发送验证码，默认false
+      sendBtnText: "发送验证码", // 发送验证码按钮文本
+      emailBindNew: false, // 是不是新邮箱绑定 TODO 注意判断用户是否绑定邮箱
+      next: true, // 下一步
+      isSendCode2: false,
+      email: null, // 邮箱地址
+      emailCode2: null,
+      sendBtnText2: "发送验证码",
+      binding: true,
     }
   },
   created() {
     this.userInfo.nick = "。"
     this.userInfo.name = "zyx511688"
     this.userInfo.photoUrl = "_nuxt/assets/img/site/photo.png"
+    this.userInfo.email = "1205878539@qq.com"
+  },
+  methods: {
+    // 邮箱绑定模态框
+    emailBind() {
+      // TODO 向后端发送邮箱绑定请求
+      this.$message.success("邮箱绑定成功")
+      this.handledClose()
+    },
+
+    // 发送验证码到旧邮箱
+    sendEmailCodeToOld() {
+      this.isSendCode = true
+      let time = 60
+      this.sendBtnText = "已发送 " + time
+      let timer = setInterval(() => {
+        --time
+        this.sendBtnText = "已发送 " + time
+        if (time == 0) {
+          clearInterval(timer)
+          this.sendBtnText = "重新发送"
+          this.isSendCode = false
+        }
+      }, 1000)
+    },
+
+    // 邮箱验证码校验
+    emailCodeCheck(val) {
+      if (val === 1) {
+        if (this.emailCode >= 100000) {
+          // TODO 向后端发送验证码校验请求
+          this.next = false
+        }
+      } else if (val === 2) {
+        if (this.emailCode2 >= 100000) {
+          // TODO 向后端发送验证码校验请求
+          this.binding = false
+        }
+      }
+
+    },
+
+    // 向新邮箱发送验证码
+    sendEmailCodeToNew() {
+      this.isSendCode2 = true
+      let time = 60
+      this.sendBtnText2 = "已发送 " + time
+      let timer = setInterval(() => {
+        --time
+        this.sendBtnText2 = "已发送 " + time
+        if (time == 0) {
+          clearInterval(timer)
+          this.sendBtnText2 = "重新发送"
+          this.isSendCode2 = false
+        }
+      }, 1000)
+    },
+
+    // 模态框关闭后
+    handledClose() {
+      this.emailBindDialog = false
+      this.isSendCode = false
+      this.emailBindNew = false
+      this.emailCode = null
+      this.binding = false
+      this.next = false
+    }
+
   }
 }
 </script>
