@@ -2,7 +2,6 @@ package com.study.tmall.user.api;
 
 import com.study.tmall.result.Result;
 import com.study.tmall.user.service.WeChatService;
-import com.study.tmall.util.JwtHelper;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -78,7 +77,7 @@ public class WeChatApi {
 
     // 微信绑定轮询
     @ApiOperation("微信绑定轮询")
-    @PostMapping("/polling/binding/{state}")
+    @PostMapping("/auth/polling/binding/{state}")
     public Result pollingBinding(
             @ApiParam(name = "state", value = "扫码查询凭证", required = true)
             @PathVariable String state) {
@@ -89,7 +88,7 @@ public class WeChatApi {
 
     // 确认进行微信绑定
     @ApiOperation("确认进行微信绑定")
-    @PostMapping("/confirm/weChat/binding/{state}")
+    @PostMapping("/auth/confirm/weChat/binding/{state}")
     public Result confirmWeChatBinding(
             @ApiParam(name = "state", value = "微信绑定凭证", required = true)
             @PathVariable String state,

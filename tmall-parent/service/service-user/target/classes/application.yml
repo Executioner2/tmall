@@ -50,5 +50,5 @@ wx:
   open:
     app_id: wxff5db53def71d004
     app_secret: 59b0368ba1dd14266d389fab707fc331
-    redirect_url: http://n5v4yj.natappfree.cc/api/user/weChat/callback # 二维码扫码成功后的回调地址
-    binding_url: http://n5v4yj.natappfree.cc/api/user/weChat/binding/callback # 微信号绑定回调地址
+    redirect_url: http://m6eie5.natappfree.cc/api/user/weChat/callback # 二维码扫码成功后的回调地址
+    binding_url: http://m6eie5.natappfree.cc/api/user/weChat/binding/callback # 微信号绑定回调地址

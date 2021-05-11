@@ -440,6 +440,43 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
         return userInfoVo;
     }
 
+    /**
+     * 根据token获取用户详情信息
+     * @param token
+     * @return
+     */
+    @Override
+    public UserInfo getUserDetailsInfoByToken(String token) {
+        // 获取用户id和用户密码
+        String userId = JwtHelper.getUserId(token);
+        String password = JwtHelper.getPassword(token);
+
+        // 根据id和密码进行查询
+        QueryWrapper<UserInfo> wrapper = new QueryWrapper<>();
+        wrapper.eq("id", userId);
+        wrapper.eq("password", password);
+        UserInfo userInfo = baseMapper.selectOne(wrapper);
+        if (userInfo == null) {
+            throw new TmallException(ResultCodeEnum.FETCH_USERINFO_ERROR);
+        }
+        // 密码 id 置空
+        userInfo.setPassword(null);
+        userInfo.setId(null);
+
+        return userInfo;
+    }
+
+    /**
+     * 解除微信绑定
+     * @param token
+     */
+    @Override
+    public void unWechatBinding(String token) {
+        String userId = JwtHelper.getUserId(token);
+        // 根据id设置openid
+        baseMapper.setOpenidById(userId, null);
+    }
+
     // 拿取用户名称
     private String getName(UserInfo userInfo) {
         if (!StringUtils.isEmpty(userInfo.getNickName())) {

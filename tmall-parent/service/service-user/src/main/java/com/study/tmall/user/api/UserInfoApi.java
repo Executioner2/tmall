@@ -1,5 +1,6 @@
 package com.study.tmall.user.api;
 
+import com.study.tmall.model.user.UserInfo;
 import com.study.tmall.result.Result;
 import com.study.tmall.user.service.UserInfoService;
 import com.study.tmall.vo.front.UserInfoVo;
@@ -118,5 +119,25 @@ public class UserInfoApi {
         return Result.ok(userInfoVo);
     }
 
+    // 根据token获取用户详情信息
+    @ApiOperation("根据token获取用户详情信息")
+    @PostMapping("/auth/getUserDetailsInfo")
+    public Result getUserDetailsInfoByToken(
+            @ApiParam(name = "request", value = "HttpServletRequest", required = true)
+            HttpServletRequest request) {
+        String token = request.getHeader("token");
+        UserInfo userInfo = userInfoService.getUserDetailsInfoByToken(token);
+        return Result.ok(userInfo);
+    }
 
+    // 解除微信绑定
+    @ApiOperation("解除微信绑定")
+    @PostMapping("/auth/unWechatBinding")
+    public Result unWechatBinding(
+            @ApiParam(name = "request", value = "HttpServletRequest", required = true)
+            HttpServletRequest request) {
+        String token = request.getHeader("token");
+        userInfoService.unWechatBinding(token);
+        return Result.ok();
+    }
 }

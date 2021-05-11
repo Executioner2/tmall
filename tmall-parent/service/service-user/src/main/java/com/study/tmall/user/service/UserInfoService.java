@@ -57,4 +57,10 @@ public interface UserInfoService extends IService<UserInfo> {
 
     // 根据token获取用户信息
     UserInfoVo getUserInfoByToken(String token);
+
+    // 根据token获取用户详情信息
+    UserInfo getUserDetailsInfoByToken(String token);
+
+    // 解除微信绑定
+    void unWechatBinding(String token);
 }
