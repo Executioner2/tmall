@@ -22,14 +22,19 @@ public class ConstantWxPropertiesUtil implements InitializingBean {
     @Value("${wx.open.redirect_url}")
     private String redirectUrl;
 
+    @Value("${wx.open.binding_url}")
+    private String bindingUrl;
+
     public static String WX_OPEN_APP_ID;
     public static String WX_OPEN_APP_SECRET;
     public static String WX_OPEN_REDIRECT_URL;
+    public static String WX_OPEN_BINDING_URL;
 
     @Override
     public void afterPropertiesSet() throws Exception {
         WX_OPEN_APP_ID = appId;
         WX_OPEN_APP_SECRET = appSecret;
         WX_OPEN_REDIRECT_URL = redirectUrl;
+        WX_OPEN_BINDING_URL = bindingUrl;
     }
 }

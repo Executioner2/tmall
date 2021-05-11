@@ -37,7 +37,7 @@
             <div id="weChat_bind_div">
               <span class="account_security_set_title">微信号绑定</span>
               <span class="hint_red">微信号未绑定</span>
-              <a @click="weChatQRCode" href="javascript:void(0)"><i class="el-icon-edit"></i></a>
+              <a @click="creatQRCode" href="javascript:void(0)"><i class="el-icon-edit"></i></a>
             </div>
             <div class="security_question_div">
               <span class="account_security_set_title">密保问题</span>
@@ -60,11 +60,16 @@
     <el-dialog
       title="微信绑定"
       :visible.sync="weChatBindDialog"
-      width="30%"
+      width="320px"
       :before-close="weChatBindDialogClose">
       <div>
         <!-- 获取微信登录二维码 -->
-        <div style="margin: 0px auto;" class="qrcode" ref="qrCodeUrl"></div>
+        <div style="margin: 0px auto; width: 220px; height: 220px" class="qrcode" ref="qrCodeUrl"></div>
+      </div>
+      <div style="margin-top: 10px; text-align: center">
+        <el-alert style="padding: 10px" v-if="state" title="微信扫码成功，请确认是否绑定微信号" :closable="false" type="success" show-icon>
+        </el-alert>
+        <el-button style="margin-top: 10px" type="primary" :disabled="!state" @click="confirmBindWeChat">确认绑定</el-button>
       </div>
     </el-dialog>
 
@@ -106,9 +111,8 @@
 
 <script>
 
-import login from "../../api/login";
 import qrcode from "qrcodejs2";
-import storage from "../../assets/js/storage";
+import accountSet from "../../api/accountSet";
 
 export default {
   name: "index",
@@ -129,6 +133,8 @@ export default {
       sendBtnText2: "发送验证码",
       binding: true,
       interval: null, // 轮询
+      uuid: null, // redis中获取token的依据
+      state: false, // 用户微信扫码状态
     }
   },
   created() {
@@ -138,6 +144,11 @@ export default {
     this.userInfo.email = "1205878539@qq.com"
   },
   methods: {
+    // TODO 确认绑定微信
+    confirmBindWeChat() {
+
+    },
+
     // 微信绑定模态框关闭
     weChatBindDialogClose() {
       this.weChatBindDialog = false
@@ -146,8 +157,7 @@ export default {
 
     // 获取二维码url
     weChatQRCode() {
-      this.weChatBindDialog = true
-      login.weChatQRCode()
+      accountSet.weChatQRCode(1) // type为0表示登录二维码 为1表示微信绑定二维码
         .then(response => {
           this.qrcodeUrl = response.data.QRCodeUrl
           this.uuid = response.data.uuid
@@ -161,39 +171,30 @@ export default {
 
     // 创建二维码
     creatQRCode() {
-      this.loginTitle = "扫码登录"
-      this.loginWay = false
+      this.weChatBindDialog = true
       // 创建二维码
       this.$nextTick(() => {
         this.weChatQRCode()
       })
 
-      let time = 60;
+      let time = 120;
       // 轮询
       this.interval = setInterval(() => {
+        console.log("amd yes")
         if (--time == 0) {
-          // 每隔60秒刷新一次二维码
+          // 每隔120秒刷新一次二维码
           this.$nextTick(() => {
             this.weChatQRCode()
           })
-          time = 60
+          time = 120
         }
         // 向后端发送请求查询用户是否扫码
-        login.polling(this.uuid)
+        accountSet.pollingBinding(this.uuid)
           .then(response => {
-            if (response.data != null) {
-              this.state = response.data.state
-              this.token = response.data.token
+            this.state = response.data
+            console.log(this.state)
+            if (this.state) { // 如果扫码成功定时器关闭
               clearInterval(this.interval)
-              if (this.state == 520) { // 邮箱未绑定，跳转到注册页面
-                storage.setItem("tempToken", this.token, 30*60*1000) // 设置为临时token
-                // cookie.set("tempToken", this.token)
-                window.location.href = "/regist"
-              } else { // 否则跳转到首页
-                storage.setItem("token", this.token, 30*60*1000) // 设置token生命周期为半小时
-                // cookie.set("token", this.token)
-                window.location.href = "/"
-              }
             }
           })
       }, 1000)

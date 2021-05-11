@@ -51,9 +51,9 @@
           </div>
           <div id="weChat_login_div" v-if="!loginWay">
             <div>
-              <div style="margin: 0px auto;" class="qrcode" ref="qrCodeUrl"></div>
+              <div style="margin: 50px auto; height: 200px; width: 200px" class="qrcode" ref="qrCodeUrl"></div>
             </div>
-            <div style="margin-top: 20px; padding-left: 20px; padding-right: 20px; width: 100%">
+            <div style="margin-top: 20px; padding-left: 30px; padding-right: 30px; width: 100%">
               <span style="float:left;" class="freeRegister"><a href="/regist">免费注册</a></span>
               <span style="float: right; " class="wechat_login"><a href="javascript:void(0)" @click="accountLogin">账号登录</a></span>
             </div>
@@ -204,14 +204,12 @@ export default {
 
     // 获取二维码url
     weChatQRCode() {
-      login.weChatQRCode()
+      login.weChatQRCode(0) // type为0表示登录二维码 为1表示微信绑定二维码
         .then(response => {
           this.qrcodeUrl = response.data.QRCodeUrl
           this.uuid = response.data.uuid
           new qrcode(this.$refs.qrCodeUrl, {
             text: this.qrcodeUrl, // 需要转换为二维码的内容
-            width: 100,
-            height: 100,
           })
         })
     },
@@ -245,11 +243,13 @@ export default {
               if (this.state == 520) { // 邮箱未绑定，跳转到注册页面
                 storage.setItem("tempToken", this.token, 30*60*1000) // 设置为临时token
                 // cookie.set("tempToken", this.token)
-                window.location.href = "/regist"
+                // window.location.href = "/regist"
+                this.$router.push("/regist")
               } else { // 否则跳转到首页
                 storage.setItem("token", this.token, 30*60*1000) // 设置token生命周期为半小时
                 // cookie.set("token", this.token)
-                window.location.href = "/"
+                // window.location.href = "/"
+                this.$router.push("/")
               }
             }
           })

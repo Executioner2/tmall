@@ -2,6 +2,8 @@ package com.study.tmall.user.service.impl;
 
 import cn.hutool.core.util.IdUtil;
 import com.alibaba.fastjson.JSONObject;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.study.tmall.enums.WeChatRedirectTypeEnum;
 import com.study.tmall.model.user.UserInfo;
 import com.study.tmall.result.ResultCodeEnum;
 import com.study.tmall.user.service.UserInfoService;
@@ -37,15 +39,22 @@ public class WeChatServiceImpl implements WeChatService {
 
     /**
      * 获取微信登录二维码
+     * @param type
      * @return
      */
     @Override
-    public Map<String, String> weChatQRCode() {
+    public Map<String, String> weChatQRCode(Integer type) {
         try {
             Map<String, String> map = new HashMap<>();
-
+            String encode = "";
             // 把回调地址进行utf-8编码
-            String encode = URLEncoder.encode(ConstantWxPropertiesUtil.WX_OPEN_REDIRECT_URL, "utf-8");
+            if (type != null) {
+                if (type == WeChatRedirectTypeEnum.LOGIN.getType()) { // 微信登录回调地址
+                    encode = URLEncoder.encode(ConstantWxPropertiesUtil.WX_OPEN_REDIRECT_URL, "utf-8");
+                } else if (type == WeChatRedirectTypeEnum.BINDING.getType()) { // 微信绑定回调地址
+                    encode = URLEncoder.encode(ConstantWxPropertiesUtil.WX_OPEN_BINDING_URL, "utf-8");
+                }
+            }
             // 生成一个uuid，便于向redis进行轮询，判别用户是否扫码
             String uuid = IdUtil.randomUUID().replaceAll("-", "");
             // 对uuid进行base64编码并进行加密
@@ -179,5 +188,108 @@ public class WeChatServiceImpl implements WeChatService {
         state = Base64.decode(state);
         Map<String, Object> map = (Map<String, Object>) redisTemplate.opsForValue().get(state);
         return map;
+    }
+
+    /**
+     * 微信绑定回调函数
+     * @param code
+     * @param state
+     * @return
+     */
+    @Override
+    public Boolean bindingCallback(String code, String state) {
+        try {
+            Map<String, String> map = new HashMap<>();
+            // 对state（base64编码并加密后的uuid）进行解密解码
+            state = Base64.decode(state);
+
+            // 因为每次的code不一样，所以拼接通用请求地址接收内存空间
+            StringBuffer baseAccessTokenUrl = new StringBuffer()
+                    .append("https://api.weixin.qq.com/sns/oauth2/access_token")
+                    .append("?appid=%s")
+                    .append("&secret=%s")
+                    .append("&code=%s")
+                    .append("&grant_type=authorization_code"); // 固定参数
+            // 格式化请求地址
+            String accessTokenUrl = String.format(baseAccessTokenUrl.toString(),
+                    ConstantWxPropertiesUtil.WX_OPEN_APP_ID,
+                    ConstantWxPropertiesUtil.WX_OPEN_APP_SECRET,
+                    code);
+            // 向获取accessToken的url地址发送请求
+            String jsonString = HttpClientUtils.get(accessTokenUrl);
+            JSONObject jsonObject = JSONObject.parseObject(jsonString);
+            String access_token = jsonObject.getString("access_token");
+            String openid = jsonObject.getString("openid");
+
+            // 装入map中，然后再写入redis中
+            map.put("access_token", access_token);
+            map.put("openid", openid);
+            redisTemplate.opsForValue().set(state, map, 120, TimeUnit.MINUTES);
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    /**
+     * 微信绑定轮询
+     * @param state
+     * @return
+     */
+    @Override
+    public Boolean pollingBinding(String state) {
+        // 对state（base64编码并加密后的uuid）进行解密解码
+        state = Base64.decode(state);
+        Object o = redisTemplate.opsForValue().get(state);
+        return o == null ? false : true;
+    }
+
+    /**
+     * 确认进行微信绑定
+     * @param token
+     * @param state
+     * @return
+     */
+    @Override
+    public Boolean confirmWeChatBinding(String token, String state) {
+        try {
+            String userId = JwtHelper.getUserId(token);
+            // 对state（base64编码并加密后的uuid）进行解密解码
+            state = Base64.decode(state);
+            // 根据state查询出openid和account_token
+            Map<String, String> map = (Map<String, String>) redisTemplate.opsForValue().get(state);
+            String access_token = map.get("access_token");
+            String openid = map.get("openid");
+
+            // 绑定到数据库
+            UserInfo userInfo = userInfoService.getById(userId);
+            userInfo.setOpenid(openid); // 设置openid
+            // 如果用户没有设置昵称，那么就把微信昵称当作用户昵称
+            if (StringUtils.isEmpty(userInfo.getNickName())) {
+                // 请求微信获取用户信息
+                StringBuffer baseUserInfoUrl = new StringBuffer()
+                        .append("https://api.weixin.qq.com/sns/userinfo")
+                        .append("?access_token=%s")
+                        .append("&openid=%s")
+                        .append("&lang=zh_CN");
+                String getUserInfoUrl = String.format(baseUserInfoUrl.toString(), access_token, openid);
+
+                String resultInfo = HttpClientUtils.get(getUserInfoUrl);
+                JSONObject resultUserInfoJson = JSONObject.parseObject(resultInfo);
+                // 解析用户信息
+                String nickname = resultUserInfoJson.getString("nickname"); // 用户昵称
+                //String headimgurl = resultUserInfoJson.getString("headimgurl"); //用户头像
+
+                userInfo.setNickName(nickname);
+            }
+            // 更新数据库
+            userInfoService.updateById(userInfo);
+
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 }

@@ -23,9 +23,9 @@ export default {
   },
 
   // 获取登录二维码
-  weChatQRCode() {
+  weChatQRCode(type) {
     return request({
-      url: `${api_weChat_url}/get/QRCode`,
+      url: `${api_weChat_url}/get/QRCode/${type}`,
       method: "get"
     });
   },
