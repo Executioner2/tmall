@@ -45,6 +45,10 @@ public class UserInfo extends BaseEntity {
     @TableField("email")
     private String email;
 
+    @ApiModelProperty(value = "用户头像url")
+    @TableField("avatar")
+    private String avatar;
+
     @ApiModelProperty(value = "证件类型：身份证，永久居留证等")
     @TableField("certificates_type")
     private String certificatesType;

@@ -29,7 +29,7 @@ public class WeChatApi {
     @ApiOperation("获取登录二维码")
     @GetMapping("/get/QRCode/{type}")
     public Result weChatQRCode(
-            @ApiParam(name = "type", value = "回调函数类型", required = true)
+            @ApiParam(name = "type", value = "回调接口", required = true)
             @PathVariable Integer type) {
         Map<String, String> map = weChatService.weChatQRCode(type);
         return map == null ? null : Result.ok(map);

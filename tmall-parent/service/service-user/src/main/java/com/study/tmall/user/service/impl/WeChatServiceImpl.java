@@ -39,7 +39,7 @@ public class WeChatServiceImpl implements WeChatService {
 
     /**
      * 获取微信登录二维码
-     * @param type
+     * @param type 回调类型，映射回调地址
      * @return
      */
     @Override
