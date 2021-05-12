@@ -14,9 +14,7 @@ import com.study.tmall.order.client.OrderFeignClient;
 import com.study.tmall.result.ResultCodeEnum;
 import com.study.tmall.user.mapper.UserInfoMapper;
 import com.study.tmall.user.service.UserInfoService;
-import com.study.tmall.util.Base64;
-import com.study.tmall.util.JwtHelper;
-import com.study.tmall.util.MD5;
+import com.study.tmall.util.*;
 import com.study.tmall.vo.front.EmailCodeVo;
 import com.study.tmall.vo.front.UserInfoVo;
 import com.study.tmall.vo.user.UserLoginVo;
@@ -29,10 +27,13 @@ import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.regex.Pattern;
 
 /**
@@ -475,6 +476,56 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
         String userId = JwtHelper.getUserId(token);
         // 根据id设置openid
         baseMapper.setOpenidById(userId, null);
+    }
+
+    /**
+     * 修改用户昵称
+     * @param token
+     * @param nickName
+     */
+    @Override
+    public void updateNickName(String token, String nickName) {
+        String userId = JwtHelper.getUserId(token);
+        UserInfo userInfo = baseMapper.selectById(userId);
+        userInfo.setNickName(nickName);
+        baseMapper.updateById(userInfo);
+    }
+
+    /**
+     * 用户头像上传
+     * @param token
+     * @param file
+     */
+    @Override
+    public void uploadAvatar(String token, MultipartFile file) {
+        try {
+            String userId = JwtHelper.getUserId(token);
+            // 查询数据库
+            UserInfo userInfo = baseMapper.selectById(userId);
+
+            // 先拿到原来的头像，等新头像写入到数据库后再删除旧的头像
+            String oldAvatar = userInfo.getAvatar();
+
+            // 写入到fastDFS中
+            String filename = file.getOriginalFilename();
+            String[] upload = FastDFSUtil.upload(file.getBytes(), filename);
+            String avatarUrl = ImageUtil.compoundUrl(upload); // 头像图片访问地址
+
+            // 写入数据库中
+            userInfo.setAvatar(avatarUrl);
+            baseMapper.updateById(userInfo);
+
+            // 如果头像不等于空那么还要删除原本的头像
+            if (!StringUtils.isEmpty(oldAvatar)) {
+                // 取得图片 服务器协议+ip  group  fastDFS中的路径
+                String[] strings = ImageUtil.splitUrl(oldAvatar);
+                // 传入group和fastDFS中的路径 删除fastDFS中的图片
+                FastDFSUtil.delete(strings[1], strings[2]);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
     }
 
     // 拿取用户名称

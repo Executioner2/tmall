@@ -8,6 +8,7 @@ import com.study.tmall.vo.front.UserInfoVo;
 import com.study.tmall.vo.user.UserLoginVo;
 import com.study.tmall.vo.user.UserQueryVo;
 import com.study.tmall.vo.user.UserRegisterVo;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -63,4 +64,10 @@ public interface UserInfoService extends IService<UserInfo> {
 
     // 解除微信绑定
     void unWechatBinding(String token);
+
+    // 修改用户昵称
+    void updateNickName(String token, String nickName);
+
+    // 用户头像上传
+    void uploadAvatar(String token, MultipartFile file);
 }

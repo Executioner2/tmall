@@ -164,7 +164,7 @@ public class CategoryInfoServiceImpl extends ServiceImpl<CategoryInfoMapper, Cat
         try {
             Map<String, String> map = new HashMap<>();
             String filename = file.getOriginalFilename();
-            String[] upload = FastDFSUtil.upload(file.getBytes(), ImageUtil.getFileExtName(file));
+            String[] upload = FastDFSUtil.upload(file.getBytes(), filename);
             map.put("filename", filename); // 文件名称，包括拓展名
             map.put("imageUrl", ImageUtil.compoundUrl(upload)); // 图片url地址
             return map;

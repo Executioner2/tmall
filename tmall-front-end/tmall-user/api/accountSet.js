@@ -42,4 +42,12 @@ export default {
     })
   },
 
+  // 修改用户昵称
+  updateNickName(nickName) {
+    return request({
+      url: `${api_userInfo_url}/auth/update/nickName/${nickName}`,
+      method: 'post'
+    })
+  }
+
 }

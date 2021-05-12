@@ -35,7 +35,7 @@ public class AuthGlobalFilter implements GlobalFilter, Ordered {
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
         ServerHttpRequest request = exchange.getRequest();
         String path = request.getURI().getPath();
-//        System.out.println("==="+path);
+        System.out.println("==="+path);
 
         //内部服务接口，不允许外部访问
         if(antPathMatcher.match("/**/inner/**", path)) {

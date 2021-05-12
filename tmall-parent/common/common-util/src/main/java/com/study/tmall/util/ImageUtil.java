@@ -63,4 +63,17 @@ public class ImageUtil {
         }
         return fileExtName;
     }
+
+    /**
+     * 获得文件后缀名
+     * @param filename
+     * @return
+     */
+    public static String getFileExtName(String filename){
+        String fileExtName = "jpg"; // 默认为jpg，防止出错
+        if (filename.contains(".")) {
+            fileExtName = filename.substring(filename.lastIndexOf(".") + 1); // 取得文件拓展名
+        }
+        return fileExtName;
+    }
 }

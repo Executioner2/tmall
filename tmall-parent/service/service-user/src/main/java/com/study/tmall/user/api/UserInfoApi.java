@@ -10,6 +10,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -138,6 +139,35 @@ public class UserInfoApi {
             HttpServletRequest request) {
         String token = request.getHeader("token");
         userInfoService.unWechatBinding(token);
+        return Result.ok();
+    }
+
+    // 修改用户昵称
+    @ApiOperation("修改用户昵称")
+    @PostMapping("/auth/update/nickName/{nickName}")
+    public Result updateNickName(
+            @ApiParam(name = "nickName", value = "用户昵称", required = true)
+            @PathVariable String nickName,
+
+            @ApiParam(name = "request", value = "request", required = true)
+            HttpServletRequest request) {
+        String token = request.getHeader("token");
+        userInfoService.updateNickName(token, nickName);
+        return Result.ok();
+    }
+
+    // 用户头像上传
+    @ApiOperation("用户头像上传")
+    @PostMapping("/auth/upload/avatar")
+    public Result uploadAvatar(
+            @ApiParam(name = "file", value = "头像文件", required = true)
+            MultipartFile file,
+
+            @ApiParam(name = "request", value = "request", required = true)
+            HttpServletRequest request) {
+
+        String token = request.getHeader("token");
+        userInfoService.uploadAvatar(token, file);
         return Result.ok();
     }
 }

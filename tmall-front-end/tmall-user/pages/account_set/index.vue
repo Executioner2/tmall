@@ -6,9 +6,15 @@
         <el-tab-pane name="1" label="基本信息">
           <div id="account_basic_info" class="right_panel">
             <div id="account_basic_info_head">
-              <el-avatar shape="square" :size="80" :src="userInfo.photoUrl"></el-avatar>
+              <div style="position: relative; display: inline-block; height: 80px; width: 80px;">
+                <el-avatar style="z-index: -1; position: absolute" shape="square" :size="80" :src="userInfo.avatar"></el-avatar>
+                <a @click="dialogShow(3)" href="javascript:void(0)" id="edit_avatar_a">修改头像</a>
+              </div>
               <div id="account_basic_info_head_nick">
-                <h4 style="height: 20px">{{userInfo.nickName}}</h4>
+                <div>
+                  <input ref="nickName" @blur="editNickName(0)" :disabled="inputTextClass == 'input_text_show'" :class="inputTextClass" type="text" v-model="userInfo.nickName">
+                  <span><a @click="editNickName(1)" href="javascript:void(0)"><i class="el-icon-edit"></i></a></span>
+                </div>
                 <h4></h4><span style="">会员名：{{userInfo.name}}</span>
               </div>
             </div>
@@ -92,6 +98,7 @@
           <el-button v-if="!emailBindNew" type="primary" :disabled="next" @click="emailBindNew = true">下一步</el-button>
           <el-button v-if="emailBindNew" type="primary" :disabled="binding" @click="emailBind">绑定</el-button>
       </span>
+
       <!-- 微信绑定 -->
       <div id="weChat_binding_div" v-if="target == 1">
         <div>
@@ -105,8 +112,26 @@
         </div>
       </div>
 
-    </el-dialog>
+      <!-- 手机号绑定 -->
+      <div id="phone_binding_div" v-if="target == 2">
 
+      </div>
+
+      <!-- 上传头像 -->
+      <div id="upload_avatar_div" v-if="target == 3" style="text-align: center">
+        <el-upload
+          class="avatar-uploader"
+          name="file"
+          :action="uploadUrl"
+          :show-file-list="false"
+          :headers="importHeaders"
+          :on-success="handleAvatarSuccess"
+          :before-upload="beforeAvatarUpload">
+          <img v-if="imageUrl" :src="imageUrl" class="avatar">
+          <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+        </el-upload>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -114,7 +139,9 @@
 
 import qrcode from "qrcodejs2";
 import accountSet from "../../api/accountSet";
+import storage from "../../assets/js/storage";
 
+const uploadUrl = "http://localhost/api/user/userInfo/auth/upload/avatar";
 export default {
   name: "index",
 
@@ -136,16 +163,74 @@ export default {
       state: false, // 用户微信扫码状态
       point: 0, // 安全分数
       securityLevelStatus: 'exception', // 安全等级状态
-      target: 0, // 当前模态框类型（邮箱：0，微信：1，手机号：2）
+      target: 0, // 当前模态框类型（邮箱：0，微信：1，手机号：2, 头像上传：3）
       dialogVisible: false,
       dialogWidth: "0px", // 模态框宽度
       dialogTitle: "", // 模态框title
+      inputTextClass: "input_text_show", // input text的类，用于编辑或显示用户名这两不同样式的切换
+      imageUrl: null, // 头像url地址
+      uploadUrl: uploadUrl, // 文件上传地址
+      importHeaders: {token: null}, // token，上传图片附带
     }
+  },
+  mounted() {
+    this.importHeaders.token = storage.getItem("token")
   },
   created() {
     this.getUserDetailsInfo()
   },
   methods: {
+    // 上传头像
+    handleAvatarSuccess(res, file) {
+      this.$message.success("头像修改成功")
+      this.imageUrl = URL.createObjectURL(file.raw);
+    },
+    beforeAvatarUpload(file) {
+      let list = ["image/png", "image/jpg", "image/jpeg"]
+      const isJPG = list.indexOf(file.type) != -1;
+      const isLt2M = file.size / 1024 / 1024 < 2;
+
+      if (!isJPG) {
+        this.$message.error('上传头像图片只能是 png jpg jpeg格式!');
+        return false
+      }
+      if (!isLt2M) {
+        this.$message.error('上传头像图片大小不能超过 2MB!');
+        return false
+      }
+      return isJPG && isLt2M;
+    },
+
+    // 更改用户昵称
+    editNickName(val) {
+      if (val == 1) {
+        this.inputTextClass = "input_text_edit"
+        this.$nextTick(function () {
+          this.$refs.nickName.focus()
+        })
+      } else if (val == 0) {
+        let nickName = this.userInfo.nickName
+        if (nickName == null || nickName.trim() == "") {
+          this.$message.info("昵称不能为空")
+          return
+        }
+        // 向后端发送修改用户名的请求
+        accountSet.updateNickName(nickName)
+          .then(response => {
+            this.$message.success("修改昵称成功，请刷新页面")
+            this.inputTextClass = "input_text_show"
+            // 更新localStorage中的用户信息
+            let user = storage.getItem("userInfo")
+            user.name = nickName
+            storage.setItem("userInfo", user, 30*60*1000)
+          })
+          .catch(error => {
+            this.$message.warning("修改昵称失败")
+          })
+
+      }
+    },
+
     // 解除微信绑定
     unWeChatBinding() {
       accountSet.unWechatBinding()
@@ -171,6 +256,9 @@ export default {
 
       } else if (this.target == 2) { // 手机号
 
+      } else if (this.target == 3) { // 上传头像
+        this.dialogWidth = "250px"
+        this.dialogTitle = "头像上传"
       }
     },
 
@@ -188,6 +276,8 @@ export default {
 
       } else if (this.target == 2) { // 手机号
 
+      } else if (this.target == 3) { // 头像
+        this.$router.go(0)
       }
       this.dialogVisible = false
     },
@@ -337,6 +427,38 @@ export default {
 }
 </script>
 
+<style>
+/*头像上传样式，element-ui提供的*/
+.avatar-uploader .el-upload {
+  margin: 0px auto;
+  border: 1px dashed #d9d9d9;
+  border-radius: 6px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+.avatar-uploader .el-upload:hover {
+  border-color: #409EFF;
+}
+.avatar-uploader .el-upload input{
+  display: none;
+  /*visibility: hidden;*/
+}
+.avatar-uploader-icon {
+  font-size: 28px;
+  color: #8c939d;
+  width: 150px;
+  height: 150px;
+  line-height: 150px;
+  text-align: center;
+}
+.avatar {
+  width: 150px;
+  height: 150px;
+  display: block;
+}
+</style>
+
 <style scoped>
 #account_set_div {
   width: 1024px;
@@ -350,18 +472,42 @@ export default {
   margin-top: 20px;
   color: #999999;
 }
+#account_set_div #account_basic_info_head #edit_avatar_a{
+  color: white;
+  text-decoration: none;
+  width: 100%;
+  background-color: rgba(0,0,0,0.2);
+  z-index: 1;
+  position: absolute;
+  bottom: 0px;
+  padding-left: 15px
+}
+#account_set_div #account_basic_info_head #edit_avatar_a:hover{
+  color: #A0CFFF;
+}
 #account_set_div #account_basic_info_head_nick {
   height: 80px;
   width: 80%;
-  line-height: 40px;
+  line-height: 35px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, .12), 0 0 6px rgba(0, 0, 0, .04);
   display: inline-block;
   vertical-align: top;
   margin-left: 10px;
   padding-left: 5px;
 }
-#account_set_div #account_basic_info_head_nick h4:nth-child(1) {
-  margin-bottom: 10px;
+#account_set_div #account_basic_info_head_nick .input_text_edit {
+  width: 160px;
+  font-size: 14px;
+  font-weight: bold;
+  height: 20px;
+}
+#account_set_div #account_basic_info_head_nick .input_text_show {
+  width: 160px;
+  background-color: unset;
+  border: none;
+  font-size: 14px;
+  font-weight: bold;
+  height: 20px;
 }
 #account_set_div #account_basic_info_head_nick span {
   display: inline-block;
@@ -394,6 +540,4 @@ export default {
   color: #F56C6C;
   margin-left: 20px;
 }
-
-
 </style>
