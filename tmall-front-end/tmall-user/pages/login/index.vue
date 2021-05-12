@@ -203,7 +203,7 @@ export default {
     },
 
     // 获取二维码url
-    weChatQRCode() {
+    weChatQRCode(val) {
       login.weChatQRCode(0) // type为0表示登录二维码 为1表示微信绑定二维码
         .then(response => {
           this.qrcodeUrl = response.data.QRCodeUrl
@@ -215,12 +215,12 @@ export default {
     },
 
     // 创建二维码
-    creatQRCode() {
+    creatQRCode(val) {
       this.loginTitle = "扫码登录"
       this.loginWay = false
       // 创建二维码
       this.$nextTick(() => {
-        this.weChatQRCode()
+        this.weChatQRCode(val)
       })
 
       let time = 60;

@@ -2004,105 +2004,6 @@ nav.top .redColor{
   margin-right: 50px;
   padding: 0px 20px;
 }
-#loginPage .mainBodyDiv .errorHint{
-    margin-top: 20px;
-    background-color: #F2DEDE;
-    border: 1px #EBCCD1 solid;
-    border-radius: 4px;
-    color: #A94442;
-    padding: 5px;
-    visibility: hidden;
-}
-#loginPage .mainBodyDiv .title{
-    font-size: 16px;
-    font-weight: bold;
-    margin-top: 10px;
-    margin-bottom: 20px;
-}
-#loginPage .mainBodyDiv table td:first-child{
-    background-color: #CBCBCB;
-    width: 40px;
-    height: 40px;
-    text-align: center;
-}
-#loginPage .mainBodyDiv table td:nth-child(2){
-    width: 250px;
-}
-#loginPage .mainBodyDiv table tr:nth-child(2) td{
-    background-color: white;
-    border: none;
-    height: 25px;
-}
-#loginPage .mainBodyDiv table input{
-    width: 100%;
-    height: 40px;
-    border: none;
-    font-size: 14px;
-}
-#loginPage .mainBodyDiv table td{
-    border: 1px #CBCBCB solid;
-}
-#loginPage .mainBodyDiv table span{
-    color: #606060;
-    font-size: 22px;
-}
-#loginPage .mainBodyDiv .hint{
-    margin: 20px 0;
-    color: #C40000;
-}
-#loginPage .mainBodyDiv a{
-    color: #999999;
-    text-decoration: none;
-}
-#loginPage .mainBodyDiv a:hover{
-    color: #C40000;
-}
-#loginPage .otherOperating span:nth-child(2){
-    float: right;
-}
-#loginPage .otherOperating .wechat_login{
-    margin-right: 10px;
-}
-#loginPage .mainBodyDiv #email_code {
-  margin-top: 20px;
-  width: 100%;
-}
-#loginPage .mainBodyDiv #email_code input{
-  border-radius: 3px;
-  border: 1px #CBCBCB solid;
-  height: 35px;
-  width: 160px;
-  font-size: 14px;
-}
-#loginPage .mainBodyDiv #email_code button{
-  border-radius: 3px;
-  border: 1px #CBCBCB solid;
-  height: 35px;
-  font-size: 14px;
-  background-color: #CBCBCB;
-  font-weight: bold;
-  color: #333333;
-  float: right;
-  padding: 0px 10px 0;
-  width: 105px;
-}
-#loginPage .mainBodyDiv #login_btn{
-    margin-top: 20px;
-    width: 100%;
-    height: 34px;
-    background-color: #C40000;
-    border: none;
-    border-radius: 3px;
-    font-size: 14px;
-    font-weight: bold;
-    color: white;
-}
-#loginPage .mainBodyDiv #login_btn:hover{
-    color: #333333;
-}
-#loginPage .mainBodyDiv #send_code_btn:hover{
-    color: #333333;
-}
 
 /*=======================分割线==========================*/
 /*===================上面是登录页面的CSS===================*/
@@ -2194,83 +2095,111 @@ nav.top .redColor{
 /*=======================分割线==========================*/
 
 /*下面是登录模态框的css*/
+
 .loginInputBox{
-    width: 330px;
-    height: 400px;
-    background-color: white;
-    margin: 0 auto;
-    padding: 0px 20px;
-    opacity: 1;
+  width: 330px;
+  height: 400px;
+  background-color: white;
+  padding: 0px 20px;
 }
 .loginInputBox .errorHint{
-    margin-top: 20px;
-    background-color: #F2DEDE;
-    border: 1px #EBCCD1 solid;
-    border-radius: 4px;
-    color: #A94442;
-    padding: 5px;
-    visibility: hidden;
+  margin-top: 20px;
+  background-color: #F2DEDE;
+  border: 1px #EBCCD1 solid;
+  border-radius: 4px;
+  color: #A94442;
+  padding: 5px;
+  visibility: hidden;
 }
-
 .loginInputBox .title{
-    font-size: 16px;
-    font-weight: bold;
-    margin-top: 10px;
-    margin-bottom: 20px;
+  font-size: 16px;
+  font-weight: bold;
+  margin-top: 10px;
+  margin-bottom: 20px;
 }
 .loginInputBox table td:first-child{
-    background-color: #CBCBCB;
-    width: 40px;
-    height: 40px;
-    text-align: center;
+  background-color: #CBCBCB;
+  width: 40px;
+  height: 40px;
+  text-align: center;
 }
 .loginInputBox table td:nth-child(2){
-    width: 250px;
+  width: 250px;
 }
 .loginInputBox table tr:nth-child(2) td{
-    background-color: white;
-    border: none;
-    height: 25px;
+  background-color: white;
+  border: none;
+  height: 25px;
 }
 .loginInputBox table input{
-    width: 100%;
-    height: 40px;
-    border: none;
+  width: 100%;
+  height: 40px;
+  border: none;
+  font-size: 14px;
 }
 .loginInputBox table td{
-    border: 1px #CBCBCB solid;
+  border: 1px #CBCBCB solid;
 }
 .loginInputBox table span{
-    color: #606060;
-    font-size: 22px;
+  color: #606060;
+  font-size: 22px;
 }
 .loginInputBox .hint{
-    margin: 20px 0;
-    color: #C40000;
+  margin: 20px 0;
+  color: #C40000;
 }
 .loginInputBox a{
-    color: #999999;
-    text-decoration: none;
+  color: #999999;
+  text-decoration: none;
 }
 .loginInputBox a:hover{
-    color: #C40000;
+  color: #C40000;
 }
 .loginInputBox .otherOperating span:nth-child(2){
-    float: right;
+  float: right;
+}
+.loginInputBox .otherOperating .wechat_login{
+  margin-right: 10px;
+}
+.loginInputBox #email_code {
+  margin-top: 20px;
+  width: 100%;
+}
+.loginInputBox #email_code input{
+  border-radius: 3px;
+  border: 1px #CBCBCB solid;
+  height: 35px;
+  width: 160px;
+  font-size: 14px;
+}
+.loginInputBox #email_code button{
+  border-radius: 3px;
+  border: 1px #CBCBCB solid;
+  height: 35px;
+  font-size: 14px;
+  background-color: #CBCBCB;
+  font-weight: bold;
+  color: #333333;
+  float: right;
+  padding: 0px 10px 0;
+  width: 105px;
 }
 .loginInputBox #login_btn{
-    margin-top: 20px;
-    width: 100%;
-    height: 34px;
-    background-color: #C40000;
-    border: none;
-    border-radius: 3px;
-    font-size: 14px;
-    font-weight: bold;
-    color: white;
+  margin-top: 20px;
+  width: 100%;
+  height: 34px;
+  background-color: #C40000;
+  border: none;
+  border-radius: 3px;
+  font-size: 14px;
+  font-weight: bold;
+  color: white;
 }
 .loginInputBox #login_btn:hover{
-    color: #333333;
+  color: #333333;
+}
+.loginInputBox #send_code_btn:hover{
+  color: #333333;
 }
 
 /*=======================分割线==========================*/
