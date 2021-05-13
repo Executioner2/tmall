@@ -343,8 +343,8 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
         String emailCode = Base64.decode(userRegisterVo.getEmailCode());
 
         // 从redis中查询验证码是否正确
-        String code = stringRedisTemplate.opsForValue()
-                .get(EmailCodeTypeEnum.REGISTER_CODE.getType() + email);
+        String key = EmailCodeTypeEnum.REGISTER_CODE.getType() + email;
+        String code = stringRedisTemplate.opsForValue().get(key);
         if (StringUtils.isEmpty(emailCode) || !emailCode.equals(code)) {
             throw new TmallException(ResultCodeEnum.CODE_ERROR);
         }
@@ -359,6 +359,9 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
         userInfo.setPassword(password);
         // 写入到数据库中去
         baseMapper.insert(userInfo);
+
+        // 注册成功后删除验证码
+        codeDelSend.send(MessageBuilder.withPayload(key).build());
     }
 
     /**

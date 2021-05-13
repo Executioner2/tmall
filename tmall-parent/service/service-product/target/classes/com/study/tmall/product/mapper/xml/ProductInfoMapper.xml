@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.study.tmall.product.mapper.ProductInfoMapper">
+    <resultMap id="productInfoBean" type="com.study.tmall.model.product.ProductInfo">
+        <id column="id" property="id"/>
+        <result column="category_id" property="categoryId"/>
+        <result column="name" property="name"/>
+        <result column="sub_title" property="subTitle"/>
+        <result column="orignal_price" property="orignalPrice"/>
+        <result column="promote_price" property="promotePrice"/>
+        <result column="stock" property="stock"/>
+        <result column="sales_volume" property="salesVolume"/>
+        <result column="monthly_sales" property="monthlySales"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="is_deleted" property="isDeleted"/>
+    </resultMap>
+
+    <select id="listProductInfoSubTitle" resultMap="productInfoBean">
+        select
+            id,
+            sub_title,
+            category_id
+        from
+            product_info
+        where
+            category_id in
+            <foreach collection="list" index="index" open="(" separator="," close=")" item="cid">
+                #{cid}
+            </foreach>
+    </select>
+
+    <select id="selectProductInfoPageOrderBy" resultMap="productInfoBean">
+        SELECT
+            id,
+            category_id,
+            name,
+            sub_title,
+            orignal_price,
+            promote_price,
+            stock,
+            sales_volume,
+            monthly_sales,
+            create_time,
+            update_time,
+            is_deleted
+        FROM
+            product_info p
+        LEFT JOIN (
+            SELECT
+                product_id,
+                count(*) AS reviews
+            FROM
+                review
+            GROUP BY
+                product_id
+        ) r ON r.product_id = p.id
+        ${ew.customSqlSegment}
+    </select>
+</mapper>

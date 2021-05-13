@@ -1,0 +1,11 @@
+com\study\tmall\category\controller\PropertyController.class
+com\study\tmall\category\service\CategoryInfoService.class
+com\study\tmall\category\api\CategoryInfoApi.class
+com\study\tmall\category\config\CategoryConfig.class
+com\study\tmall\category\mapper\CategoryInfoMapper.class
+com\study\tmall\category\service\impl\PropertyServiceImpl.class
+com\study\tmall\category\service\impl\CategoryInfoServiceImpl.class
+com\study\tmall\category\controller\CategoryInfoController.class
+com\study\tmall\category\service\PropertyService.class
+com\study\tmall\category\ServiceCategoryApplication.class
+com\study\tmall\category\mapper\PropertyMapper.class
