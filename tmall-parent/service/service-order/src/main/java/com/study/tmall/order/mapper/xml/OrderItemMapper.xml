@@ -11,6 +11,6 @@
             order_item
         WHERE
             user_id=#{userId}
-        AND (product_id IS NULL)
+        AND (order_id IS NULL)
     </select>
 </mapper>

@@ -89,7 +89,7 @@
             <router-link :to="'/product/' + product.id" class="productItemDescLink">
               <span class="productItemDesc">[热销] {{product.name}}</span>
             </router-link>
-            <span>{{product.promotePrice}}</span>
+            <span>¥ {{product.promotePrice}}</span>
           </div>
         </div>
         <div class="endDiv" id="endDiv">

@@ -79,7 +79,7 @@ public class OrderItemServiceImpl extends ServiceImpl<OrderItemMapper, OrderItem
         QueryWrapper<OrderItem> wrapper = new QueryWrapper<>();
         wrapper.eq("user_id", userId);
         wrapper.eq("product_id", orderItem.getProductId());
-        wrapper.eq("order_id", null);
+        wrapper.isNull("order_id");
         OrderItem item = baseMapper.selectOne(wrapper);
 
         // 远程调用service-product模块更新商品数量

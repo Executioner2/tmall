@@ -57,6 +57,6 @@ public interface ProductInfoService extends IService<ProductInfo> {
     // 商品搜索，分页显示
     IPage<ProductInfo> searchProductInfo(Page<ProductInfo> page, String keyword);
 
-    // 更新商品库存
-    Boolean updateProductNumber(OrderItem orderItem);
+        // 更新商品库存
+        Boolean updateProductNumber(OrderItem orderItem);
 }
