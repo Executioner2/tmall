@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Copyright@1205878539@qq.com
@@ -48,5 +50,17 @@ public class OrderItemApi {
         String token = request.getHeader("token");
         Boolean flag = orderItemService.joinOrderItem(token, orderItem);
         return Result.ok(flag);
+    }
+
+    // 获取订单项（包括订单项对应的商品信息）
+    @ApiOperation("获取订单项（包括订单项对应的商品信息）")
+    @PostMapping("/auth/getOrderItem")
+    public Result getOrderItemByToken(
+            @ApiParam(name = "request", value = "request", required = true)
+            HttpServletRequest request) {
+
+        String token = request.getHeader("token");
+        List<OrderItem> orderItems = orderItemService.getOrderItemByToken(token);
+        return Result.ok(orderItems);
     }
 }

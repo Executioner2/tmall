@@ -33,12 +33,9 @@ export default {
   },
   name: "myheader",
   mounted() {
-
+    this.getUserInfo()
   },
   created() {
-    this.$nextTick(() => {
-      this.getUserInfo()
-    })
   },
   methods: {
     // 获取用户信息
@@ -51,6 +48,8 @@ export default {
             // 存入localStorage中
             storage.setItem("userInfo", this.userInfo)
             storage.setItem("toDataLoad", true, -1)
+            // 更新token的ttl
+            storage.updateTtl("token")
           })
       }
     },

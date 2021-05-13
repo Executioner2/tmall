@@ -38,6 +38,14 @@ public class OrderItemServiceImpl extends ServiceImpl<OrderItemMapper, OrderItem
         wrapper.eq("order_id", orderId);
         List<OrderItem> orderItems = baseMapper.selectList(wrapper);
 
+        // 封装订单项
+        this.packOrderItems(orderItems);
+
+        return orderItems;
+    }
+
+    // 封装订单项
+    private void packOrderItems(List<OrderItem> orderItems) {
         // 根据订单项中的商品id查询出产品，用远程调用访问product模块
         List<String> productInfoIdList = new ArrayList<>();
         orderItems.stream().forEach(item -> {
@@ -51,8 +59,6 @@ public class OrderItemServiceImpl extends ServiceImpl<OrderItemMapper, OrderItem
         for (int i = 0; i < orderItems.size(); i++) {
             orderItems.get(i).getParams().put("productInfo", productInfoList.get(i));
         }
-
-        return orderItems;
     }
 
     /**
@@ -100,5 +106,26 @@ public class OrderItemServiceImpl extends ServiceImpl<OrderItemMapper, OrderItem
         }
 
         return false;
+    }
+
+    /**
+     * 获取订单项（包括订单项对应的商品信息）
+     * @param token
+     * @return
+     */
+    @Override
+    public List<OrderItem> getOrderItemByToken(String token) {
+        // 根据token拿到userId
+        String userId = JwtHelper.getUserId(token);
+        // 根据userId查询符合条件的订单项（order_id为空的，即未下单的）
+        QueryWrapper<OrderItem> wrapper = new QueryWrapper<>();
+        wrapper.eq("user_id", userId);
+        wrapper.isNull("order_id");
+        List<OrderItem> orderItems = baseMapper.selectList(wrapper);
+
+        // 封装订单项
+        this.packOrderItems(orderItems);
+
+        return orderItems;
     }
 }
