@@ -114,4 +114,13 @@ public class EmailServiceImpl implements EmailService {
         // 写入到redis中去
         stringRedisTemplate.opsForValue().set(codeType + to, code, 10, TimeUnit.MINUTES); // 验证码有效时间 十分钟
     }
+
+    /**
+     * 删除redis中的邮箱验证码
+     * @param key
+     */
+    @Override
+    public void delCode(String key) {
+       stringRedisTemplate.delete(key);
+    }
 }

@@ -1,3 +1,0 @@
-com\study\tmall\gateway\ServerGateWayApplication.class
-com\study\tmall\gateway\config\CorsConfig.class
-com\study\tmall\gateway\filter\AuthGlobalFilter.class

@@ -5,9 +5,14 @@ export default {
     let data = {}
     // 当前时间戳
     let timestamp = new Date().getTime()
-    if (ttl >= 0) { // 如果ttl大于等于0则设置ttl，否则为永久存储
+    if (ttl >= 0) { // 如果ttl大于等于0则设置ttl
       data.ttl = ttl + timestamp
+    } else if (ttl == null) { // 如果为null，则设置默认ttl 30分钟
+      data.ttl = timestamp + 30*60*1000
+    } else if (ttl == -1) { // 如果ttl为-1代表永久存储
+      data.ttl = null
     }
+
     data.value = value
     // 转换为json格式的字符串
     data = JSON.stringify(data)
@@ -52,9 +57,17 @@ export default {
     }
     // 把json字符串转换为json对象
     data = JSON.parse(data)
-    data.ttl = timestamp + ttl
+    if (ttl >= 0) { // 如果ttl大于等于0则设置ttl
+      data.ttl = ttl + timestamp
+    } else if (ttl == null) { // 如果为null，则设置默认ttl 30分钟
+      data.ttl = timestamp + 30*60*1000
+    } else if (ttl == -1) { // 如果ttl为-1代表永久存储
+      data.ttl = null
+    }
+
     data = JSON.stringify(data)
     localStorage.setItem(key, data)
   }
+
 
 }

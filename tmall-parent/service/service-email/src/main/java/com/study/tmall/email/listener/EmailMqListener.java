@@ -1,10 +1,10 @@
 package com.study.tmall.email.listener;
 
+import com.study.tmall.email.handler.MySink;
 import com.study.tmall.email.service.EmailService;
 import com.study.tmall.vo.front.EmailCodeVo;
 import org.springframework.cloud.stream.annotation.EnableBinding;
 import org.springframework.cloud.stream.annotation.StreamListener;
-import org.springframework.cloud.stream.messaging.Sink;
 import org.springframework.messaging.Message;
 import org.springframework.stereotype.Component;
 
@@ -18,17 +18,28 @@ import javax.annotation.Resource;
  * Description: 邮箱服务mq监听
  */
 @Component
-@EnableBinding(Sink.class)
+@EnableBinding(MySink.class)
 public class EmailMqListener {
     @Resource
     private EmailService emailService;
 
     /**
      * 发送邮件
+     * @param message
      */
-    @StreamListener(Sink.INPUT)
+    @StreamListener(MySink.CODE_RECEIVE)
     public void sendEmail(Message<EmailCodeVo> message) {
         EmailCodeVo emailCodeVo = message.getPayload();
         emailService.sendCode(emailCodeVo);
+    }
+
+    /**
+     * 删除redis中的邮箱验证码
+     * @param message
+     */
+    @StreamListener(MySink.CODE_DEL_RECEIVE)
+    public void delCode(Message<String> message) {
+        String key = message.getPayload();
+        emailService.delCode(key);
     }
 }

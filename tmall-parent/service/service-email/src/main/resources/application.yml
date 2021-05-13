@@ -31,13 +31,21 @@ spring:
                 username: root
                 password: 123321
       bindings: # 服务的整合处理
-        input: # 这个名字是一个通道的名称
+        codeReceive: # 这个名字是一个通道的名称
           destination: exchange.direct.email # 表示要使用的Exchange名称定义
           content-type: application/json # 设置消息类型，本次为对象json，如果是文本则设置“text/plain”
           binder: defaultRabbit # 设置要绑定的消息服务的具体设置
           # 解决消费者重复读取队列中的消息，就是分组，同一个分组的消费者只会拿一次，不会都同时拿相同的（轮询策略）
           # 分组还能实现消息持久化
-          group: email_group #<---关键
+          group: code_send #<---关键
+        codeDelReceive: # 邮箱验证码删除消息接收者
+          destination: exchange.direct.email # 表示要使用的Exchange名称定义
+          content-type: application/json # 设置消息类型，本次为对象json，如果是文本则设置“text/plain”
+          binder: defaultRabbit # 设置要绑定的消息服务的具体设置
+          # 解决消费者重复读取队列中的消息，就是分组，同一个分组的消费者只会拿一次，不会都同时拿相同的（轮询策略）
+          # 分组还能实现消息持久化
+          group: code_del #<---关键
+
   mail:
     host: smtp.qq.com
     port: 587

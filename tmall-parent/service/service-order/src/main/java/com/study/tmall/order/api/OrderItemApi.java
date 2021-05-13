@@ -37,7 +37,7 @@ public class OrderItemApi {
 
     // 加入到购物车
     @ApiOperation("加入到购物车")
-    @PostMapping("/auth/join/orderItem}")
+    @PostMapping("/auth/join/orderItem")
     public Result joinOrderItem(
             @ApiParam(name = "orderItem", value = "订单项", required = true)
             @RequestBody OrderItem orderItem,
@@ -45,6 +45,8 @@ public class OrderItemApi {
             @ApiParam(name = "request", value = "request", required = true)
             HttpServletRequest request) {
 
-        return Result.ok();
+        String token = request.getHeader("token");
+        Boolean flag = orderItemService.joinOrderItem(token, orderItem);
+        return Result.ok(flag);
     }
 }

@@ -222,7 +222,7 @@ export default {
             // 更新localStorage中的用户信息
             let user = storage.getItem("userInfo")
             user.name = nickName
-            storage.setItem("userInfo", user, 30*60*1000)
+            storage.setItem("userInfo", user)
           })
           .catch(error => {
             this.$message.warning("修改昵称失败")

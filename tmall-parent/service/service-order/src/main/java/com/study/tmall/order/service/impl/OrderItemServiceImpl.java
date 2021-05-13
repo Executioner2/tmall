@@ -7,6 +7,7 @@ import com.study.tmall.model.product.ProductInfo;
 import com.study.tmall.order.mapper.OrderItemMapper;
 import com.study.tmall.order.service.OrderItemService;
 import com.study.tmall.product.client.ProductFeignClient;
+import com.study.tmall.util.JwtHelper;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -63,5 +64,41 @@ public class OrderItemServiceImpl extends ServiceImpl<OrderItemMapper, OrderItem
     public Integer getProductNumberByUserId(String userId) {
 
         return baseMapper.getProductNumberByUserId(userId);
+    }
+
+    /**
+     * 加入到购物车
+     * @param token
+     * @param orderItem
+     */
+    @Override
+    public Boolean joinOrderItem(String token, OrderItem orderItem) {
+        String userId = JwtHelper.getUserId(token);
+
+        // 根据userId查询是否有未下单的购物车，且商品id相同，如果相同更新购物车中商品数量即可，不用新增加数据
+        QueryWrapper<OrderItem> wrapper = new QueryWrapper<>();
+        wrapper.eq("user_id", userId);
+        wrapper.eq("product_id", orderItem.getProductId());
+        wrapper.eq("order_id", null);
+        OrderItem item = baseMapper.selectOne(wrapper);
+
+        // 远程调用service-product模块更新商品数量
+        Boolean flag = productFeignClient.updateProductNumber(orderItem);
+        if (flag) {
+            int insert;
+            // 如果购物车中没有该商品则添加数据
+            if (item == null) {
+                // 添加到数据库
+                orderItem.setUserId(userId);
+                insert = baseMapper.insert(orderItem);
+            } else { // 否则只更新商品数量
+                item.setNumber(item.getNumber() + orderItem.getNumber());
+                insert = baseMapper.updateById(item);
+            }
+
+            return insert == 1 ? true : false;
+        }
+
+        return false;
     }
 }

@@ -12,6 +12,7 @@ import com.study.tmall.exception.TmallException;
 import com.study.tmall.model.user.UserInfo;
 import com.study.tmall.order.client.OrderFeignClient;
 import com.study.tmall.result.ResultCodeEnum;
+import com.study.tmall.user.handler.MySource;
 import com.study.tmall.user.mapper.UserInfoMapper;
 import com.study.tmall.user.service.UserInfoService;
 import com.study.tmall.util.*;
@@ -21,7 +22,6 @@ import com.study.tmall.vo.user.UserLoginVo;
 import com.study.tmall.vo.user.UserQueryVo;
 import com.study.tmall.vo.user.UserRegisterVo;
 import org.springframework.cloud.stream.annotation.EnableBinding;
-import org.springframework.cloud.stream.messaging.Source;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.support.MessageBuilder;
@@ -33,7 +33,6 @@ import javax.annotation.Resource;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.regex.Pattern;
 
 /**
@@ -44,10 +43,12 @@ import java.util.regex.Pattern;
  * Description:
  */
 @Service
-@EnableBinding(Source.class)
+@EnableBinding(MySource.class)
 public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> implements UserInfoService {
     @Resource
-    private MessageChannel output;
+    private MessageChannel codeSend; // 验证码发送
+    @Resource
+    private MessageChannel codeDelSend; // 验证码删除
     @Resource
     private StringRedisTemplate stringRedisTemplate;
     @Resource
@@ -198,7 +199,7 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
         emailCodeVo.setEmail(email);
         emailCodeVo.setType(EmailCodeTypeEnum.LOGIN_CODE.getNumber());
         // 发送消息到rabbitMQ队列，内容为邮箱地址
-        output.send(MessageBuilder.withPayload(emailCodeVo).build());
+        codeSend.send(MessageBuilder.withPayload(emailCodeVo).build());
     }
 
     /**
@@ -251,7 +252,7 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
         emailCodeVo.setEmail(decode);
         emailCodeVo.setType(EmailCodeTypeEnum.REGISTER_CODE.getNumber());
         // 发送到rabbitMQ中
-        output.send(MessageBuilder.withPayload(emailCodeVo).build());
+        codeSend.send(MessageBuilder.withPayload(emailCodeVo).build());
     }
 
     /**
@@ -269,10 +270,10 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
 
         // 通过account格式识别出用户以什么方式登录的，已进行相应的数据库查询
         UserInfo userInfo = this.getUserInfoOfLogin(account, password);
+        String key = EmailCodeTypeEnum.LOGIN_CODE.getType() + userInfo.getEmail();
 
         // 从redis中查询出验证码
-        String code = stringRedisTemplate.opsForValue()
-                .get(EmailCodeTypeEnum.LOGIN_CODE.getType() + userInfo.getEmail());
+        String code = stringRedisTemplate.opsForValue().get(key);
         if (StringUtils.isEmpty(code) || !code.equals(emailCode)) {
             throw new TmallException(ResultCodeEnum.CODE_ERROR);
         }
@@ -284,6 +285,9 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
 
         // 创建token
         String token = JwtHelper.createToken(userInfo.getId(), userInfo.getPassword());
+
+        // 登录成功后应该删除redis中的邮箱验证码（发送到rabbit中）
+        codeDelSend.send(MessageBuilder.withPayload(key).build());
         return token;
     }
 

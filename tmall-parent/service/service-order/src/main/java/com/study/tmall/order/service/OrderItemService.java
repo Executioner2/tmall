@@ -18,4 +18,7 @@ public interface OrderItemService extends IService<OrderItem> {
 
     // 根据用户id获取购物车商品数量（内部调用）
     Integer getProductNumberByUserId(String userId);
+
+    // 加入到购物车
+    Boolean joinOrderItem(String token, OrderItem orderItem);
 }

@@ -31,7 +31,11 @@ spring:
                 username: root
                 password: 123321
       bindings: # 服务的整合处理
-        output: # 这个名字是一个通道的名称
+        codeSend: # 这个名字是一个通道的名称
+          destination: exchange.direct.email # 表示要使用的Exchange名称定义
+          content-type: application/json # 设置消息类型，本次为json，文本则设置“text/plain”
+          binder: defaultRabbit # 设置要绑定的消息服务的具体设置
+        codeDelSend: # 邮箱验证码删除消息发送
           destination: exchange.direct.email # 表示要使用的Exchange名称定义
           content-type: application/json # 设置消息类型，本次为json，文本则设置“text/plain”
           binder: defaultRabbit # 设置要绑定的消息服务的具体设置

@@ -3,6 +3,7 @@ package com.study.tmall.product.service;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.study.tmall.model.order.OrderItem;
 import com.study.tmall.model.product.ProductInfo;
 import com.study.tmall.vo.product.ProductInfoFrontQueryVo;
 import com.study.tmall.vo.product.ProductQueryVo;
@@ -55,4 +56,7 @@ public interface ProductInfoService extends IService<ProductInfo> {
 
     // 商品搜索，分页显示
     IPage<ProductInfo> searchProductInfo(Page<ProductInfo> page, String keyword);
+
+    // 更新商品库存
+    Boolean updateProductNumber(OrderItem orderItem);
 }

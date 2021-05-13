@@ -60,8 +60,8 @@ export default {
         // this.userInfo = JSON.parse(cookie.get("userInfo"))
         if (this.userInfo) {
           // 如果有就更新生存时间并返回
-          storage.updateTtl("token", 30*60*1000)
-          storage.updateTtl("userInfo", 30*60*1000)
+          storage.updateTtl("token")
+          storage.updateTtl("userInfo")
           return
         } else {
           // 如果没有就从后端获取
@@ -69,7 +69,7 @@ export default {
             .then(response => {
               this.userInfo = response.data
               // // 存入localStorage中
-              storage.setItem("userInfo", this.userInfo, 30*60*1000)
+              storage.setItem("userInfo", this.userInfo)
               // 存入cookie
               // cookie.set("userInfo", this.userInfo)
             })

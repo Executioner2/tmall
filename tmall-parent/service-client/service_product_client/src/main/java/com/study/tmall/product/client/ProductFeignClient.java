@@ -1,5 +1,6 @@
 package com.study.tmall.product.client;
 
+import com.study.tmall.model.order.OrderItem;
 import com.study.tmall.model.product.ProductInfo;
 import io.swagger.annotations.ApiModelProperty;
 import io.swagger.annotations.ApiParam;
@@ -32,4 +33,8 @@ public interface ProductFeignClient {
     // 显示每个分类前五个热销商品（内部调用）
     @PostMapping("/api/product/productInfo/inner/list/hot")
     Map<String, List<ProductInfo>> listProductInfoHot(@RequestBody List<String> idList);
+
+    // 更新商品库存
+    @PostMapping("/api/product/productInfo/inner/updateProductNumber")
+    Boolean updateProductNumber(@RequestBody OrderItem orderItem);
 }

@@ -15,4 +15,7 @@ public interface EmailService {
 
     // 发送验证码到目标邮箱
     void sendCode(EmailCodeVo emailCodeVo);
+
+    // 删除redis中的邮箱验证码
+    void delCode(String key);
 }

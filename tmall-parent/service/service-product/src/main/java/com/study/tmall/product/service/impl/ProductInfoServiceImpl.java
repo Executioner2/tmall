@@ -10,6 +10,7 @@ import com.study.tmall.enums.ProductSortStatusEnum;
 import com.study.tmall.enums.SortTypeEnum;
 import com.study.tmall.exception.TmallException;
 import com.study.tmall.model.category.Property;
+import com.study.tmall.model.order.OrderItem;
 import com.study.tmall.model.product.ProductInfo;
 import com.study.tmall.model.product.PropertyValue;
 import com.study.tmall.model.product.Review;
@@ -401,6 +402,31 @@ public class ProductInfoServiceImpl extends ServiceImpl<ProductInfoMapper, Produ
         });
 
         return productInfoPage;
+    }
+
+    /**
+     * 更新商品库存
+     * @param orderItem
+     * @return
+     */
+    @Override
+    public Boolean updateProductNumber(OrderItem orderItem) {
+        // 取出商品信息
+        String productId = orderItem.getProductId();
+        Integer number = orderItem.getNumber();
+        if (StringUtils.isEmpty(productId) || number == null || number <= 0) {
+            throw new TmallException(ResultCodeEnum.PARAM_ERROR);
+        }
+        // 根据id查询商品
+        ProductInfo productInfo = baseMapper.selectById(productId);
+        if (productInfo == null) { // 如果查询结果为null，则抛出数据异常
+            throw new TmallException(ResultCodeEnum.DATA_ERROR);
+        }
+        productInfo.setStock(productInfo.getStock() - number);
+        // 更新数据库
+        int i = baseMapper.updateById(productInfo);
+
+        return i == 1 ? true : false;
     }
 
     // 把第一张缩略图装进去

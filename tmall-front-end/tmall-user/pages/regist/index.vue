@@ -140,7 +140,7 @@ export default {
                 // cookie.remove("tempToken") // 移除临时token
                 // cookie.set("token", response.data)
                 storage.removeItem("tempToken") // 移除临时token
-                storage.setItem("token", response.data, 30*60*1000)
+                storage.setItem("token", response.data)
                 window.location.href = "/"
               }, 2000)
             })

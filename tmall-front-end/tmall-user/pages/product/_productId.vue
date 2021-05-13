@@ -266,7 +266,18 @@ export default {
         // 弹出登录模态框
         this.dialogVisible = true
       } else { // 否则加入购物车
-
+        productInfo.joinOrderItem(this.orderItem)
+          .then(response => {
+            if (response.data) {
+              this.$message.success("成功加入购物车！刷新页面更新商品数量")
+              $("#joinShopping")[0].disabled = true
+              $("#joinShopping").css({"background-color": "#8c939d", "border": "none"})
+              // 更新localStorage中userInfo的购物车商品数量
+              let userInfo = storage.getItem("userInfo")
+              userInfo.productNumber += this.orderItem.number
+              storage.setItem("userInfo", userInfo)
+            }
+          })
       }
     },
 
@@ -372,7 +383,7 @@ export default {
       login.userLogin(this.userLogin)
         .then(response => {
           this.token = response.data
-          storage.setItem("token", this.token, 30*60*1000)
+          storage.setItem("token", this.token)
           this.$router.go(0) // 刷新当前页
         })
     },
@@ -503,12 +514,12 @@ export default {
               this.token = response.data.token
               clearInterval(this.interval)
               if (this.state == 520) { // 邮箱未绑定，跳转到注册页面
-                storage.setItem("tempToken", this.token, 30*60*1000) // 设置为临时token
+                storage.setItem("tempToken", this.token) // 设置为临时token
                 // cookie.set("tempToken", this.token)
                 // window.location.href = "/regist"
                 this.$router.push("/regist")
               } else { // 刷新当前页
-                storage.setItem("token", this.token, 30*60*1000) // 设置token生命周期为半小时
+                storage.setItem("token", this.token) // 设置token生命周期为半小时（默认不设置ttl为半小时）
                 // cookie.set("token", this.token)
                 // window.location.href = "/"
                 this.$router.go(0)

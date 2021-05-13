@@ -109,7 +109,7 @@ export default {
       login.userLogin(this.userLogin)
         .then(response => {
           this.token = response.data
-          storage.setItem("token", this.token, 30*60*1000)
+          storage.setItem("token", this.token)
           // window.location.href = "/"
           this.$router.push("/")
         })
@@ -241,12 +241,12 @@ export default {
               this.token = response.data.token
               clearInterval(this.interval)
               if (this.state == 520) { // 邮箱未绑定，跳转到注册页面
-                storage.setItem("tempToken", this.token, 30*60*1000) // 设置为临时token
+                storage.setItem("tempToken", this.token) // 设置为临时token
                 // cookie.set("tempToken", this.token)
                 // window.location.href = "/regist"
                 this.$router.push("/regist")
               } else { // 否则跳转到首页
-                storage.setItem("token", this.token, 30*60*1000) // 设置token生命周期为半小时
+                storage.setItem("token", this.token) // 设置token生命周期为半小时（默认不设置ttl为半小时）
                 // cookie.set("token", this.token)
                 // window.location.href = "/"
                 this.$router.push("/")
