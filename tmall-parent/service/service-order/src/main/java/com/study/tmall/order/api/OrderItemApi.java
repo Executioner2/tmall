@@ -1,15 +1,15 @@
 package com.study.tmall.order.api;
 
+import com.study.tmall.model.order.OrderItem;
 import com.study.tmall.order.service.OrderItemService;
+import com.study.tmall.result.Result;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * Copyright@1205878539@qq.com
@@ -33,5 +33,18 @@ public class OrderItemApi {
             @PathVariable String userId) {
 
         return orderItemService.getProductNumberByUserId(userId);
+    }
+
+    // 加入到购物车
+    @ApiOperation("加入到购物车")
+    @PostMapping("/auth/join/orderItem}")
+    public Result joinOrderItem(
+            @ApiParam(name = "orderItem", value = "订单项", required = true)
+            @RequestBody OrderItem orderItem,
+
+            @ApiParam(name = "request", value = "request", required = true)
+            HttpServletRequest request) {
+
+        return Result.ok();
     }
 }
