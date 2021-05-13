@@ -38,7 +38,7 @@
     <div class="settieAccountsButton" id="settieAccountsButton">
       <div class="settieAccountsUpDiv">
         <span>已选商品 (不含运费)</span>
-        <span class="settlementAmount totalAmount" id="settlementAmount1" totalAmount="0">￥0.00</span>
+        <span class="settlementAmount totalAmount" id="settlementAmount1">￥{{totalAmount}}</span>
         <button disabled>结 算</button>
       </div>
 
@@ -104,7 +104,7 @@
         <span class="rightSpan pull-right">
                 <span>已选商品 <span class="productNumberSum">0</span> 件</span>
                 <span>合计 (不含运费)：</span>
-                <span class="settlementAmount totalAmount" id="settlementAmount2" totalAmount="0">￥0.00</span>
+                <span class="settlementAmount totalAmount" id="settlementAmount2">￥{{totalAmount}}</span>
                 <button disabled>结 算</button>
             </span>
       </div>
@@ -122,6 +122,7 @@ export default {
   data() {
     return {
       list: [], // 订单项信息集合
+      totalAmount: "0.00", // 总金额
     }
   },
   created() {
