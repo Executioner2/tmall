@@ -130,7 +130,7 @@ export default {
 
     // 模态框打开
     dialogOpen() {
-      this.confirmTime = 60 // 设置60秒给用户在线确认，若超过60秒用户未确认则视为离线
+      this.confirmTime = 60*5 // 设置5分钟给用户在线确认，若超过5分钟用户未确认则视为离线
       let my = this
       this.confirmTimer = setInterval(function () {
         --my.confirmTime
@@ -153,7 +153,7 @@ export default {
         this.hint = "请把滑块拖至最右方，还剩" + this.count + "次机会！"
         this.msgIsShow = true
         this.slider = 0
-        this.confirmTime = 10 // 用户滑动了滑块，确认时间重置
+        this.confirmTime = 60*5 // 用户滑动了滑块，确认时间重置
       } else { // 验证成功，从新获取userInfo
         this.$message.success("欢迎回来！")
         this.init()
