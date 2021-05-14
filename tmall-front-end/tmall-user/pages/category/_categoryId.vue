@@ -31,15 +31,15 @@
   <div class="productListInClassify" id="productListInClassify">
     <div class="productItem" v-for="(item, index) in list" :key="index">
       <div style="height: 200px; text-align: center">
-        <a :href="'/product/' + item.id"><img class="productImage" :src="item.params.imageUrl" height="150"/></a>
+        <router-link :to="'/product/' + item.id"><img class="productImage" :src="item.params.imageUrl" height="150"/></router-link>
       </div>
       <span class="price">￥{{item.promotePrice}}</span>
-      <a :href="'/product/' + item.id">{{item.name}}</a>
-      <a href="#">天猫专卖</a>
+      <router-link :to="'/product/' + item.id">{{item.name}}</router-link>
+      <a href="javascript:void(0)">天猫专卖</a>
       <div class="itemFooter">
         <span class="monthMake">月成交<span class="monthMakeCount">{{item.monthlySales}}笔</span></span>
         <span class="evaluate">评价<span class="evaluateCount">{{item.params.reviewNumber == null ? 0 : item.params.reviewNumber}}</span></span>
-        <span class="wangWang"><a href="#"><img src="~/assets/img/site/wangwang.png" height="16" width="16"/></a></span>
+        <span class="wangWang"><a href="javascript:void(0)"><img src="~/assets/img/site/wangwang.png" height="16" width="16"/></a></span>
       </div>
     </div>
   </div>

@@ -48,7 +48,7 @@ export default {
             // 存入localStorage中
             storage.setItem("userInfo", this.userInfo)
             storage.setItem("toDataLoad", true, -1)
-            // 更新token的ttl
+            // 页面刷新或href跳转不会触发default.vue中的路由变换监听,所以这里也更新token的ttl
             storage.updateTtl("token")
           })
       }

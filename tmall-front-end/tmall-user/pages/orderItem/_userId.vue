@@ -9,28 +9,28 @@
       /*格式化货币*/
       function formattingMoney(money){
         money = money.toString()
-        let length = parseInt(money).toString().length;
-        let rem = length % 3;
-        let newMoney = new Array();
-        let flag = false;
-        for (var i = 0; i < money.length; i++) {
+        let length = parseInt(money).toString().length
+        let rem = length % 3
+        let newMoney = new Array()
+        let flag = false
+        for (let i = 0; i < money.length; i++) {
           if (money[i] == '.'){
-            flag = money.substring(i);
-            break;
+            flag = money.substring(i)
+            break
           }
         }
-        for (var i = 0; i < length; i++) {
+        for (let i = 0; i < length; i++) {
           if(i % 3 - rem == 0 && i > 0){
-            newMoney += ',';
+            newMoney += ','
           }
-          newMoney += money[i];
+          newMoney += money[i]
         }
         if(!flag){
-          newMoney += '.00';
+          newMoney += '.00'
         }else{
-          newMoney += flag;
+          newMoney += flag
         }
-        return newMoney;
+        return newMoney
       }
 
     </script>
@@ -38,7 +38,7 @@
     <div class="settieAccountsButton" id="settieAccountsButton">
       <div class="settieAccountsUpDiv">
         <span>已选商品 (不含运费)</span>
-        <span class="settlementAmount totalAmount" id="settlementAmount1">￥{{totalAmount}}</span>
+        <span class="settlementAmount totalAmount" id="settlementAmount1">￥{{totalAmountStr}}</span>
         <button disabled>结 算</button>
       </div>
 
@@ -48,7 +48,7 @@
           <tr id="tableTitle">
             <td>
               <a href="javascript:void(0)" class="cartPullSelectBtn">
-                <img class="cartPullSelect" src="~assets/img/site/cartNotSelected.png"/>
+                <img class="cartPullSelect" @click="pullSelect" :src="selectStatusImageUrl"/>
               </a>
               <span>全选</span>
             </td>
@@ -60,8 +60,8 @@
           </tr>
           <tr class="tableBody" v-for="(item, index) in list" :key="index" >
             <td>
-              <a href="javascript:void(0)" class="cartSelectBtn">
-                <img class="cartSelect" src="~assets/img/site/cartNotSelected.png"/>
+              <a href="javascript:void(0)" class="cartSelectBtn" >
+                <img class="cartSelect" @click="select($event, item)" src="~assets/img/site/cartNotSelected.png"/>
               </a>
               <img class="productImage" :src="item.params.productInfo.params.imageUrl" />
             </td>
@@ -87,7 +87,7 @@
               </div>
             </td>
             <td>
-              <span>￥</span><span ref="productMoney" class="productMoney"></span>
+              <span>￥</span><span :ref="item.id" class="productMoney"></span>
             </td>
             <td>
               <a href="javascript:void(0)" class="deleteProductItem">删除</a>
@@ -97,14 +97,14 @@
       </div>
 
       <div class="settieAccountsDownDiv">
-        <a href="javascript:void(0)" class="cartPullSelectBtn">
-          <img class="cartPullSelect" src="~assets/img/site/cartNotSelected.png"/>
+        <a href="javascript:void(0)" @click="pullSelect" class="cartPullSelectBtn">
+          <img class="cartPullSelect" :src="selectStatusImageUrl"/>
         </a>
         <span>全选</span>
         <span class="rightSpan pull-right">
-                <span>已选商品 <span class="productNumberSum">0</span> 件</span>
+                <span>已选商品 <span class="productNumberSum">{{totalNumber}}</span> 件</span>
                 <span>合计 (不含运费)：</span>
-                <span class="settlementAmount totalAmount" id="settlementAmount2">￥{{totalAmount}}</span>
+                <span class="settlementAmount totalAmount" id="settlementAmount2">￥{{totalAmountStr}}</span>
                 <button disabled>结 算</button>
             </span>
       </div>
@@ -116,19 +116,103 @@
 <script>
 import SimpleSearch from "../../layouts/simpleSearch";
 import orderItem from "../../api/orderItem";
+
+import selectUrl from "../../assets/img/site/cartSelected.png"
+import notSelectUrl from "../../assets/img/site/cartNotSelected.png"
+import moneyFormat from "../../assets/js/moneyFormat";
+
 export default {
   name: "_userId",
   components: {SimpleSearch},
   data() {
     return {
       list: [], // 订单项信息集合
-      totalAmount: "0.00", // 总金额
+      selectStatusImageUrl: notSelectUrl, // 选中状态态图片url，默认未选中
+      isFullSelect: false, // 是否是全选
+      totalAmount: 0, // 总金额
+      totalAmountStr: "0.00", // 总金额格式化
+      totalNumber: 0, // 已选商品总数
     }
   },
   created() {
     this.getOrderItem()
   },
   methods: {
+    // 全选
+    pullSelect() {
+      this.isFullSelect = !this.isFullSelect
+      if (this.isFullSelect) { // 如果是选中状态
+        // 所有订单项做选中标记
+        this.list.forEach(function (value) {
+          value.isSelect = true
+        })
+        // 设置图标为选中
+        this.selectStatusImageUrl = selectUrl
+        $(".cartSelect").attr("src", selectUrl)
+      } else { // 不是选中状态
+        // 所有订单项做未选中标记
+        this.list.forEach(function (value) {
+          value.isSelect = false
+        })
+        // 设置图标为未选中
+        this.selectStatusImageUrl = notSelectUrl
+        $(".cartSelect").attr("src", notSelectUrl)
+      }
+
+      this.countTotalAmount() // 计算总金额
+    },
+
+    // 单选
+    select(event, item) {
+      let el = event.target // 获取点击事件被点到的目标元素
+      if (item.isSelect == null) { // 如果item.isSelect为null则给个初始值
+        item.isSelect = false
+      }
+      item.isSelect = !item.isSelect
+      if (item.isSelect) { // 如果点击的时候是false，那么要改变为true
+        el.src = selectUrl
+      } else { // 反之
+        el.src = notSelectUrl
+      }
+      if (this.forEachSelect()) { // 如果为true则表示全选
+        // 更新全选图标
+        this.selectStatusImageUrl = selectUrl
+        this.isFullSelect = true
+      } else {
+        // 更新全不选图标
+        this.selectStatusImageUrl = notSelectUrl
+        this.isFullSelect = false
+      }
+      this.countTotalAmount() // 计算总金额
+    },
+
+    // 遍历所有单选项
+    forEachSelect() {
+      for (let i = 0; i < this.list.length; i++) {
+        // 如果有一个没有被选中则返回false
+        if (!this.list[i].isSelect) {
+          return false
+        }
+      }
+      // 执行到这里表示都选中了，返回true
+      return true
+    },
+
+    // 计算总金额
+    countTotalAmount() {
+      this.totalAmount = 0
+      this.totalNumber = 0
+      for (let i = 0; i < this.list.length; i++) {
+        let item = this.list[i]
+        if (item.isSelect) { // 如果是选择状态
+          this.totalAmount = (parseFloat(this.totalAmount) + parseFloat(item.amount)).toFixed(2)
+          // 已选商品总数量
+          this.totalNumber += item.number
+        }
+      }
+      this.totalAmountStr = moneyFormat.format(this.totalAmount) // 格式化
+    },
+
     // 获取购物车商品详情
     getOrderItem() {
       orderItem.getOrderItem()
@@ -183,10 +267,13 @@ export default {
     updateAmount(item) {
       let price = item.params.productInfo.promotePrice
       item.amount = (price * item.number).toFixed(2)
+      // dom渲染完毕后填充text，dom渲染完成后才有ref成员
       this.$nextTick(() => {
-        this.$refs.productMoney[0].innerText = item.amount
+        // 这里手动赋值是因为@blur不能触发v-text更新
+        this.$refs[item.id][0].innerText = moneyFormat.format(item.amount) // 格式化一手
       })
 
+      this.countTotalAmount() // 计算总金额
     },
 
     // 输入商品数量
