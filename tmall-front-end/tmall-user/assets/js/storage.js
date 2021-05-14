@@ -67,6 +67,12 @@ export default {
 
     data = JSON.stringify(data)
     localStorage.setItem(key, data)
+  },
+
+  // 移除所有项
+  removeLoginStatus() {
+    localStorage.removeItem("token")
+    localStorage.removeItem("userInfo")
   }
 
 

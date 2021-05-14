@@ -383,7 +383,7 @@ export default {
       login.userLogin(this.userLogin)
         .then(response => {
           this.token = response.data
-          storage.setItem("token", this.token)
+          storage.setItem("token", this.token, -1)
           this.$router.go(0) // 刷新当前页
         })
     },
@@ -519,7 +519,7 @@ export default {
                 // window.location.href = "/regist"
                 this.$router.push("/regist")
               } else { // 刷新当前页
-                storage.setItem("token", this.token) // 设置token生命周期为半小时（默认不设置ttl为半小时）
+                storage.setItem("token", this.token, -1) // 设置token生命周期为半小时（默认不设置ttl为半小时）
                 // cookie.set("token", this.token)
                 // window.location.href = "/"
                 this.$router.go(0)

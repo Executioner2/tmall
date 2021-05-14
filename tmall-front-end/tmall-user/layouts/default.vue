@@ -27,13 +27,13 @@ export default {
   watch: {
     $route() {
       window.scrollTo(0, 0)
-      if (storage.getItem("token")) { // 如果token存在，用户登录了
-        // 那么每次路由就会更新token的ttl
-        storage.updateTtl("token")
-        if (storage.getItem("userInfo")) {
-          storage.updateTtl("userInfo") // 如果userInfo存在还会更新userInfo的ttl
-        }
-      }
+      // if (storage.getItem("token")) { // 如果token存在，用户登录了
+      //   // 那么每次路由就会更新token的ttl
+      //   storage.updateTtl("token")
+      //   if (storage.getItem("userInfo")) {
+      //     storage.updateTtl("userInfo") // 如果userInfo存在还会更新userInfo的ttl
+      //   }
+      // }
     }
   },
   mounted() {

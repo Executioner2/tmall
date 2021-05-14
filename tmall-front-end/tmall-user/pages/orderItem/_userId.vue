@@ -5,36 +5,6 @@
     <simple-search/>
 
     <!--这里放结算里面嵌套订单项-->
-    <script>
-      /*格式化货币*/
-      function formattingMoney(money){
-        money = money.toString()
-        let length = parseInt(money).toString().length
-        let rem = length % 3
-        let newMoney = new Array()
-        let flag = false
-        for (let i = 0; i < money.length; i++) {
-          if (money[i] == '.'){
-            flag = money.substring(i)
-            break
-          }
-        }
-        for (let i = 0; i < length; i++) {
-          if(i % 3 - rem == 0 && i > 0){
-            newMoney += ','
-          }
-          newMoney += money[i]
-        }
-        if(!flag){
-          newMoney += '.00'
-        }else{
-          newMoney += flag
-        }
-        return newMoney
-      }
-
-    </script>
-
     <div class="settieAccountsButton" id="settieAccountsButton">
       <div class="settieAccountsUpDiv">
         <span>已选商品 (不含运费)</span>

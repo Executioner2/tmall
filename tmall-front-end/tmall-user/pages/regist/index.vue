@@ -140,8 +140,8 @@ export default {
                 // cookie.remove("tempToken") // 移除临时token
                 // cookie.set("token", response.data)
                 storage.removeItem("tempToken") // 移除临时token
-                storage.setItem("token", response.data)
-                window.location.href = "/"
+                storage.setItem("token", response.data, -1)
+                this.$router.push("/")
               }, 2000)
             })
       } else {
@@ -150,7 +150,7 @@ export default {
           .then(response => {
             this.$message.success("注册成功")
             setTimeout(() => {
-              window.location.href = "/login"
+              this.$router.push("/login")
             }, 2000)
           })
       }
