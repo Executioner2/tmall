@@ -19,4 +19,13 @@ export default {
     })
   },
 
+  // 更新商品库存
+  updateStock(orderItem) {
+    return request({
+      url: `${api_orderItem_url}/auth/shopping/update/number`,
+      method: "post",
+      data: orderItem
+    })
+  },
+
 }

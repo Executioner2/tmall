@@ -22,7 +22,7 @@ public class ProductStockVo {
     private String productId;
 
     @ApiModelProperty("更新数量")
-    private String number;
+    private Integer number;
 
     @ApiModelProperty("更新规则（加 还是 减）")
     private ArithmeticTypeEnum type;

@@ -6,7 +6,7 @@
       </a>
       <div class="pull-right">
         <div class="searchDiv">
-          <input type="text" name="keyword" placeholder="平衡车 原汁机">
+          <input type="text" name="keyword" placeholder="平衡车 原汁机" v-model="keyword" @keydown="keydown">
           <button class="searchButton">搜天猫</button>
         </div>
         <div class="searchBelow">
@@ -22,7 +22,31 @@
 
 <script>
 export default {
-  name: "simpleSearch"
+  name: "simpleSearch",
+  data() {
+    return {
+      keyword: "", // 商品搜索关键字
+    }
+  },
+  methods: {
+    // 搜索
+    search() {
+      this.keyword = this.keyword.trim()
+      if (this.keyword === "" || this.keyword === null) {
+        this.$message.warning("请输入商品查询关键字")
+        return
+      }
+      this.$router.push("/search/" + this.keyword)
+      this.keyword = null
+    },
+
+    // 搜索框按键按下
+    keydown(key) {
+      if (key.code === "Enter") {
+        this.search()
+      }
+    }
+  }
 }
 </script>
 

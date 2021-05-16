@@ -37,7 +37,7 @@
             </td>
             <td>
               <div class="productInformation">
-                <a href="#">{{item.params.productInfo.name}}</a>
+                <router-link :to="'/product/' + item.params.productInfo.id">{{item.params.productInfo.name}}</router-link>
                 <div class="cartProductLinkInnerDiv">
                   <img src="~assets/img/site/creditcard.png" height="11" width="16"/>
                   <img src="~assets/img/site/7day.png" height="16" width="16"/>
@@ -52,7 +52,7 @@
             <td>
               <div>
                 <a href="javascript:void(0)" @click="numberSub(item.id)" class="numberSub">-</a>
-                <span><input type="text" class="productNumber" @blur="updateAmount(item)" name="productNumber" @keyup="inputNumber(item)" v-model="item.number"></span>
+                <span><input type="text" class="productNumber" @blur="updateAmountAndStock(item)" name="productNumber" @keyup="inputNumber(item)" v-model="item.number"></span>
                 <a href="javascript:void(0)" @click="numberAdd(item.id)" class="numberAdd">+</a>
               </div>
             </td>
@@ -111,6 +111,18 @@ export default {
     this.getOrderItem()
   },
   methods: {
+    // 更新商品库存数量
+    updateStock(item) {
+      orderItem.updateStock(item)
+        .then(response => {
+          let stock = response.data
+          // 如果返回的商品库存不为空则更新库存信息
+          if (stock) {
+            item.params.productInfo.stock = stock
+          }
+        })
+    },
+
     // 结算
     balance() {
       // 遍历订单项，如果标记为选中那么就加入订单
@@ -253,10 +265,10 @@ export default {
           --value.number
           // 重新计算商品金额
           this.updateAmount(value)
+          // 更新商品库存
+          this.updateStock(value)
           return
         }
-
-        this.updateAmount(this.list[i])
       }
     },
 
@@ -271,6 +283,8 @@ export default {
           ++value.number
           // 重新计算商品金额
           this.updateAmount(value)
+          // 更新商品库存
+          this.updateStock(value)
           return
         }
       }
@@ -294,15 +308,18 @@ export default {
     inputNumber(val) {
       if (val.number == "" || val.number == null || val.number == 0) {
         val.number = 1
-        return
-      }
-      if (isNaN(val.number)) {
+      } else if (isNaN(val.number)) {
         val.number = parseInt(val.number.substring(0, val.number.length - 1))
-        return
-      }
-      if (val.number > val.params.productInfo.stock) {
+      } else if (val.number > val.params.productInfo.stock) {
         val.number = val.params.productInfo.stock
       }
+    },
+
+    // 更新商品库存和金额
+    updateAmountAndStock(item) {
+      this.updateAmount(item)
+      // 更新商品库存
+      this.updateStock(item)
     },
 
   }

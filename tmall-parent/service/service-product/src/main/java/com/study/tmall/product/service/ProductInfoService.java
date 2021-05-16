@@ -3,9 +3,8 @@ package com.study.tmall.product.service;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.study.tmall.enums.ArithmeticTypeEnum;
-import com.study.tmall.model.order.OrderItem;
 import com.study.tmall.model.product.ProductInfo;
+import com.study.tmall.vo.after_end.ProductStockVo;
 import com.study.tmall.vo.product.ProductInfoFrontQueryVo;
 import com.study.tmall.vo.product.ProductQueryVo;
 import org.springframework.web.multipart.MultipartFile;
@@ -59,5 +58,5 @@ public interface ProductInfoService extends IService<ProductInfo> {
     IPage<ProductInfo> searchProductInfo(Page<ProductInfo> page, String keyword);
 
     // 更新商品库存
-    Boolean updateProductNumber(OrderItem orderItem, ArithmeticTypeEnum type);
+    Long updateProductNumber(ProductStockVo productStockVo);
 }

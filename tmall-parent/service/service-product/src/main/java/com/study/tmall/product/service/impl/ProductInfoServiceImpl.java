@@ -11,7 +11,6 @@ import com.study.tmall.enums.ProductSortStatusEnum;
 import com.study.tmall.enums.SortTypeEnum;
 import com.study.tmall.exception.TmallException;
 import com.study.tmall.model.category.Property;
-import com.study.tmall.model.order.OrderItem;
 import com.study.tmall.model.product.ProductInfo;
 import com.study.tmall.model.product.PropertyValue;
 import com.study.tmall.model.product.Review;
@@ -22,9 +21,9 @@ import com.study.tmall.product.service.ProductInfoService;
 import com.study.tmall.product.service.PropertyValueService;
 import com.study.tmall.product.service.ReviewService;
 import com.study.tmall.result.ResultCodeEnum;
+import com.study.tmall.vo.after_end.ProductStockVo;
 import com.study.tmall.vo.product.*;
 import org.springframework.beans.BeanUtils;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
@@ -407,15 +406,15 @@ public class ProductInfoServiceImpl extends ServiceImpl<ProductInfoMapper, Produ
 
     /**
      * 更新商品库存
-     * @param orderItem
-     * @param type
+     * @param productStockVo
      * @return
      */
     @Override
-    public Boolean updateProductNumber(OrderItem orderItem, ArithmeticTypeEnum type) {
+    public Long updateProductNumber(ProductStockVo productStockVo) {
         // 取出商品信息
-        String productId = orderItem.getProductId();
-        Integer number = orderItem.getNumber();
+        String productId = productStockVo.getProductId();
+        Integer number = productStockVo.getNumber();
+        ArithmeticTypeEnum type = productStockVo.getType();
         if (StringUtils.isEmpty(productId) || number == null || number <= 0) {
             throw new TmallException(ResultCodeEnum.PARAM_ERROR);
         }
@@ -436,8 +435,10 @@ public class ProductInfoServiceImpl extends ServiceImpl<ProductInfoMapper, Produ
         // 更新数据库
         productInfo.setStock(temp);
         int i = baseMapper.updateById(productInfo);
-
-        return i == 1 ? true : false;
+        if (i == 1) {
+            return temp; // 库存
+        }
+        return null;
     }
 
     // 把第一张缩略图装进去

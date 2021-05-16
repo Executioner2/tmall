@@ -85,8 +85,8 @@ public class OrderItemApi {
             @ApiParam(name = "orderItem", value = "订单项", required = true)
             @RequestBody OrderItem orderItem) {
 
-        orderItemService.updateProductNumber(orderItem);
-        return Result.ok();
+        Long stock = orderItemService.updateProductNumber(orderItem);
+        return Result.ok(stock);
     }
 
 }

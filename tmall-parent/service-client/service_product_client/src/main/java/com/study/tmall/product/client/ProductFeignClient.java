@@ -3,6 +3,7 @@ package com.study.tmall.product.client;
 import com.study.tmall.enums.ArithmeticTypeEnum;
 import com.study.tmall.model.order.OrderItem;
 import com.study.tmall.model.product.ProductInfo;
+import com.study.tmall.vo.after_end.ProductStockVo;
 import io.swagger.annotations.ApiModelProperty;
 import io.swagger.annotations.ApiParam;
 import org.springframework.cloud.openfeign.FeignClient;
@@ -37,6 +38,6 @@ public interface ProductFeignClient {
     Map<String, List<ProductInfo>> listProductInfoHot(@RequestBody List<String> idList);
 
     // 更新商品库存
-    @PostMapping("/api/product/productInfo/inner/updateProductNumber/{type}")
-    Boolean updateProductNumber(@RequestBody OrderItem orderItem, @PathVariable("type")ArithmeticTypeEnum type);
+    @PostMapping("/api/product/productInfo/inner/updateProductNumber")
+    Long updateProductNumber(@RequestBody ProductStockVo productStockVo);
 }

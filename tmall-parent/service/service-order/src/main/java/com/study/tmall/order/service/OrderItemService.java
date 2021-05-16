@@ -29,5 +29,5 @@ public interface OrderItemService extends IService<OrderItem> {
     void removeProduct(String token, String id);
 
     // 更新订单项商品数量
-    void updateProductNumber(OrderItem orderItem);
+    Long updateProductNumber(OrderItem orderItem);
 }
