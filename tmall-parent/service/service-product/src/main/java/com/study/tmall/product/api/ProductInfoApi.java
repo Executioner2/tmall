@@ -2,6 +2,7 @@ package com.study.tmall.product.api;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.study.tmall.enums.ArithmeticTypeEnum;
 import com.study.tmall.model.order.OrderItem;
 import com.study.tmall.model.product.ProductInfo;
 import com.study.tmall.product.service.ProductInfoService;
@@ -99,12 +100,15 @@ public class ProductInfoApi {
 
     // 更新商品数量
     @ApiOperation("更新商品数量")
-    @PostMapping("/inner/updateProductNumber")
+    @PostMapping("/inner/updateProductNumber/{type}")
     public Boolean updateProductNumber(
             @ApiParam(name = "orderItem", value = "订单项", required = true)
-            @RequestBody OrderItem orderItem) {
+            @RequestBody OrderItem orderItem,
 
-        return productInfoService.updateProductNumber(orderItem);
+            @ApiParam(name = "算术类型", value = "type", required = true)
+            @PathVariable("type") ArithmeticTypeEnum type) {
+
+        return productInfoService.updateProductNumber(orderItem, type);
     }
 
 }

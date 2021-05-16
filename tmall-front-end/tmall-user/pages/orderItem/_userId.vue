@@ -5,11 +5,11 @@
     <simple-search/>
 
     <!--这里放结算里面嵌套订单项-->
-    <div class="settieAccountsButton" id="settieAccountsButton">
-      <div class="settieAccountsUpDiv">
+    <div class="settleAccountsButton" id="settleAccountsButton">
+      <div class="settleAccountsUpDiv">
         <span>已选商品 (不含运费)</span>
         <span class="settlementAmount totalAmount" id="settlementAmount1">￥{{totalAmountStr}}</span>
-        <button disabled>结 算</button>
+        <button :style="balanceBtnBackgroundColor" :disabled="balanceBtnDisable" @click="balance">结 算</button>
       </div>
 
       <!--这里放订单项内容-->
@@ -60,23 +60,23 @@
               <span>￥</span><span :ref="item.id" class="productMoney"></span>
             </td>
             <td>
-              <a href="javascript:void(0)" class="deleteProductItem">删除</a>
+              <a href="javascript:void(0)" class="deleteProductItem" @click="removeOrderItem(item.id)">删除</a>
             </td>
           </tr>
         </table>
       </div>
 
-      <div class="settieAccountsDownDiv">
+      <div class="settleAccountsDownDiv">
         <a href="javascript:void(0)" @click="pullSelect" class="cartPullSelectBtn">
           <img class="cartPullSelect" :src="selectStatusImageUrl"/>
         </a>
         <span>全选</span>
         <span class="rightSpan pull-right">
-                <span>已选商品 <span class="productNumberSum">{{totalNumber}}</span> 件</span>
-                <span>合计 (不含运费)：</span>
-                <span class="settlementAmount totalAmount" id="settlementAmount2">￥{{totalAmountStr}}</span>
-                <button disabled>结 算</button>
-            </span>
+            <span>已选商品 <span class="productNumberSum">{{totalNumber}}</span> 件</span>
+            <span>合计 (不含运费)：</span>
+            <span class="settlementAmount totalAmount" id="settlementAmount2">￥{{totalAmountStr}}</span>
+            <button :style="balanceBtnBackgroundColor" :disabled="balanceBtnDisable" @click="balance">结 算</button>
+        </span>
       </div>
     </div>
 
@@ -90,6 +90,7 @@ import orderItem from "../../api/orderItem";
 import selectUrl from "../../assets/img/site/cartSelected.png"
 import notSelectUrl from "../../assets/img/site/cartNotSelected.png"
 import moneyFormat from "../../assets/js/moneyFormat";
+import storage from "../../assets/js/storage";
 
 export default {
   name: "_userId",
@@ -102,12 +103,47 @@ export default {
       totalAmount: 0, // 总金额
       totalAmountStr: "0.00", // 总金额格式化
       totalNumber: 0, // 已选商品总数
+      balanceBtnDisable: true, // 结算按钮不可用
+      balanceBtnBackgroundColor: "background-color: #AAAAAA", // 结算按钮背景色
     }
   },
   created() {
     this.getOrderItem()
   },
   methods: {
+    // 结算
+    balance() {
+      // 遍历订单项，如果标记为选中那么就加入订单
+      let shopping = {}
+      shopping.orderItems = []
+      this.list.forEach(function (value) {
+        if (value.isSelect) {
+          shopping.orderItems.push(value) // 加入到集合中
+        }
+      })
+      shopping.totalAmountStr = this.totalAmountStr
+      shopping.totalAmount = this.totalAmount
+      // 不传入后端了，直接就把这个数据带到下单页面
+      // 存入localStorage
+      storage.setItem("shopping", shopping, -1)
+      this.$router.push("/settlement");
+    },
+
+    // 删除订单
+    removeOrderItem(id) {
+      this.$confirm("是否要把该商品移除购物车？", "提示", {
+        confirmButtonText: "是",
+        cancelButtonText: "否",
+        type: "warning"
+      }).then(() => {
+        // 移除商品，刷新页面
+        orderItem.removeProduct(id)
+          .then(() => {
+            this.$router.go(0)
+          })
+      })
+    },
+
     // 全选
     pullSelect() {
       this.isFullSelect = !this.isFullSelect
@@ -180,6 +216,13 @@ export default {
           this.totalNumber += item.number
         }
       }
+      if (this.totalAmount === 0) { // 如果购物车已选商品总金额为0则结算按钮不可用
+        this.balanceBtnDisable = true
+        this.balanceBtnBackgroundColor = "background-color: #AAAAAA" // 设置背景色为灰色
+      } else { // 否则反之
+        this.balanceBtnDisable = false
+        this.balanceBtnBackgroundColor = "background-color: #C40000" // 设置背景色为红色
+      }
       this.totalAmountStr = moneyFormat.format(this.totalAmount) // 格式化
     },
 
@@ -240,7 +283,8 @@ export default {
       // dom渲染完毕后填充text，dom渲染完成后才有ref成员
       this.$nextTick(() => {
         // 这里手动赋值是因为@blur不能触发v-text更新
-        this.$refs[item.id][0].innerText = moneyFormat.format(item.amount) // 格式化一手
+        item.amountStr = moneyFormat.format(item.amount) // 格式化一手
+        this.$refs[item.id][0].innerText = item.amountStr
       })
 
       this.countTotalAmount() // 计算总金额

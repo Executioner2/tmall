@@ -134,7 +134,6 @@ export default {
       let my = this
       this.confirmTimer = setInterval(function () {
         --my.confirmTime
-        console.log(my.confirmTime)
         if (my.confirmTime == 0) { // 超时未确认，重新登录
           my.$message.error("确认超时，请重新登录")
           my.reLogin()

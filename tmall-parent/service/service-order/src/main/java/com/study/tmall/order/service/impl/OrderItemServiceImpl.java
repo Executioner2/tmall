@@ -1,7 +1,9 @@
 package com.study.tmall.order.service.impl;
 
+import cn.hutool.db.sql.Order;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.study.tmall.enums.ArithmeticTypeEnum;
 import com.study.tmall.model.order.OrderItem;
 import com.study.tmall.model.product.ProductInfo;
 import com.study.tmall.order.mapper.OrderItemMapper;
@@ -89,7 +91,7 @@ public class OrderItemServiceImpl extends ServiceImpl<OrderItemMapper, OrderItem
         OrderItem item = baseMapper.selectOne(wrapper);
 
         // 远程调用service-product模块更新商品数量
-        Boolean flag = productFeignClient.updateProductNumber(orderItem);
+        Boolean flag = productFeignClient.updateProductNumber(orderItem, ArithmeticTypeEnum.SUBTRACT);
         if (flag) {
             int insert;
             // 如果购物车中没有该商品则添加数据
@@ -128,4 +130,48 @@ public class OrderItemServiceImpl extends ServiceImpl<OrderItemMapper, OrderItem
 
         return orderItems;
     }
+
+    /**
+     * 从购物车中移除商品
+     * @param token
+     * @param id
+     */
+    @Override
+    public void removeProduct(String token, String id) {
+        String userId = JwtHelper.getUserId(token);
+
+        // 移除条件，用户id和登录用户id一致，订单id为空，即未下单，id等于前端传入的id
+        QueryWrapper<OrderItem> wrapper = new QueryWrapper<>();
+        wrapper.eq("user_id", userId);
+        wrapper.isNull("order_id");
+        wrapper.eq("id", id);
+
+        // 先查询，更新商品的库存
+        OrderItem orderItem = baseMapper.selectOne(wrapper);
+        // 更新商品库存，加法
+        Boolean flag = productFeignClient.updateProductNumber(orderItem, ArithmeticTypeEnum.ADD);
+
+        if (flag) { // 如果库存更新成功就把商品从购物车中删除
+            baseMapper.delete(wrapper);
+        }
+    }
+
+    /**
+     * 更新订单项商品数量
+     * @param orderItem
+     */
+    @Override
+    public void updateProductNumber(OrderItem orderItem) {
+       // 先根据订单项id查询订单项原来的商品数量
+        String id = orderItem.getId();
+        OrderItem oldOrderItem = baseMapper.selectById(id);
+        Integer oldNumber = oldOrderItem.getNumber();
+        Integer newNumber = orderItem.getNumber();
+        if (oldNumber < newNumber) { // 如果旧的数量小于新的数量就是加
+
+        } else if (oldNumber > newNumber) { // 如果旧的大于新的就是减
+
+        }
+    }
+
 }

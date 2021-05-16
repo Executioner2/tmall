@@ -52,7 +52,7 @@
         </div>
         <div class="numberDiv">
           <span>数量</span>
-          <span><input type="text" v-model="orderItem.number" id="productNumber" @keyup="productNumberKeyUp"></span>
+          <span><input type="text" ref="number" v-model="orderItem.number" @keyup="setProductNumber" id="productNumber"></span>
           <span class="arrow">
                 <a href="javascript:void(0)" id="upKey" @click="numberAdd">
                     <span class="updown">
@@ -337,36 +337,43 @@ export default {
         })
     },
 
-    // 输入商品数量
-    productNumberKeyUp(){
-      let number = $("#productNumber").val();
-      let inventory = $("#productBasicInformation .inventory").text();
-      if(isNaN(parseInt(number)) || parseInt(number) <= 0){
-        $("#productNumber").val(1);
-      }
-      if(isNaN(number)){
-        $("#productNumber").val(parseInt(number));
-      }
-      if(parseInt(number) > parseInt(inventory)){
-        $("#productNumber").val(inventory);
-      }
-    },
-
     // 商品数量增加
     numberAdd(){
-      let number = $("#productNumber").val();
-      let inventory = $("#productBasicInformation .inventory").text();
-      if(parseInt(number) < parseInt(inventory)){
-        $("#productNumber").val(parseInt(number)+1);
+      if(this.orderItem.number < this.productInfo.stock){
+        ++this.orderItem.number
       }
+      // 手动更新text文本值，v-model不好使了
+      this.updateNumber()
+    },
+
+    // 设置商品数量
+    setProductNumber() {
+      let number = this.orderItem.number
+      if (number == "" || number == null || number == 0) {
+        this.orderItem.number = 1
+      } else if (isNaN(number)) {
+        this.orderItem.number = parseInt(number.substring(0, number.length - 1))
+      } else if (number > this.productInfo.stock) {
+        this.orderItem.number = this.productInfo.stock
+      }
+      // 手动更新text文本值，v-model不好使了
+      this.updateNumber()
     },
 
     // 商品数量减少
     numberSub(){
-      let number = $("#productNumber").val();
-      if(parseInt(number) > 1){
-        $("#productNumber").val(parseInt(number)-1);
+      if(this.orderItem.number > 1){
+        --this.orderItem.number
       }
+      // 手动更新text文本值，v-model不好使了
+      this.updateNumber()
+    },
+
+    // 手动更新商品数量 text文本值， v-model不好使了
+    updateNumber() {
+      this.$nextTick(() => {
+        this.$refs.number.value = this.orderItem.number
+      })
     },
 
     /* 以下为用户登录页面复制的代码 */

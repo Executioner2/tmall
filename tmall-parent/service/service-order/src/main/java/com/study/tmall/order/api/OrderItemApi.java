@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Copyright@1205878539@qq.com
@@ -63,4 +62,31 @@ public class OrderItemApi {
         List<OrderItem> orderItems = orderItemService.getOrderItemByToken(token);
         return Result.ok(orderItems);
     }
+
+    // 从购物车中移除商品
+    @ApiOperation("从购物车中移除商品")
+    @PostMapping("/auth/shopping/remove/product/{id}")
+    public Result removeProduct(
+            @ApiParam(name = "id", value = "订单项id", required = true)
+            @PathVariable String id,
+
+            @ApiParam(name = "request", value = "request", required = true)
+            HttpServletRequest request) {
+
+        String token = request.getHeader("token");
+        orderItemService.removeProduct(token, id);
+        return Result.ok();
+    }
+
+    // 更新订单项商品数量
+    @ApiOperation("更新订单项商品数量")
+    @PostMapping("/auth/shopping/update/number")
+    public Result updateProductNumber(
+            @ApiParam(name = "orderItem", value = "订单项", required = true)
+            @RequestBody OrderItem orderItem) {
+
+        orderItemService.updateProductNumber(orderItem);
+        return Result.ok();
+    }
+
 }

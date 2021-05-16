@@ -927,55 +927,55 @@ nav.top .redColor{
 /*=======================分割线==========================*/
 
 /*下面是结算按钮的CSS*/
-#settieAccountsButton{
+#settleAccountsButton{
     width: 1024px;
     margin: 0 auto;
     position: relative;
 }
-#settieAccountsButton .settieAccountsUpDiv{
+#settleAccountsButton .settleAccountsUpDiv{
     float: right;
 }
-#settieAccountsButton .settieAccountsDownDiv{
+#settleAccountsButton .settleAccountsDownDiv{
     background-color: #E5E5E5;
     position: relative;
     line-height: 50px;
     padding-left: 20px;
 }
-#settieAccountsButton .rightSpan{
+#settleAccountsButton .rightSpan{
     display: inline-block;
     position: relative;
 }
-#settieAccountsButton button{
+#settleAccountsButton button{
     color: white;
     background-color: #AAAAAA;
     border: none;
 }
-#settieAccountsButton .rightSpan button{
+#settleAccountsButton .rightSpan button{
     width: 108px;
     height: 50px;
     font-size: 17px;
     font-weight: bold;
 }
-#settieAccountsButton .settieAccountsUpDiv button{
+#settleAccountsButton .settleAccountsUpDiv button{
     border: 1px solid #AAAAAA;
     border-radius: 2px;
     padding: 3px 9px;
 }
-#settieAccountsButton .settlementAmount{
+#settleAccountsButton .settlementAmount{
     color: #C40000;
 }
-#settieAccountsButton #settlementAmount1{
+#settleAccountsButton #settlementAmount1{
     font-size: 14px;
     font-weight: bold;
 }
-#settieAccountsButton #settlementAmount2{
+#settleAccountsButton #settlementAmount2{
     font-size: 20px;
     font-weight: bold;
 }
-#settieAccountsButton .settieAccountsDownDiv .cartPullSelect{
+#settleAccountsButton .settleAccountsDownDiv .cartPullSelect{
     width: 15px;
 }
-#settieAccountsButton .rightSpan .productNumberSum{
+#settleAccountsButton .rightSpan .productNumberSum{
     font-size: 17px;
     font-weight: bold;
     color: #C40000;
@@ -1449,16 +1449,12 @@ nav.top .redColor{
 #confirmOrderInformation .confirmOrderFooter textarea{
     resize: none;
     border: 1px #FFAD35 solid;
-    display: none;
 }
 #confirmOrderInformation .confirmOrderFooter span:nth-child(1){
     float: left;
 }
 #confirmOrderInformation .confirmOrderFooter span:nth-child(2){
     float: right;
-}
-#confirmOrderInformation .confirmOrderFooter .explainSpan{
-    display: none;
 }
 #confirmOrderInformation .submitOrderForm{
     text-align: right;

@@ -9,5 +9,14 @@ export default {
       url: `${api_orderItem_url}/auth/getOrderItem`,
       method: "post"
     })
-  }
+  },
+
+  // 从购物车中移除商品
+  removeProduct(id) {
+    return request({
+      url: `${api_orderItem_url}/auth/shopping/remove/product/${id}`,
+      method: "post"
+    })
+  },
+
 }

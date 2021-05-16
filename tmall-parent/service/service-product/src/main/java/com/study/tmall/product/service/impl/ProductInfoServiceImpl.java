@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.study.tmall.category.client.CategoryClient;
+import com.study.tmall.enums.ArithmeticTypeEnum;
 import com.study.tmall.enums.ProductSortStatusEnum;
 import com.study.tmall.enums.SortTypeEnum;
 import com.study.tmall.exception.TmallException;
@@ -407,10 +408,11 @@ public class ProductInfoServiceImpl extends ServiceImpl<ProductInfoMapper, Produ
     /**
      * 更新商品库存
      * @param orderItem
+     * @param type
      * @return
      */
     @Override
-    public Boolean updateProductNumber(OrderItem orderItem) {
+    public Boolean updateProductNumber(OrderItem orderItem, ArithmeticTypeEnum type) {
         // 取出商品信息
         String productId = orderItem.getProductId();
         Integer number = orderItem.getNumber();
@@ -422,8 +424,17 @@ public class ProductInfoServiceImpl extends ServiceImpl<ProductInfoMapper, Produ
         if (productInfo == null) { // 如果查询结果为null，则抛出数据异常
             throw new TmallException(ResultCodeEnum.DATA_ERROR);
         }
-        productInfo.setStock(productInfo.getStock() - number);
+
+        Long temp = 0L;
+        if (type == ArithmeticTypeEnum.SUBTRACT) { // 减法
+            temp = productInfo.getStock() - number;
+            temp = temp >= 0L ? temp : productInfo.getStock();
+        } else if (type == ArithmeticTypeEnum.ADD) { // 加法
+            temp = productInfo.getStock() + number;
+        }
+
         // 更新数据库
+        productInfo.setStock(temp);
         int i = baseMapper.updateById(productInfo);
 
         return i == 1 ? true : false;

@@ -24,4 +24,10 @@ public interface OrderItemService extends IService<OrderItem> {
 
     // 获取订单项（包括订单项对应的商品信息）
     List<OrderItem> getOrderItemByToken(String token);
+
+    // 从购物车中移除商品
+    void removeProduct(String token, String id);
+
+    // 更新订单项商品数量
+    void updateProductNumber(OrderItem orderItem);
 }

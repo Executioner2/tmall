@@ -12,5 +12,6 @@
         WHERE
             user_id=#{userId}
         AND (order_id IS NULL)
+        AND (is_deleted=0)
     </select>
 </mapper>
