@@ -16,36 +16,25 @@
             <span>详细地址</span><span class="important">*</span>
           </td>
           <td>
-            <textarea name="" id="" cols="60" rows="2" placeholder="建议您如实填写详细收货地址，例如接到名称，门牌好吗，楼层和房间号等信息"></textarea>
+            <textarea v-model="order.address" cols="60" rows="2" placeholder="建议您如实填写详细收货地址，例如接到名称，门牌号码，楼层和房间号等信息"></textarea>
           </td>
         </tr>
         <tr class="tableBody">
           <td>邮政编码</td>
-          <td><input type="text" placeholder="如果您不清楚邮递区号，请填写000000"></td>
+          <td><input type="text" v-model="order.post" placeholder="如果您不清楚邮递区号，请填写000000"></td>
         </tr>
         <tr class="tableBody">
           <td><span>收货人姓名</span><span class="important">*</span></td>
-          <td><input type="text" placeholder="长度不超过25个字符"></td>
+          <td><input type="text" v-model="order.receiver" placeholder="长度不超过25个字符"></td>
         </tr>
         <tr class="tableBody">
           <td><span>手机号码</span><span class="important">*</span></td>
-          <td><input type="text" placeholder="请输入11位手机号码"></td>
+          <td><input type="text" v-model="order.mobile" placeholder="请输入11位手机号码"></td>
         </tr>
       </table>
     </div>
 
     <!--这里放确认订单信息-->
-<!--    <script>-->
-<!--      $(function () {-->
-<!--        $("#confirmOrderInformation .confirmOrderFooter .leaveMessagePng").click(leaveMessageShow);-->
-<!--      });-->
-
-<!--      function leaveMessageShow(){-->
-<!--        $("#confirmOrderInformation .confirmOrderFooter .leaveMessagePng").css("display","none");-->
-<!--        $("#confirmOrderInformation .confirmOrderFooter .leaveMessage").show();-->
-<!--        $("#confirmOrderInformation .confirmOrderFooter .explainSpan").show();-->
-<!--      }-->
-<!--    </script>-->
     <div class="confirmOrderInformation" id="confirmOrderInformation">
       <div class="confirmOrderHeadline">确认订单信息</div>
       <table  class="confirmOrderItem">
@@ -110,7 +99,7 @@
       </div>
       <div class="submitOrderForm">
         <div><span>实付款：</span><span class="actualPayment">￥{{totalAmountStr}}</span></div>
-        <button class="submitBtn">提交订单</button>
+        <button class="submitBtn" @click="submitOrder">提交订单</button>
       </div>
     </div>
   </div>
@@ -119,6 +108,7 @@
 <script>
 import storage from "../../assets/js/storage";
 import moneyFormat from "../../assets/js/moneyFormat";
+import settlement from "../../api/settlement";
 
 export default {
   name: "index",
@@ -142,6 +132,11 @@ export default {
   methods: {
     // 数据初始化
     init() {
+      this.order.address = ""
+      this.order.mobile = ""
+      this.order.post = ""
+      this.order.userMessage = ""
+      this.order.receiver = ""
       let shopping = storage.getItem("shopping")
       this.list = shopping.orderItems
       this.totalAmountStr = shopping.totalAmountStr
@@ -158,7 +153,22 @@ export default {
       if (msg.length <= 200) {
         this.hint = "还可以输入"+ (200 - msg.length) +"个字符"
       }
+    },
 
+    // 下单
+    submitOrder() {
+      let idList = []
+      this.list.forEach(function (value) {
+        idList.push(value.id)
+      })
+      this.order.orderItemIdList = idList
+      settlement.settlement(this.order)
+        .then(response => {
+          this.orderId = response.data
+          // TODO 如果下单执行成功那么又向后端发送创建支付二维码请求
+          this.$message.success("下单成功")
+
+        })
     },
 
   }

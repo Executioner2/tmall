@@ -1,10 +1,14 @@
 package com.study.tmall.order.service.impl;
 
+import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.util.RandomUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.study.tmall.enums.AuthStatusEnum;
 import com.study.tmall.enums.OrderStatusEnum;
+import com.study.tmall.enums.UserLockStatusEnum;
 import com.study.tmall.exception.TmallException;
 import com.study.tmall.model.order.OrderInfo;
 import com.study.tmall.model.order.OrderItem;
@@ -13,18 +17,18 @@ import com.study.tmall.model.user.UserInfo;
 import com.study.tmall.order.mapper.OrderInfoMapper;
 import com.study.tmall.order.service.OrderInfoService;
 import com.study.tmall.order.service.OrderItemService;
+import com.study.tmall.order.service.WeChatService;
 import com.study.tmall.result.ResultCodeEnum;
 import com.study.tmall.user.client.UserFeignClient;
 import com.study.tmall.vo.order.OrderQueryVo;
+import com.study.tmall.vo.order.SettlementVo;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 /**
  * Copyright@1205878539@qq.com
@@ -39,7 +43,8 @@ public class OrderInfoServiceImpl extends ServiceImpl<OrderInfoMapper, OrderInfo
     private UserFeignClient userFeignClient;
     @Resource
     private OrderItemService orderItemService;
-
+    @Resource
+    private WeChatService weChatService;
 
 
     /**
@@ -154,5 +159,66 @@ public class OrderInfoServiceImpl extends ServiceImpl<OrderInfoMapper, OrderInfo
         }
         // TODO 后续根据前端需求继续完善
         return orderInfo;
+    }
+
+    /**
+     * 下单
+     * @param token
+     * @param settlementVo
+     * @return
+     */
+    @Override
+    public String settlement(String token, SettlementVo settlementVo) {
+        // 校验用户合法性
+        UserInfo userInfo = userFeignClient.getUserInfoByToken(token);
+        // 是否查询到用户
+        if (userInfo == null) {
+            throw new TmallException(ResultCodeEnum.LOGIN_AURH);
+        }
+        // 用户是否被禁用
+        if (userInfo.getStatus() == UserLockStatusEnum.LOCK.getStatus()) {
+            throw new TmallException(ResultCodeEnum.LOGIN_DISABLED_ERROR);
+        }
+        // 用户是否实名认证
+        if (userInfo.getAuthStatus() != AuthStatusEnum.AUTH_SUCCESS.getStatus()) {
+            throw new TmallException(ResultCodeEnum.NOT_AUTH);
+        }
+
+        // 提取settlementVo参数，设置订单参数
+        OrderInfo orderInfo = new OrderInfo();
+        BeanUtils.copyProperties(settlementVo, orderInfo);
+        // 订单项id集合
+        List<String> orderItemIdList = settlementVo.getOrderItemIdList();
+        // 查询出所有订单项和商品，进行支付金额计算
+        List<OrderItem> orderItems = orderItemService.selectByIdList(orderItemIdList);
+        if (orderItems == null) {
+            throw new TmallException(ResultCodeEnum.PARAM_ERROR);
+        }
+
+        // 遍历计算总金额
+        BigDecimal amount = new BigDecimal("0");
+        for (OrderItem item : orderItems) {
+            BigDecimal number = new BigDecimal(item.getNumber());
+            ProductInfo productInfo = (ProductInfo) item.getParams().get("productInfo");
+            BigDecimal promotePrice = productInfo.getPromotePrice();
+            amount = amount.add(promotePrice.multiply(number));
+        }
+
+        orderInfo.setOrderStatus(OrderStatusEnum.WAIT_PAY.getStatus()); // 设置订单状态
+        orderInfo.setCreateDate(new Date()); // 设置下单日期时间
+        orderInfo.setUserId(userInfo.getId()); // 设置用户id
+        orderInfo.setAmount(amount); // 支付金额
+        // 生成流水订单号
+        String format = DateUtil.format(new Date(),"yyyyMMddHHmmss");
+        String numbers = RandomUtil.randomNumbers(5);
+        orderInfo.setOutTradeNo(format + numbers); // 对外订单号
+
+        // 生成订单
+        baseMapper.insert(orderInfo);
+
+        // 让订单项关联订单id
+        orderItemService.relevanceOrderInfo(orderItemIdList, userInfo.getId()); // 关联订单信息
+
+        return orderInfo.getId();
     }
 }

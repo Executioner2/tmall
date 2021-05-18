@@ -57,7 +57,7 @@ public interface UserInfoService extends IService<UserInfo> {
     String emailBinding(String token, UserRegisterVo userRegisterVo);
 
     // 根据token获取用户信息
-    UserInfoVo getUserInfoByToken(String token);
+    UserInfoVo getUserInfoVoByToken(String token);
 
     // 根据token获取用户详情信息
     UserInfo getUserDetailsInfoByToken(String token);
@@ -70,4 +70,7 @@ public interface UserInfoService extends IService<UserInfo> {
 
     // 用户头像上传
     void uploadAvatar(String token, MultipartFile file);
+
+    // 根据token查询用户
+    UserInfo getUserInfoByToken(String token);
 }

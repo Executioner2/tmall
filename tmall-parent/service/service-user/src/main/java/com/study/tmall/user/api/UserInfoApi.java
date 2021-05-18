@@ -112,11 +112,11 @@ public class UserInfoApi {
     // 根据token获取用户信息
     @ApiOperation("获取用户信息")
     @PostMapping("/auth/getUserInfo")
-    public Result getUserInfoByToken(
+    public Result getUserInfoVoByToken(
             @ApiParam(name = "request", value = "HttpServletRequest", required = true)
             HttpServletRequest request) {
         String token = request.getHeader("token");
-        UserInfoVo userInfoVo = userInfoService.getUserInfoByToken(token);
+        UserInfoVo userInfoVo = userInfoService.getUserInfoVoByToken(token);
         return Result.ok(userInfoVo);
     }
 
@@ -169,5 +169,15 @@ public class UserInfoApi {
         String token = request.getHeader("token");
         userInfoService.uploadAvatar(token, file);
         return Result.ok();
+    }
+
+    // 根据token查询用户
+    @ApiOperation("根据token查询用户")
+    @PostMapping("inner/getUserInfo/{token}")
+    public UserInfo getUserInfoByToken(
+            @ApiParam(name = "token", value = "token", required = true)
+            @PathVariable("token") String token) {
+
+        return userInfoService.getUserInfoByToken(token);
     }
 }

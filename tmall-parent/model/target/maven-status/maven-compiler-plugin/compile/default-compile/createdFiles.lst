@@ -11,6 +11,7 @@ com\study\tmall\vo\product\ProductQueryVo.class
 com\study\tmall\vo\user\UserQueryVo.class
 com\study\tmall\model\product\ProductInfo.class
 com\study\tmall\model\order\OrderInfo.class
+com\study\tmall\vo\order\SettlementVo.class
 com\study\tmall\enums\UserLockStatusEnum.class
 com\study\tmall\vo\product\ProductImageReturnVo.class
 com\study\tmall\enums\WeChatRedirectTypeEnum.class

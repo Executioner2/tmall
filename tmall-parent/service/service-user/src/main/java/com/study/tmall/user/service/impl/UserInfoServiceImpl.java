@@ -421,7 +421,7 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
      * @return
      */
     @Override
-    public UserInfoVo getUserInfoByToken(String token) {
+    public UserInfoVo getUserInfoVoByToken(String token) {
         // 获取用户id和用户密码
         String userId = JwtHelper.getUserId(token);
         String password = JwtHelper.getPassword(token);
@@ -533,6 +533,25 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
             e.printStackTrace();
         }
 
+    }
+
+    /**
+     * 根据token查询用户
+     * @param token
+     * @return
+     */
+    @Override
+    public UserInfo getUserInfoByToken(String token) {
+        String userId = JwtHelper.getUserId(token);
+        String password = JwtHelper.getPassword(token);
+
+        // 查询数据库
+        QueryWrapper<UserInfo> wrapper = new QueryWrapper<>();
+        wrapper.eq("id", userId);
+        wrapper.eq("password", password);
+
+        UserInfo userInfo = baseMapper.selectOne(wrapper);
+        return userInfo;
     }
 
     // 拿取用户名称

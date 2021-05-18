@@ -34,6 +34,8 @@ public enum ResultCodeEnum {
     DELIVER_GOODS_FAIL(401, "发货失败"),
     CONFIRM_GOODS_FAIL(402, "确认收货失败"),
 
+    NOT_AUTH(507, "用户需要认证"),
+
     LOGIN_AUTH(508, "未登陆"),
     PERMISSION(509, "没有权限"),
 

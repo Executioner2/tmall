@@ -8,6 +8,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 /**
@@ -47,6 +48,10 @@ public class OrderInfo extends BaseEntity {
     @ApiModelProperty(value = "收件人手机号")
     @TableField("mobile")
     private String mobile;
+
+    @ApiModelProperty(value = "支付金额")
+    @TableField("amount")
+    private BigDecimal amount;
 
     @ApiModelProperty(value = "用户留言")
     @TableField("user_message")

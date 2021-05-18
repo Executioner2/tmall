@@ -1,6 +1,5 @@
 package com.study.tmall.order.service.impl;
 
-import cn.hutool.db.sql.Order;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.study.tmall.enums.ArithmeticTypeEnum;
@@ -198,6 +197,43 @@ public class OrderItemServiceImpl extends ServiceImpl<OrderItemMapper, OrderItem
         // 返回库存
         return stock;
 
+    }
+
+    /**
+     * 让订单项关联订单id
+     * @param orderItemIdList
+     * @param id 用户id
+     */
+    @Override
+    public void relevanceOrderInfo(List<String> orderItemIdList, String id) {
+        orderItemIdList.stream().forEach(item -> {
+            QueryWrapper<OrderItem> wrapper = new QueryWrapper<>();
+            wrapper.eq("user_id", id);
+            wrapper.isNull("order_id");
+            wrapper.eq("id", item);
+            OrderItem orderItem = baseMapper.selectOne(wrapper);
+            orderItem.setOrderId(id);
+            baseMapper.updateById(orderItem);
+        });
+    }
+
+    /**
+     * 查询出id集合中的订单项和商品
+     * @param orderItemIdList
+     * @return
+     */
+    @Override
+    public List<OrderItem> selectByIdList(List<String> orderItemIdList) {
+        List<OrderItem> orderItems = new ArrayList<>();
+        orderItemIdList.stream().forEach(item -> {
+            OrderItem orderItem = baseMapper.selectById(item);
+            if (orderItem != null) {
+                orderItems.add(orderItem);
+            }
+        });
+        // 远程调用查询商品信息集合
+        this.packOrderItems(orderItems);
+        return orderItems;
     }
 
 }

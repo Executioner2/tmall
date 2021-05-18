@@ -30,4 +30,10 @@ public interface OrderItemService extends IService<OrderItem> {
 
     // 更新订单项商品数量
     Long updateProductNumber(OrderItem orderItem);
+
+    // 让订单项关联订单id
+    void relevanceOrderInfo(List<String> orderItemIdList, String id);
+
+    // 查询出id集合中的订单项和商品
+    List<OrderItem> selectByIdList(List<String> orderItemIdList);
 }

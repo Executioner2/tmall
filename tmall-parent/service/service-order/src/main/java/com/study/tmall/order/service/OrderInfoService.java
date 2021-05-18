@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.study.tmall.model.order.OrderInfo;
 import com.study.tmall.vo.order.OrderQueryVo;
+import com.study.tmall.vo.order.SettlementVo;
 
 /**
  * Copyright@1205878539@qq.com
@@ -19,4 +20,7 @@ public interface OrderInfoService extends IService<OrderInfo> {
 
     // 订单发货
     void deliverGoods(String id);
+
+    // 下单
+    String settlement(String token, SettlementVo settlementVo);
 }
