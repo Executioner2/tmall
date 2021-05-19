@@ -1,7 +1,6 @@
 import request from '@/utils/request'
 
 const api_orderInfo_url = "/api/order/orderInfo"
-const api_weChat_url = "/api/order/weChat"
 
 export default {
   // 下单
@@ -13,6 +12,5 @@ export default {
     })
   }
 
-  // 微信支付二维码
 }
 

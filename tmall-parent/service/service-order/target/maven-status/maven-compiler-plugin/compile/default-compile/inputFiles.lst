@@ -4,6 +4,7 @@ E:\JavaProject\study\tmall-v1.0\tmall-parent\service\service-order\src\main\java
 E:\JavaProject\study\tmall-v1.0\tmall-parent\service\service-order\src\main\java\com\study\tmall\order\controller\OrderItemController.java
 E:\JavaProject\study\tmall-v1.0\tmall-parent\service\service-order\src\main\java\com\study\tmall\order\service\OrderInfoService.java
 E:\JavaProject\study\tmall-v1.0\tmall-parent\service\service-order\src\main\java\com\study\tmall\order\mapper\PaymentInfoMapper.java
+E:\JavaProject\study\tmall-v1.0\tmall-parent\service\service-order\src\main\java\com\study\tmall\order\util\HttpClient.java
 E:\JavaProject\study\tmall-v1.0\tmall-parent\service\service-order\src\main\java\com\study\tmall\order\mapper\OrderItemMapper.java
 E:\JavaProject\study\tmall-v1.0\tmall-parent\service\service-order\src\main\java\com\study\tmall\order\mapper\RefundInfoMapper.java
 E:\JavaProject\study\tmall-v1.0\tmall-parent\service\service-order\src\main\java\com\study\tmall\order\config\OrderConfig.java

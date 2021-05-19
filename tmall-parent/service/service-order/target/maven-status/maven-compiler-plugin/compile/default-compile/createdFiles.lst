@@ -7,10 +7,12 @@ com\study\tmall\order\service\PaymentInfoService.class
 com\study\tmall\order\service\impl\RefundInfoServiceImpl.class
 com\study\tmall\order\service\OrderItemService.class
 com\study\tmall\order\service\impl\PaymentInfoServiceImpl.class
+com\study\tmall\order\util\HttpClient$1.class
 com\study\tmall\order\config\OrderConfig.class
 com\study\tmall\order\ServiceOrderApplication.class
 com\study\tmall\order\service\OrderInfoService.class
 com\study\tmall\order\mapper\OrderInfoMapper.class
+com\study\tmall\order\util\HttpClient.class
 com\study\tmall\order\api\OrderInfoApi.class
 com\study\tmall\order\controller\OrderInfoController.class
 com\study\tmall\order\service\WeChatService.class

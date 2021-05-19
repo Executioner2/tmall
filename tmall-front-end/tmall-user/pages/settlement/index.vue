@@ -111,7 +111,6 @@ import moneyFormat from "../../assets/js/moneyFormat";
 import settlement from "../../api/settlement";
 
 export default {
-  name: "index",
   data() {
     return {
       order: {}, // 订单对象
@@ -164,9 +163,9 @@ export default {
       this.order.orderItemIdList = idList
       settlement.settlement(this.order)
         .then(response => {
-          this.orderId = response.data
-          // TODO 如果下单执行成功那么又向后端发送创建支付二维码请求
-          this.$message.success("下单成功")
+          let orderId = response.data
+          // 如果下单执行成功那么跳转到支付页面
+          this.$router.push("/pay/" + orderId)
 
         })
     },

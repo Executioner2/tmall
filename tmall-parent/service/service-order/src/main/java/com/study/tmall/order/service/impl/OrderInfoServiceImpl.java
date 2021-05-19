@@ -215,9 +215,7 @@ public class OrderInfoServiceImpl extends ServiceImpl<OrderInfoMapper, OrderInfo
 
         // 生成订单
         baseMapper.insert(orderInfo);
-
-        // 让订单项关联订单id
-        orderItemService.relevanceOrderInfo(orderItemIdList, userInfo.getId()); // 关联订单信息
+        orderItemService.relevanceOrderInfo(orderItemIdList, userInfo.getId()); // 让订单项关联订单id
 
         return orderInfo.getId();
     }

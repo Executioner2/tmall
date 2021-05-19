@@ -1,15 +1,13 @@
 package com.study.tmall.order.api;
 
+import com.study.tmall.model.order.OrderInfo;
 import com.study.tmall.order.service.OrderInfoService;
 import com.study.tmall.result.Result;
 import com.study.tmall.vo.order.SettlementVo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -41,5 +39,16 @@ public class OrderInfoApi {
         String token = request.getHeader("token");
         String orderId = orderInfoService.settlement(token, settlementVo);
         return Result.ok(orderId);
+    }
+
+    // 获取订单信息
+    @ApiOperation("获取订单信息")
+    @PostMapping("/auth/getOrderInfo/{orderId}")
+    public Result getOrderInfo(
+            @ApiParam(name = "orderId", value = "订单id", required = true)
+            @PathVariable String orderId) {
+
+        OrderInfo orderInfo = orderInfoService.getById(orderId);
+        return Result.ok(orderInfo);
     }
 }

@@ -37,4 +37,15 @@ public class WeChatApi {
         Map map = weChatService.createNative(orderId);
         return Result.ok(map);
     }
+
+    // 支付结果轮询
+    @ApiOperation("支付结果轮询")
+    @PostMapping("/auth/payStatus/poll/{orderId}")
+    public Result payStatusPoll(
+            @ApiParam(name = "orderId", value = "订单id", required = true)
+            @PathVariable String orderId) {
+
+        String msg = weChatService.payStatusPoll(orderId);
+        return Result.ok().message(msg);
+    }
 }

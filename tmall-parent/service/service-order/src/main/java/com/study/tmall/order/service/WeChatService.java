@@ -12,4 +12,7 @@ import java.util.Map;
 public interface WeChatService {
     // 生成微信支付二维码
     Map createNative(String orderId);
+
+    // 支付结果轮询
+    String payStatusPoll(String orderId);
 }

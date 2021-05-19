@@ -11,8 +11,9 @@ import io.swagger.annotations.ApiModel;
  */
 @ApiModel(description = "支付状态枚举类")
 public enum PaymentStatusEnum {
+    FAIL(0, "支付失败"),
     UNPAID(1,"支付中"),
-    PAID(2, "已支付"),
+    PAID(2, "已支付")
     ;
 
     private Integer status;
