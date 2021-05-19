@@ -61,7 +61,7 @@ public class WeChatServiceImpl implements WeChatService {
             paramMap.put("appid", ConstantPropertiesUtil.APPID); // 关联的公众号id
             paramMap.put("mch_id", ConstantPropertiesUtil.PARTNER); // 商户号
             paramMap.put("nonce_str", WXPayUtil.generateNonceStr()); // 随机字符串
-            paramMap.put("body", "用户留言：" + orderInfo.getUserMessage()); // 商品描述
+            paramMap.put("body", "tmall-v1.0在线支付"); // 商品描述
             paramMap.put("out_trade_no", orderInfo.getOutTradeNo()); // 商家订单号
             // 金额，因为微信支付的单位是分，所以扩大100倍
             paramMap.put("total_fee", orderInfo.getAmount().multiply(new BigDecimal("100")).longValue()+"");
@@ -72,8 +72,8 @@ public class WeChatServiceImpl implements WeChatService {
 
             // HttpClient根据url访问第三方接口并传递参数
             HttpClient httpClient = new HttpClient("https://api.mch.weixin.qq.com/pay/unifiedorder");
-            // 设置参数
-            httpClient.setXmlParam(WXPayUtil.mapToXml(paramMap));
+            // 设置参数，并把商户的sign写进去
+            httpClient.setXmlParam(WXPayUtil.generateSignedXml(paramMap, ConstantPropertiesUtil.PARTNERKEY));
             httpClient.setHttps(true); // 支持https
             httpClient.post(); // 发送post请求，执行这个方法就发送过去了
             // 获取返回信息，是xml格式的字符串
@@ -123,7 +123,7 @@ public class WeChatServiceImpl implements WeChatService {
             // 发送请求
             HttpClient httpClient = new HttpClient("https://api.mch.weixin.qq.com/pay/orderquery");
             httpClient.setHttps(true); // 支持https
-            httpClient.setXmlParam(WXPayUtil.mapToXml(paramMap)); // 设置参数
+            httpClient.setXmlParam(WXPayUtil.generateSignedXml(paramMap, ConstantPropertiesUtil.PARTNERKEY)); // 设置参数
             httpClient.post();
             // 返回结果
             String content = httpClient.getContent();

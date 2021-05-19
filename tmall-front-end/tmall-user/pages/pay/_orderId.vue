@@ -35,6 +35,8 @@ export default {
     this.getOrderInfo()
     this.createNative()
   },
+  watch: {
+  },
   methods: {
     // 根据订单id获取订单信息
     getOrderInfo() {
@@ -64,15 +66,16 @@ export default {
 
     // 轮询
     polling() {
-      this.timer = setInterval(() => {
+      let timer = setInterval(() => {
         pay.polling(this.orderId)
           .then(response => {
             if (response.data.message == "支付中") {
               return
             }
-            clearInterval(this.timer)
             // 跳转到支付成功页面
-            this.$router.push("/paySuccess")
+            clearInterval(timer)
+            this.$router.push("/paySuccess/" + this.orderId)
+            console.log("计时器已关闭")
           })
       }, 3000)
     },
