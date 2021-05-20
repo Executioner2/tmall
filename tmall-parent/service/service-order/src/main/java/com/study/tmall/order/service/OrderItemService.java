@@ -20,7 +20,7 @@ public interface OrderItemService extends IService<OrderItem> {
     Integer getProductNumberByUserId(String userId);
 
     // 加入到购物车
-    Boolean joinOrderItem(String token, OrderItem orderItem);
+    OrderItem joinOrderItem(String token, OrderItem orderItem);
 
     // 获取订单项（包括订单项对应的商品信息）
     List<OrderItem> getOrderItemByToken(String token);

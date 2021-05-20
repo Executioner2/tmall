@@ -59,15 +59,13 @@
         <div class="leftMenu">
           <div v-for="(item, index) in list" :key="index" class="link" @mouseenter="floatMenuBlock(item.id)">
             <span class="glyphicon glyphicon-link"></span>
-<!--            <a :href="'/category/' + item.id">{{item.name}}</a>-->
             <router-link :to="'/category/' + item.id">{{item.name}}</router-link>
           </div>
         </div>
         <div id="rightFloatMenu" class="rightFloatMenu">
           <div class="row" v-for="(item, index) in floatMenu" :key="index">
             <span v-for="(it) in item" :key="it.id" v-if="it.subTitle != '' && it.subTitle != null">
-                <!-- 随机上色 -->
-<!--                <a :href="'/product/' + it.id" :style="Math.random() > 0.8 ? 'color: #87CEFA': '' ">{{it.subTitle}}</a>-->
+              <!-- 随机上色 -->
               <router-link :to="'/product/' + it.id" :style="Math.random() > 0.8 ? 'color: #87CEFA': '' ">{{it.subTitle}}</router-link>
             </span>
           </div>

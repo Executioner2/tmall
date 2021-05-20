@@ -78,7 +78,7 @@
         </div>
         <div class="buyAndJoinShopping">
           <button id="buy" @click="buy">立即购买</button>
-          <button id="joinShopping" @click="joinOrderItem"><span class="glyphicon glyphicon-shopping-cart"></span>加入购物车</button>
+          <button id="joinShopping" @click="joinOrderItemClick"><span class="glyphicon glyphicon-shopping-cart"></span>加入购物车</button>
         </div>
       </div>
     </div>
@@ -208,6 +208,7 @@ import login from "../../api/login";
 import base64Util from "../../assets/js/base64Util";
 import md5Util from "../../assets/js/md5Util";
 import qrcode from "qrcodejs2";
+import moneyFormat from "../../assets/js/moneyFormat";
 
 export default {
   components: {SimpleSearch},
@@ -259,35 +260,64 @@ export default {
     },
 
     // 加入购物车
-    joinOrderItem() {
+    async joinOrderItemClick() { // 同步执行
       let token = storage.getItem("token")
       if (!token) { // 如果token为空，则表示没有登录
         // 弹出登录模态框
         this.dialogVisible = true
       } else { // 否则加入购物车
-        productInfo.joinOrderItem(this.orderItem)
-          .then(response => {
-            if (response.data) {
-              this.$message.success("成功加入购物车！刷新页面更新商品数量")
-              $("#joinShopping")[0].disabled = true
-              $("#joinShopping").css({"background-color": "#8c939d", "border": "none"})
-              // 更新localStorage中userInfo的购物车商品数量
-              let userInfo = storage.getItem("userInfo")
-              userInfo.productNumber += this.orderItem.number
-              storage.setItem("userInfo", userInfo)
-            }
-          })
+        if (await this.joinOrderItem()) { // 需要等待的异步方法
+          this.$message.success("成功加入购物车！刷新页面更新商品数量")
+        } else {
+          this.$message.error("加入购物车失败！")
+        }
       }
     },
 
+    // 加入购物车请求
+    joinOrderItem() {
+      return productInfo.joinOrderItem(this.orderItem)
+        .then(response => {
+          if (response.data) {
+            $("#joinShopping")[0].disabled = true
+            $("#joinShopping").css({"background-color": "#8c939d", "border": "none"})
+            // 更新localStorage中userInfo的购物车商品数量
+            let userInfo = storage.getItem("userInfo")
+            userInfo.productNumber += this.orderItem.number
+            storage.setItem("userInfo", userInfo)
+            return response.data
+          }
+        })
+    },
+
+
     // 立即购买
-    buy() {
+    async buy() {
       let token = storage.getItem("token")
       if (!token) { // 如果token为空，则表示没有登录
         // 弹出登录模态框
         this.dialogVisible = true
       } else { // 否则直接购买，跳转到下单页
-
+        // 先添加到购物车，然后跳转到下单页面
+        let orderItem = await this.joinOrderItem()
+        if (orderItem) {
+          // 把该商品所在购物车信息存入localStorage中
+          let shopping = {}
+          orderItem.amount = (parseFloat(orderItem.number) * parseFloat(this.productInfo.promotePrice)).toFixed(2)
+          orderItem.params.productInfo = this.productInfo
+          orderItem.params.productInfo.params.imageUrl = this.productImage.thumbnail[0].url
+          orderItem.amountStr = moneyFormat.format(orderItem.amount)
+          shopping.orderItems = []
+          shopping.totalAmountStr = orderItem.amountStr
+          shopping.totalAmount = orderItem.amount
+          shopping.orderItems.push(orderItem)
+          // 存入localStroage
+          storage.setItem("shopping", shopping, -1)
+          // 跳转到下单页面
+          this.$router.push("/settlement")
+        } else {
+          this.$message.error("加入购物车失败！")
+        }
       }
     },
 

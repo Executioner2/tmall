@@ -41,8 +41,8 @@
         <tr class="confirmOrderTitle">
           <td colspan="2px">
             <img class="tamllbuyPng" src="~assets/img/site/tmallbuy.png"/>
-            <a href="#" class="storeName">店铺：天猫店铺</a>
-            <a href="#"><div class="wangwangGif"></div></a>
+            <a href="javascript:void(0)" class="storeName">店铺：天猫店铺</a>
+            <a href="javascript:void(0)"><div class="wangwangGif"></div></a>
           </td>
           <td>单价</td>
           <td>数量</td>
@@ -62,7 +62,7 @@
           </td>
           <td>
             <div>
-              <a href="#">{{item.params.productInfo.name}}</a>
+              <router-link :to="'/product/' + item.params.productInfo.id">{{item.params.productInfo.name}}</router-link>
               <div>
                 <img src="~assets/img/site/creditcard.png" height="11" width="16"/>
                 <img src="~assets/img/site/7day.png" height="16" width="16"/>

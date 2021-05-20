@@ -47,8 +47,8 @@ public class OrderItemApi {
             HttpServletRequest request) {
 
         String token = request.getHeader("token");
-        Boolean flag = orderItemService.joinOrderItem(token, orderItem);
-        return Result.ok(flag);
+        OrderItem resultModule = orderItemService.joinOrderItem(token, orderItem);
+        return Result.ok(resultModule);
     }
 
     // 获取订单项（包括订单项对应的商品信息）

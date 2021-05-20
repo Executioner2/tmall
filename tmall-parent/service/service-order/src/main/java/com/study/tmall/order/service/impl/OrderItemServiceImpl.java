@@ -81,7 +81,7 @@ public class OrderItemServiceImpl extends ServiceImpl<OrderItemMapper, OrderItem
      * @param orderItem
      */
     @Override
-    public Boolean joinOrderItem(String token, OrderItem orderItem) {
+    public OrderItem joinOrderItem(String token, OrderItem orderItem) {
         String userId = JwtHelper.getUserId(token);
 
         // 根据userId查询是否有未下单的购物车，且商品id相同，如果相同更新购物车中商品数量即可，不用新增加数据
@@ -97,21 +97,23 @@ public class OrderItemServiceImpl extends ServiceImpl<OrderItemMapper, OrderItem
         productStockVo.setType(ArithmeticTypeEnum.SUBTRACT);
         Long stock = productFeignClient.updateProductNumber(productStockVo);
         if (stock != null) {
-            int insert;
+            int flag;
             // 如果购物车中没有该商品则添加数据
             if (item == null) {
                 // 添加到数据库
                 orderItem.setUserId(userId);
-                insert = baseMapper.insert(orderItem);
+                flag = baseMapper.insert(orderItem);
             } else { // 否则只更新商品数量
-                item.setNumber(item.getNumber() + orderItem.getNumber());
-                insert = baseMapper.updateById(item);
+                Integer number = orderItem.getNumber();
+                BeanUtils.copyProperties(item, orderItem);
+                orderItem.setNumber(item.getNumber() + number);
+                flag = baseMapper.updateById(orderItem);
             }
 
-            return insert == 1 ? true : false;
+            return flag == 1 ? orderItem : null;
         }
 
-        return false;
+        return null;
     }
 
     /**

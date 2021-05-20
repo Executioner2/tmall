@@ -224,7 +224,7 @@ export default {
         if (item.isSelect) { // 如果是选择状态
           this.totalAmount = (parseFloat(this.totalAmount) + parseFloat(item.amount)).toFixed(2)
           // 已选商品总数量
-          this.totalNumber += item.number
+          this.totalNumber += parseInt(item.number)
         }
       }
       if (this.totalAmount === 0) { // 如果购物车已选商品总金额为0则结算按钮不可用
