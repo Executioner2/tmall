@@ -26,6 +26,14 @@ export default {
       url: `${api_orderInfo_url}/auth/getOrderInfo/${orderId}`,
       method: "post",
     })
+  },
+
+  // 点击支付
+  pay(orderId) {
+    return request({
+      url: `${api_weChat_url}/auth/pay/${orderId}`,
+      method: "post",
+    })
   }
 
 }

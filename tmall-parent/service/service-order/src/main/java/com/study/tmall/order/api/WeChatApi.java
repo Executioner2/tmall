@@ -48,4 +48,15 @@ public class WeChatApi {
         String msg = weChatService.payStatusPoll(orderId);
         return Result.ok().message(msg);
     }
+
+    // 点击支付按钮直接完成支付功能
+    @ApiOperation("点击支付按钮直接完成支付功能")
+    @PostMapping("/auth/pay/{orderId}")
+    public Result pay (
+            @ApiParam(name = "orderId", value = "订单id", required = true)
+            @PathVariable String orderId) {
+
+        String msg = weChatService.pay(orderId);
+        return Result.ok().message(msg);
+    }
 }

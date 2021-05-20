@@ -15,4 +15,7 @@ public interface WeChatService {
 
     // 支付结果轮询
     String payStatusPoll(String orderId);
+
+    // 点击支付按钮直接完成支付功能
+    String pay(String orderId);
 }

@@ -9,7 +9,7 @@
         <div>
           <div style="margin: 50px auto; height: 200px; width: 200px" class="qrcode" ref="qrCodeUrl"></div>
         </div>
-        <button>确认支付</button>
+        <button @click="pay">确认支付</button>
       </div>
     </div>
   </div>
@@ -36,8 +36,21 @@ export default {
     this.createNative()
   },
   watch: {
+    $route() {
+      clearInterval(this.timer)
+    }
   },
   methods: {
+    // 点击支付
+    pay() {
+      pay.pay(this.orderId)
+        .then(response => {
+          if (response.message === '已支付') {
+            this.$router.push("/paySuccess/" + this.orderId)
+          }
+        })
+    },
+
     // 根据订单id获取订单信息
     getOrderInfo() {
       pay.getOrderInfo(this.orderId)
@@ -66,14 +79,14 @@ export default {
 
     // 轮询
     polling() {
-      let timer = setInterval(() => {
+      this.timer = setInterval(() => {
         pay.polling(this.orderId)
           .then(response => {
-            if (response.data.message == "支付中") {
+            if (response.message == "支付中") {
               return
             }
             // 跳转到支付成功页面
-            clearInterval(timer)
+            clearInterval(this.timer)
             this.$router.push("/paySuccess/" + this.orderId)
             console.log("计时器已关闭")
           })

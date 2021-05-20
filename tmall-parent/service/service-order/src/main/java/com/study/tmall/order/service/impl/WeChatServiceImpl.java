@@ -1,6 +1,7 @@
 package com.study.tmall.order.service.impl;
 
 import cn.hutool.Hutool;
+import cn.hutool.core.util.RandomUtil;
 import cn.hutool.crypto.digest.MD5;
 import com.github.wxpay.sdk.WXPayUtil;
 import com.study.tmall.enums.PaymentStatusEnum;
@@ -143,5 +144,25 @@ public class WeChatServiceImpl implements WeChatService {
             // 返回支付失败
             return PaymentStatusEnum.FAIL.getName();
         }
+    }
+
+    /**
+     * TODO 点击支付按钮直接完成支付功能，这是为了方便测试
+     * @param orderId
+     * @return
+     */
+    @Override
+    public String pay(String orderId) {
+        OrderInfo orderInfo = orderInfoService.getById(orderId);
+        if (orderInfo == null) {
+            throw new TmallException(ResultCodeEnum.PARAM_ERROR);
+        }
+        // 假数据
+        Map<String, String> resultMap = new HashMap<>();
+        resultMap.put("transaction_id", RandomUtil.randomString(16));
+        resultMap.put("context", "这是一个为了方便支付测试的方法");
+        // 更新订单状态
+        paymentInfoService.paySuccess(orderInfo, PaymentTypeEnum.WEIXIN, resultMap);
+        return PaymentStatusEnum.PAID.getName(); // 返回支付成功
     }
 }
