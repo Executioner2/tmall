@@ -93,7 +93,6 @@ import moneyFormat from "../../assets/js/moneyFormat";
 import storage from "../../assets/js/storage";
 
 export default {
-  name: "_userId",
   components: {SimpleSearch},
   data() {
     return {

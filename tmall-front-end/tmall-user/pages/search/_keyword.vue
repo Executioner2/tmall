@@ -43,7 +43,6 @@ import Search from "../../layouts/search";
 import searchApi from "../../api/search"
 
 export default {
-  name: "_keyword",
   components: {Search},
   data() {
     return {

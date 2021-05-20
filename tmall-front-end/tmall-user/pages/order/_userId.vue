@@ -225,7 +225,6 @@
 <script>
 import SimpleSearch from "../../layouts/simpleSearch";
 export default {
-  name: "_userId",
   components: {SimpleSearch},
   created() {
     this.$nextTick(function () {

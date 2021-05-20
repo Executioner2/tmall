@@ -210,7 +210,6 @@ import md5Util from "../../assets/js/md5Util";
 import qrcode from "qrcodejs2";
 
 export default {
-  name: "_productId",
   components: {SimpleSearch},
   data() {
     return {
