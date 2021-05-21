@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 /**
  * Copyright@1205878539@qq.com
@@ -50,5 +51,20 @@ public class OrderInfoApi {
 
         OrderInfo orderInfo = orderInfoService.getById(orderId);
         return Result.ok(orderInfo);
+    }
+
+    // 根据条件显示用户订单
+    @ApiOperation("根据条件显示用户订单")
+    @PostMapping("/auth/list/orderInfo/{orderStatus}")
+    public Result listOrderInfo(
+            @ApiParam(name = "request", value = "request", required = true)
+            HttpServletRequest request,
+
+            @ApiParam(name = "orderStatus", value = "订单状态")
+            @PathVariable Integer orderStatus) {
+
+        String token = request.getHeader("token");
+        List<OrderInfo> orderInfos = orderInfoService.listOrderInfo(token, orderStatus);
+        return Result.ok(orderInfos);
     }
 }

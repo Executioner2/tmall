@@ -7,6 +7,8 @@ import com.study.tmall.model.order.OrderInfo;
 import com.study.tmall.vo.order.OrderQueryVo;
 import com.study.tmall.vo.order.SettlementVo;
 
+import java.util.List;
+
 /**
  * Copyright@1205878539@qq.com
  * Author:2Executioner
@@ -23,4 +25,7 @@ public interface OrderInfoService extends IService<OrderInfo> {
 
     // 下单
     String settlement(String token, SettlementVo settlementVo);
+
+    // 根据条件显示用户订单
+    List<OrderInfo> listOrderInfo(String token, Integer orderStatus);
 }

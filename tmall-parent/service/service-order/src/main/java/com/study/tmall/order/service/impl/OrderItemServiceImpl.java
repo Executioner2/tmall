@@ -15,7 +15,10 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * Copyright@1205878539@qq.com
@@ -204,13 +207,12 @@ public class OrderItemServiceImpl extends ServiceImpl<OrderItemMapper, OrderItem
     /**
      * 让订单项关联订单id
      * @param orderItemIdList
-     * @param id 用户id
+     * @param id 订单id
      */
     @Override
     public void relevanceOrderInfo(List<String> orderItemIdList, String id) {
         orderItemIdList.stream().forEach(item -> {
             QueryWrapper<OrderItem> wrapper = new QueryWrapper<>();
-            wrapper.eq("user_id", id);
             wrapper.isNull("order_id");
             wrapper.eq("id", item);
             OrderItem orderItem = baseMapper.selectOne(wrapper);
@@ -236,6 +238,31 @@ public class OrderItemServiceImpl extends ServiceImpl<OrderItemMapper, OrderItem
         // 远程调用查询商品信息集合
         this.packOrderItems(orderItems);
         return orderItems;
+    }
+
+    /**
+     * 根据订单id取得订单项信息
+     * @param orderIdList
+     * @return
+     */
+    @Override
+    public Map<String, List<OrderItem>> getOrderItemByOrderId(List<String> orderIdList) {
+        // 根据订单id查询出所有订单项
+        QueryWrapper<OrderItem> wrapper = new QueryWrapper<>();
+        wrapper.in("order_id", orderIdList);
+        List<OrderItem> orderItems = baseMapper.selectList(wrapper);
+
+        // 根据订单id对订单项集合进行分组
+        Map<String, List<OrderItem>> orderItemMap = orderItems.stream().collect(Collectors.groupingBy(OrderItem::getOrderId));
+        Iterator<String> it = orderItemMap.keySet().iterator();
+        while (it.hasNext()) {
+            List<OrderItem> items = orderItemMap.get(it.next());
+            // 对订单项进行封装
+            this.packOrderItems(items);
+        }
+
+        // 返回订单项map集合
+        return orderItemMap;
     }
 
 }

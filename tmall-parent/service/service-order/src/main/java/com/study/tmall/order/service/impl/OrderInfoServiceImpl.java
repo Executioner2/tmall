@@ -17,9 +17,9 @@ import com.study.tmall.model.user.UserInfo;
 import com.study.tmall.order.mapper.OrderInfoMapper;
 import com.study.tmall.order.service.OrderInfoService;
 import com.study.tmall.order.service.OrderItemService;
-import com.study.tmall.order.service.WeChatService;
 import com.study.tmall.result.ResultCodeEnum;
 import com.study.tmall.user.client.UserFeignClient;
+import com.study.tmall.util.JwtHelper;
 import com.study.tmall.vo.order.OrderQueryVo;
 import com.study.tmall.vo.order.SettlementVo;
 import org.springframework.beans.BeanUtils;
@@ -43,8 +43,6 @@ public class OrderInfoServiceImpl extends ServiceImpl<OrderInfoMapper, OrderInfo
     private UserFeignClient userFeignClient;
     @Resource
     private OrderItemService orderItemService;
-    @Resource
-    private WeChatService weChatService;
 
 
     /**
@@ -215,8 +213,55 @@ public class OrderInfoServiceImpl extends ServiceImpl<OrderInfoMapper, OrderInfo
 
         // 生成订单
         baseMapper.insert(orderInfo);
-        orderItemService.relevanceOrderInfo(orderItemIdList, userInfo.getId()); // 让订单项关联订单id
+        orderItemService.relevanceOrderInfo(orderItemIdList, orderInfo.getId()); // 让订单项关联订单id
 
         return orderInfo.getId();
+    }
+
+    /**
+     * 根据条件显示用户订单
+     * @param token
+     * @param orderStatus
+     * @return
+     */
+    @Override
+    public List<OrderInfo> listOrderInfo(String token, Integer orderStatus) {
+        // 取得用户id
+        String userId = JwtHelper.getUserId(token);
+
+        // 根据用户id和订单状态查询出用户订单
+        QueryWrapper<OrderInfo> wrapper = new QueryWrapper<>();
+        wrapper.eq("user_id", userId);
+        if (orderStatus != -1) {
+            wrapper.eq("order_status", orderStatus);
+        }
+        List<OrderInfo> orderInfos = baseMapper.selectList(wrapper);
+        // 如果订单集合为空或者没有数据则返回空
+        if (orderInfos == null || orderInfos.size() == 0) {
+            return null;
+        }
+
+        List<String> orderIdList = new ArrayList<>();
+        // 取出订单id和字符化订单状态
+        orderInfos.stream().forEach(item -> {
+            orderIdList.add(item.getId());
+            item.getParams().put("orderStatusStr", OrderStatusEnum.getStatusNameByStatus(item.getOrderStatus()));
+        });
+
+        // 根据订单id取得订单项信息
+        Map<String, List<OrderItem>> orderItemMap = orderItemService.getOrderItemByOrderId(orderIdList);
+        // 把订单项信息封装到订单集合中
+        orderInfos.stream().forEach(item -> {
+            List<OrderItem> orderItems = orderItemMap.get(item.getId());
+            // 计算一个订单中的商品数量
+            int totalNumber = 0;
+            for (OrderItem obj : orderItems) {
+                totalNumber += obj.getNumber();
+            }
+            item.getParams().put("totalNumber", totalNumber);
+            item.getParams().put("orderItems", orderItems);
+        });
+
+        return orderInfos;
     }
 }

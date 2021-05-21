@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.study.tmall.model.order.OrderItem;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Copyright@1205878539@qq.com
@@ -36,4 +37,7 @@ public interface OrderItemService extends IService<OrderItem> {
 
     // 查询出id集合中的订单项和商品
     List<OrderItem> selectByIdList(List<String> orderItemIdList);
+
+    // 根据订单id取得订单项信息
+    Map<String, List<OrderItem>> getOrderItemByOrderId(List<String> orderIdList);
 }

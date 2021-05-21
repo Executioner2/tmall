@@ -89,7 +89,7 @@ public class PaymentInfoServiceImpl extends ServiceImpl<PaymentInfoMapper, Payme
         this.updateById(paymentInfo);
 
         // 更新订单信息
-        orderInfo.setOrderStatus(OrderStatusEnum.WAIT_TAKE_GOODS.getStatus()); // 待收货
+        orderInfo.setOrderStatus(OrderStatusEnum.WAIT_SHIPMENTS.getStatus()); // 待发货
         orderInfo.setPayDate(new Date()); // 更新支付日期
         orderInfoService.updateById(orderInfo);
     }

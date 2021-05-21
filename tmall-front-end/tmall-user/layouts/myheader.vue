@@ -11,7 +11,7 @@
         <a v-show="userInfo" @click="quit" href="javascript:void(0)">退出</a>
         <router-link v-show="!userInfo" to="/regist">免费注册</router-link>
         <span class="pull-right">
-            <a :href="userInfo == null ? '/login' : '/order/' + userInfo.id">我的订单</a>
+            <a :href="userInfo == null ? '/login' : '/order'">我的订单</a>
             <a :href="userInfo == null ? '/login' : '/orderItem/' + userInfo.id">
                 <span class="glyphicon glyphicon-shopping-cart redColor"></span>购物车<strong>{{userInfo == null ? 0 : userInfo.productNumber == null ? 0 : userInfo.productNumber }}</strong>件
             </a>
