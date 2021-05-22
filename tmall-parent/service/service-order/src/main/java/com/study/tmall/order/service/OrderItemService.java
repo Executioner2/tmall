@@ -43,4 +43,7 @@ public interface OrderItemService extends IService<OrderItem> {
 
     // 根据订单id取得订单项信息
     List<OrderItem> getOrderItemByOrderId(String orderId);
+
+    // 根据订单id删除订单项
+    void removeByOrderId(String id);
 }

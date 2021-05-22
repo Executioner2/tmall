@@ -11,4 +11,6 @@ import com.study.tmall.model.order.RefundInfo;
  * Description:
  */
 public interface RefundInfoService extends IService<RefundInfo> {
+    // 根据订单id删除退款记录
+    void removeByOrderId(String id);
 }

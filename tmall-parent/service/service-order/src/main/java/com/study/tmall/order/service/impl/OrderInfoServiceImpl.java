@@ -17,6 +17,8 @@ import com.study.tmall.model.user.UserInfo;
 import com.study.tmall.order.mapper.OrderInfoMapper;
 import com.study.tmall.order.service.OrderInfoService;
 import com.study.tmall.order.service.OrderItemService;
+import com.study.tmall.order.service.PaymentInfoService;
+import com.study.tmall.order.service.RefundInfoService;
 import com.study.tmall.result.ResultCodeEnum;
 import com.study.tmall.user.client.UserFeignClient;
 import com.study.tmall.util.JwtHelper;
@@ -43,6 +45,10 @@ public class OrderInfoServiceImpl extends ServiceImpl<OrderInfoMapper, OrderInfo
     private UserFeignClient userFeignClient;
     @Resource
     private OrderItemService orderItemService;
+    @Resource
+    private PaymentInfoService paymentInfoService;
+    @Resource
+    private RefundInfoService refundInfoService;
 
 
     /**
@@ -286,11 +292,12 @@ public class OrderInfoServiceImpl extends ServiceImpl<OrderInfoMapper, OrderInfo
     }
 
     // 根据用户id 订单id 订单状态查询订单信息
-    private OrderInfo getOrderInfoOfCondition(UserInfo userInfo, String orderId, Integer status) {
+    private OrderInfo getOrderInfoOfCondition(UserInfo userInfo, String orderId, Integer... status) {
         QueryWrapper<OrderInfo> wrapper = new QueryWrapper<>();
+
         wrapper.eq("id", orderId);
         wrapper.eq("user_id", userInfo.getId());
-        wrapper.eq("order_status", status);
+        wrapper.in("order_status", status);
         OrderInfo orderInfo = baseMapper.selectOne(wrapper);
 
         return orderInfo;
@@ -358,5 +365,31 @@ public class OrderInfoServiceImpl extends ServiceImpl<OrderInfoMapper, OrderInfo
         orderInfo.setOrderStatus(OrderStatusEnum.WAIT_REVIEW.getStatus());
         orderInfo.setConfirmDate(new Date());
         baseMapper.updateById(orderInfo);
+    }
+
+    /**
+     * 删除交易完成了的订单（确认收货后就算完成了交易）
+     * @param token
+     * @param orderId
+     */
+    @Override
+    public void removeOrderInfo(String token, String orderId) {
+        // 先验证用户信息是否合法
+        UserInfo userInfo = userFeignClient.getUserInfoByToken(token);
+        if (userInfo == null) throw new TmallException(ResultCodeEnum.FETCH_USERINFO_ERROR);
+        // 根据用户id 订单id 订单状态（待收货）查询订单信息
+        OrderInfo orderInfo = this.getOrderInfoOfCondition(
+                userInfo, orderId,
+                OrderStatusEnum.WAIT_REVIEW.getStatus(),
+                OrderStatusEnum.COMPLETE_TRANSACTION.getStatus());
+        // 查询结果为空，参数不正确
+        if (orderInfo == null) throw new TmallException(ResultCodeEnum.PARAM_ERROR);
+
+        // 逻辑删除订单信息
+        baseMapper.deleteById(orderInfo);
+        // 根据订单id删除订单项，支付记录，退款记录
+        orderItemService.removeByOrderId(orderInfo.getId());
+        paymentInfoService.removeByOrderId(orderInfo.getId());
+        refundInfoService.removeByOrderId(orderInfo.getId());
     }
 }

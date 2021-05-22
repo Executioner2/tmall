@@ -19,4 +19,12 @@ export default {
     })
   },
 
+  // 删除订单
+  deleteOrderInfo(orderId) {
+    return request({
+      url: `${api_orderInfo_url}/auth/delete/${orderId}`,
+      method: "post",
+    })
+  }
+
 }

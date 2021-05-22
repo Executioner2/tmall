@@ -20,4 +20,7 @@ public interface PaymentInfoService extends IService<PaymentInfo> {
 
     // 更新订单状态
     void paySuccess(OrderInfo orderInfo, PaymentTypeEnum typeEnum, Map<String, String> resultMap);
+
+    // 根据订单id删除支付记录
+    void removeByOrderId(String id);
 }

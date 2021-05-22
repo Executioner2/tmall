@@ -281,4 +281,15 @@ public class OrderItemServiceImpl extends ServiceImpl<OrderItemMapper, OrderItem
         return orderItems;
     }
 
+    /**
+     * 根据订单id删除订单项
+     * @param id
+     */
+    @Override
+    public void removeByOrderId(String id) {
+       QueryWrapper<OrderItem> wrapper = new QueryWrapper<>();
+       wrapper.eq("order_id", id);
+       baseMapper.delete(wrapper);
+    }
+
 }

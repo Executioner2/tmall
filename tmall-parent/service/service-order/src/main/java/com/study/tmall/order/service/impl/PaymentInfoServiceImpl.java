@@ -94,6 +94,17 @@ public class PaymentInfoServiceImpl extends ServiceImpl<PaymentInfoMapper, Payme
         orderInfoService.updateById(orderInfo);
     }
 
+    /**
+     * 根据订单id删除支付记录
+     * @param id
+     */
+    @Override
+    public void removeByOrderId(String id) {
+       QueryWrapper<PaymentInfo> wrapper = new QueryWrapper<>();
+       wrapper.eq("order_id", id);
+       baseMapper.delete(wrapper);
+    }
+
     // 根据商家订单id和订单支付状态查询出支付信息
     private PaymentInfo getPaymentInfo(String outTradeNo, Integer status) {
         QueryWrapper<PaymentInfo> wrapper = new QueryWrapper<>();

@@ -72,6 +72,21 @@ public class OrderInfoApi {
         return Result.ok(orderInfos);
     }
 
+    // 删除交易完成了的订单（确认收货后就算完成了交易）
+    @ApiOperation("删除交易完成了的订单")
+    @PostMapping("/auth/delete/{orderId}")
+    public Result deleteOrderInfo(
+            @ApiParam(name = "request", value = "request", required = true)
+            HttpServletRequest request,
+
+            @ApiParam(name = "orderId", value = "订单id")
+            @PathVariable String orderId) {
+
+        String token = request.getHeader("token");
+        orderInfoService.removeOrderInfo(token, orderId);
+        return Result.ok();
+    }
+
     // 用户催卖家发货，卖家光速发货
     @ApiOperation("用户催卖家发货，卖家光速发货")
     @PostMapping("/auth/deliver/{orderId}")
@@ -116,4 +131,5 @@ public class OrderInfoApi {
         orderInfoService.confirmReceipt(token, orderId);
         return Result.ok();
     }
+
 }

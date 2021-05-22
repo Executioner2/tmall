@@ -39,7 +39,7 @@
             <a href="javascript:void(0)"><div class="wangwangGif"></div></a>
           </td>
           <td>
-            <a href="javascript:void(0)" v-if="item.orderStatus >= 3"><span class="orderListItemDelete glyphicon glyphicon-trash"></span></a>
+            <a @click="remove(item.id)" href="javascript:void(0)" v-if="item.orderStatus >= 3"><span class="orderListItemDelete glyphicon glyphicon-trash"></span></a>
           </td>
         </tr>
         <tr class="myOrderProductItem" v-for="(oItem, index2) in item.params.orderItems" :key="index2">
@@ -139,6 +139,20 @@ export default {
         .catch(error => {
           this.$message.error("卖家拒绝发货并向您竖了个中指")
         })
+    },
+
+    // 删除订单
+    remove(orderId) {
+      this.$confirm("此操作将永久删除订单？是否继续", "提示", {
+        confirmButtonText: "是",
+        cancelButtonText: "否",
+        type: "warning"
+      }).then(() => {
+        order.deleteOrderInfo(orderId)
+          .then(() => {
+            this.$router.go(0)
+          })
+      })
     },
 
     //红色下标的位置

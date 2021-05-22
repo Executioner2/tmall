@@ -40,4 +40,7 @@ public interface OrderInfoService extends IService<OrderInfo> {
 
     // 确认收货
     void confirmReceipt(String token, String orderId);
+
+    // 删除交易完成了的订单（确认收货后就算完成了交易）
+    void removeOrderInfo(String token, String orderId);
 }
