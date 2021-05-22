@@ -91,6 +91,9 @@
               已评价
             </span>
           </td>
+          <td v-if="index2 == 0 && item.orderStatus == 4" :rowspan="item.params.orderItems.length">
+            <span>已完成</span>
+          </td>
         </tr>
       </table>
     </div>

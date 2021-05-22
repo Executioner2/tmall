@@ -380,7 +380,7 @@ public class OrderInfoServiceImpl extends ServiceImpl<OrderInfoMapper, OrderInfo
         // 更新商品月销量，总销量
         productFeignClient.updateSales(paramsMap);
 
-        // TODO 发送邮件，提醒买家已签收
+        // TODO 发送邮件，提醒买家已签收，同时开启定时任务，超过规定时间则用户不能评价该商品
     }
 
     /**
@@ -407,5 +407,17 @@ public class OrderInfoServiceImpl extends ServiceImpl<OrderInfoMapper, OrderInfo
         orderItemService.removeByOrderId(orderInfo.getId());
         paymentInfoService.removeByOrderId(orderInfo.getId());
         refundInfoService.removeByOrderId(orderInfo.getId());
+    }
+
+    /**
+     * 更新订单状态
+     * @param orderId
+     * @param status
+     */
+    @Override
+    public void updateOrderStatus(String orderId, Integer status) {
+        OrderInfo orderInfo = baseMapper.selectById(orderId);
+        orderInfo.setOrderStatus(status);
+        baseMapper.updateById(orderInfo);
     }
 }

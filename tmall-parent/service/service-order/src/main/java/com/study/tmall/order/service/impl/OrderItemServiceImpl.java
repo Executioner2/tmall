@@ -3,11 +3,13 @@ package com.study.tmall.order.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.study.tmall.enums.ArithmeticTypeEnum;
+import com.study.tmall.enums.OrderStatusEnum;
 import com.study.tmall.enums.ReviewEnum;
 import com.study.tmall.exception.TmallException;
 import com.study.tmall.model.order.OrderItem;
 import com.study.tmall.model.product.ProductInfo;
 import com.study.tmall.order.mapper.OrderItemMapper;
+import com.study.tmall.order.service.OrderInfoService;
 import com.study.tmall.order.service.OrderItemService;
 import com.study.tmall.product.client.ProductFeignClient;
 import com.study.tmall.result.ResultCodeEnum;
@@ -31,6 +33,8 @@ import java.util.stream.Collectors;
 public class OrderItemServiceImpl extends ServiceImpl<OrderItemMapper, OrderItem> implements OrderItemService {
     @Resource
     private ProductFeignClient productFeignClient;
+    @Resource
+    private OrderInfoService orderInfoService;
 
     /**
      * 显示订单项
@@ -322,8 +326,27 @@ public class OrderItemServiceImpl extends ServiceImpl<OrderItemMapper, OrderItem
         OrderItem orderItem = baseMapper.selectById(id);
         if (orderItem == null) throw new TmallException(ResultCodeEnum.PARAM_ERROR);
 
+        // 更新订单项评价状态
         orderItem.setIsReview(status);
         baseMapper.updateById(orderItem);
+
+        // 查询订单项对应的订单内是否所有订单项都完成了评价
+        String orderId = orderItem.getOrderId();
+        QueryWrapper<OrderItem> wrapper = new QueryWrapper<>();
+        wrapper.eq("order_id", orderId);
+        List<OrderItem> orderItems = baseMapper.selectList(wrapper);
+        Iterator<OrderItem> iterator = orderItems.iterator();
+        // 遍历所有订单项
+        while (iterator.hasNext()) {
+            OrderItem item = iterator.next();
+            // 如果有一个订单项没有评价就返回
+            if (item.getIsReview() == ReviewEnum.NOT_REVIEW.getStatus()) {
+                return;
+            }
+        }
+
+        // 执行到这里表示所有订单项都完成了评价，那么更新订单状态为已完成
+        orderInfoService.updateOrderStatus(orderId, OrderStatusEnum.COMPLETE_TRANSACTION.getStatus());
     }
 
 }
