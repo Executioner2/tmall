@@ -48,7 +48,7 @@
           </td>
           <td>
             <div class="productInformation">
-              <a href="javascript:void(0)">{{oItem.params.productInfo.name}}</a>
+              <router-link :to="'/product/' + oItem.params.productInfo.id">{{oItem.params.productInfo.name}}</router-link>
               <div class="cartProductLinkInnerDiv">
                 <img src="~/assets/img/site/creditcard.png" height="11" width="16"/>
                 <img src="~/assets/img/site/7day.png" height="16" width="16"/>

@@ -49,4 +49,7 @@ public interface OrderItemService extends IService<OrderItem> {
 
     // 根据订单项id查询订单项和商品
     Map<String, Object> getOrderItemDetailsById(String id);
+
+    // 更新订单项评价状态（内部调用）
+    void updateReviewStatus(String id, Integer status);
 }

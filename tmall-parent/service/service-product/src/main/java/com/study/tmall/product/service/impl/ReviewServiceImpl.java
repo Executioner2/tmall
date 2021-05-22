@@ -1,18 +1,27 @@
 package com.study.tmall.product.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.study.tmall.enums.OrderStatusEnum;
+import com.study.tmall.enums.ReviewEnum;
+import com.study.tmall.exception.TmallException;
 import com.study.tmall.model.product.Review;
 import com.study.tmall.model.user.UserInfo;
+import com.study.tmall.order.client.OrderFeignClient;
 import com.study.tmall.product.mapper.ReviewMapper;
 import com.study.tmall.product.service.ReviewService;
+import com.study.tmall.result.ResultCodeEnum;
 import com.study.tmall.user.client.UserFeignClient;
 import com.study.tmall.vo.front.ProductReviewReturnVo;
+import com.study.tmall.vo.product.ReviewVo;
 import org.springframework.beans.BeanUtils;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
@@ -29,6 +38,9 @@ import java.util.List;
 public class ReviewServiceImpl extends ServiceImpl<ReviewMapper, Review> implements ReviewService {
     @Resource
     private UserFeignClient userFeignClient;
+    @Resource
+    private OrderFeignClient orderFeignClient;
+
 
     /**
      * 根据商品id分页查询商品评价
@@ -58,6 +70,28 @@ public class ReviewServiceImpl extends ServiceImpl<ReviewMapper, Review> impleme
         });
 
         return reviewPage;
+    }
+
+    /**
+     * 添加评价
+     * @param token
+     * @param reviewVo
+     */
+    @Override
+    @CacheEvict(value = "product", allEntries = true) // 清除redis缓存
+    public void addReview(String token, ReviewVo reviewVo) {
+        // 核实用户信息
+        UserInfo userInfo = userFeignClient.getUserInfoByToken(token);
+        if (userInfo == null) throw new TmallException(ResultCodeEnum.FETCH_USERINFO_ERROR);
+
+        // 增加评价
+        Review review = new Review();
+        BeanUtils.copyProperties(reviewVo, review);
+        review.setUserId(userInfo.getId());
+        baseMapper.insert(review);
+
+        // 更新订单项评价状态
+        orderFeignClient.updateReviewStatus(reviewVo.getOrderItemId(), ReviewEnum.REVIEW.getStatus());
     }
 
     // 封装匿名用户名称

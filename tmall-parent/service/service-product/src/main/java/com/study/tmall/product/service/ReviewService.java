@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.study.tmall.model.product.Review;
 import com.study.tmall.vo.front.ProductReviewReturnVo;
+import com.study.tmall.vo.product.ReviewVo;
 
 /**
  * Copyright@1205878539@qq.com
@@ -16,4 +17,7 @@ import com.study.tmall.vo.front.ProductReviewReturnVo;
 public interface ReviewService extends IService<Review> {
     // 根据商品id分页查询商品评价
     IPage listReviewByProductId(Page<ProductReviewReturnVo> page, String productId);
+
+    // 添加评价
+    void addReview(String token, ReviewVo reviewVo);
 }

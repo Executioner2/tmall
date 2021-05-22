@@ -6,15 +6,14 @@ import com.study.tmall.model.product.Review;
 import com.study.tmall.product.service.ReviewService;
 import com.study.tmall.result.Result;
 import com.study.tmall.vo.front.ProductReviewReturnVo;
+import com.study.tmall.vo.product.ReviewVo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * Copyright@1205878539@qq.com
@@ -47,4 +46,20 @@ public class ReviewApi {
         IPage pageModule = reviewService.listReviewByProductId(page, productId);
         return Result.ok(pageModule);
     }
+
+    // 添加评价
+    @ApiOperation("添加评价")
+    @PostMapping("/auth/add")
+    public Result addReview(
+            @ApiParam(name = "request", value = "request", required = true)
+            HttpServletRequest request,
+
+            @ApiParam(name = "reviewVo", value = "商品评价vo类", required = true)
+            @RequestBody ReviewVo reviewVo) {
+
+        String token = request.getHeader("token");
+        reviewService.addReview(token, reviewVo);
+        return Result.ok();
+    }
+
 }

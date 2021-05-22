@@ -42,3 +42,4 @@ com\study\tmall\model\category\CategoryInfo.class
 com\study\tmall\vo\user\UserLoginVo.class
 com\study\tmall\model\product\Review.class
 com\study\tmall\enums\ProductSortStatusEnum.class
+com\study\tmall\vo\product\ReviewVo.class

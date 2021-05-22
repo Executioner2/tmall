@@ -1,9 +1,7 @@
 package com.study.tmall.product.mapper;
 
-import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.core.toolkit.Constants;
 import com.study.tmall.model.product.Review;
 import com.study.tmall.vo.front.ProductReviewReturnVo;
 import org.apache.ibatis.annotations.Param;

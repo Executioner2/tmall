@@ -312,4 +312,18 @@ public class OrderItemServiceImpl extends ServiceImpl<OrderItemMapper, OrderItem
         return map;
     }
 
+    /**
+     * 更新订单项评价状态（内部调用）
+     * @param id
+     * @param status
+     */
+    @Override
+    public void updateReviewStatus(String id, Integer status) {
+        OrderItem orderItem = baseMapper.selectById(id);
+        if (orderItem == null) throw new TmallException(ResultCodeEnum.PARAM_ERROR);
+
+        orderItem.setIsReview(status);
+        baseMapper.updateById(orderItem);
+    }
+
 }

@@ -20,5 +20,6 @@
             review
         WHERE
             product_id=#{productId}
+        ORDER BY create_time DESC
     </select>
 </mapper>

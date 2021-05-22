@@ -101,4 +101,17 @@ public class OrderItemApi {
         return Result.ok(resultMap);
     }
 
+    // 更新订单项评价状态（内部调用）
+    @ApiOperation("更新订单项评价状态（内部调用）")
+    @PostMapping("inner/update/reviewStatus/{id}/{status}")
+    public void updateReviewStatus(
+            @ApiParam(name = "id", value = "订单id", required = true)
+            @PathVariable("id") String id,
+
+            @ApiParam(name = "status", value = "评价状态", required = true)
+            @PathVariable("status") Integer status) {
+
+        orderItemService.updateReviewStatus(id, status);
+    }
+
 }
