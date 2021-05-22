@@ -27,7 +27,7 @@ public interface OrderInfoService extends IService<OrderInfo> {
     String settlement(String token, SettlementVo settlementVo);
 
     // 获取订单信息
-    OrderInfo getOrderInfo(String token, String orderId);
+    OrderInfo getOrderInfo(String token, String orderId, Integer orderStatus);
 
     // 根据条件显示用户订单
     List<OrderInfo> listOrderInfo(String token, Integer orderStatus);
@@ -36,7 +36,7 @@ public interface OrderInfoService extends IService<OrderInfo> {
     void deliverGoodsByUser(String token, String orderId);
 
     // 获取订单详细信息
-    OrderInfo getOrderInfoDetails(String token, String orderId);
+    OrderInfo getOrderInfoDetails(String token, String orderId, Integer orderStatus);
 
     // 确认收货
     void confirmReceipt(String token, String orderId);

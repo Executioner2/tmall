@@ -21,9 +21,9 @@ export default {
   },
 
   // 根据订单id或取订单信息
-  getOrderInfo(orderId) {
+  getOrderInfo(orderId, orderStatus) {
     return request({
-      url: `${api_orderInfo_url}/auth/getOrderInfo/${orderId}`,
+      url: `${api_orderInfo_url}/auth/getOrderInfo/${orderId}/${orderStatus}`,
       method: "post",
     })
   },

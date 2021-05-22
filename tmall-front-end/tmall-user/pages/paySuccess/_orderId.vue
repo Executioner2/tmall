@@ -62,9 +62,10 @@ export default {
   methods: {
     // 根据订单id获取订单信息
     getOrderInfo() {
-      pay.getOrderInfo(this.orderId)
+      pay.getOrderInfo(this.orderId, 1) // 1 代表支付成功，等待发货
         .then(response => {
           this.orderInfo = response.data
+          console.log(this.orderInfo)
           this.amountStr = moneyFormat.format(this.orderInfo.amount)
         })
     },

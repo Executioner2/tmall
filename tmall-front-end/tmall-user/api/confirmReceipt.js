@@ -4,9 +4,9 @@ const api_orderInfo_url = "/api/order/orderInfo"
 
 export default {
   // 获取订单详情信息
-  getOrderInfoDetails(orderId) {
+  getOrderInfoDetails(orderId, orderStatus) {
     return request({
-      url: `${api_orderInfo_url}/auth/getOrderInfoDetails/${orderId}`,
+      url: `${api_orderInfo_url}/auth/getOrderInfoDetails/${orderId}/${orderStatus}`,
       method: "post"
     })
   },

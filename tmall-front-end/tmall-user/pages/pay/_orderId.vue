@@ -53,7 +53,7 @@ export default {
 
     // 根据订单id获取订单信息
     getOrderInfo() {
-      pay.getOrderInfo(this.orderId)
+      pay.getOrderInfo(this.orderId, 0) // 0 代表未支付
         .then(response => {
           this.orderInfo = response.data
           this.amountStr = moneyFormat.format(this.orderInfo.amount)

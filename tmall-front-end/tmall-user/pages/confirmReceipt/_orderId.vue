@@ -99,7 +99,7 @@ export default {
   methods: {
     // 获得订单信息
     getOrderInfo() {
-      confirmReceipt.getOrderInfoDetails(this.orderId)
+      confirmReceipt.getOrderInfoDetails(this.orderId, 2) // 2代表等待买家确认收货
         .then(response => {
           this.orderInfo = response.data
           this.orderItems = this.orderInfo.params.orderItems

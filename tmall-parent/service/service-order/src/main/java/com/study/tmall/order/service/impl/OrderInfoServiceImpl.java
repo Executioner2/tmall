@@ -21,7 +21,6 @@ import com.study.tmall.order.service.PaymentInfoService;
 import com.study.tmall.order.service.RefundInfoService;
 import com.study.tmall.result.ResultCodeEnum;
 import com.study.tmall.user.client.UserFeignClient;
-import com.study.tmall.util.JwtHelper;
 import com.study.tmall.vo.order.OrderQueryVo;
 import com.study.tmall.vo.order.SettlementVo;
 import org.springframework.beans.BeanUtils;
@@ -278,15 +277,18 @@ public class OrderInfoServiceImpl extends ServiceImpl<OrderInfoMapper, OrderInfo
      * 获取订单信息
      * @param token
      * @param orderId
+     * @param orderStatus
      * @return
      */
     @Override
-    public OrderInfo getOrderInfo(String token, String orderId) {
+    public OrderInfo getOrderInfo(String token, String orderId, Integer orderStatus) {
         // 先验证用户信息是否合法
         UserInfo userInfo = userFeignClient.getUserInfoByToken(token);
         if (userInfo == null) throw new TmallException(ResultCodeEnum.FETCH_USERINFO_ERROR);
-        // 根据用户id 订单id 订单状态（待付款）查询订单信息
-        OrderInfo orderInfo = this.getOrderInfoOfCondition(userInfo, orderId, OrderStatusEnum.WAIT_PAY.getStatus());
+        // 如果传来的订单状态不存在，则抛出参数错误
+        if (!OrderStatusEnum.exist(orderStatus)) throw new TmallException(ResultCodeEnum.PARAM_ERROR);
+        // 根据用户id 订单id 订单状态（待发货）查询订单信息
+        OrderInfo orderInfo = this.getOrderInfoOfCondition(userInfo, orderId, orderStatus);
 
         return orderInfo;
     }
@@ -310,11 +312,8 @@ public class OrderInfoServiceImpl extends ServiceImpl<OrderInfoMapper, OrderInfo
      */
     @Override
     public void deliverGoodsByUser(String token, String orderId) {
-        // 先验证用户信息是否合法
-        UserInfo userInfo = userFeignClient.getUserInfoByToken(token);
-        if (userInfo == null) throw new TmallException(ResultCodeEnum.FETCH_USERINFO_ERROR);
-        // 根据用户id 订单id 订单状态（待发货）查询订单信息
-        OrderInfo orderInfo = this.getOrderInfoOfCondition(userInfo, orderId, OrderStatusEnum.WAIT_SHIPMENTS.getStatus());
+        // 先查询待发货的订单信息
+        OrderInfo orderInfo = this.getOrderInfo(token, orderId, OrderStatusEnum.WAIT_SHIPMENTS.getStatus());
         // 查询结果为空，参数不正确
         if (orderInfo == null) throw new TmallException(ResultCodeEnum.PARAM_ERROR);
 
@@ -328,15 +327,12 @@ public class OrderInfoServiceImpl extends ServiceImpl<OrderInfoMapper, OrderInfo
      * 获取订单详细信息
      * @param token
      * @param orderId
+     * @param orderStatus
      * @return
      */
     @Override
-    public OrderInfo getOrderInfoDetails(String token, String orderId) {
-        // 先验证用户信息是否合法
-        UserInfo userInfo = userFeignClient.getUserInfoByToken(token);
-        if (userInfo == null) throw new TmallException(ResultCodeEnum.FETCH_USERINFO_ERROR);
-        // 根据用户id 订单id 订单状态（待收货）查询订单信息
-        OrderInfo orderInfo = this.getOrderInfoOfCondition(userInfo, orderId, OrderStatusEnum.WAIT_TAKE_GOODS.getStatus());
+    public OrderInfo getOrderInfoDetails(String token, String orderId, Integer orderStatus) {
+        OrderInfo orderInfo = this.getOrderInfo(token, orderId, orderStatus);
         // 查询结果为空，参数不正确
         if (orderInfo == null) throw new TmallException(ResultCodeEnum.PARAM_ERROR);
 

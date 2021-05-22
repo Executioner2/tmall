@@ -44,16 +44,19 @@ public class OrderInfoApi {
 
     // 获取订单信息
     @ApiOperation("获取订单信息")
-    @PostMapping("/auth/getOrderInfo/{orderId}")
+    @PostMapping("/auth/getOrderInfo/{orderId}/{orderStatus}")
     public Result getOrderInfo(
             @ApiParam(name = "request", value = "request", required = true)
             HttpServletRequest request,
 
             @ApiParam(name = "orderId", value = "订单id", required = true)
-            @PathVariable String orderId) {
+            @PathVariable String orderId,
+
+            @ApiParam(name = "orderStatus", value = "订单状态", required = true)
+            @PathVariable Integer orderStatus) {
 
         String token = request.getHeader("token");
-        OrderInfo orderInfo = orderInfoService.getOrderInfo(token, orderId);
+        OrderInfo orderInfo = orderInfoService.getOrderInfo(token, orderId, orderStatus);
         return Result.ok(orderInfo);
     }
 
@@ -104,16 +107,19 @@ public class OrderInfoApi {
 
     // 获取订单详细信息
     @ApiOperation("获取订单详细信息")
-    @PostMapping("/auth/getOrderInfoDetails/{orderId}")
+    @PostMapping("/auth/getOrderInfoDetails/{orderId}/{orderStatus}")
     public Result getOrderInfoDetails(
             @ApiParam(name = "request", value = "request", required = true)
             HttpServletRequest request,
 
             @ApiParam(name = "orderId", value = "订单id", required = true)
-            @PathVariable String orderId) {
+            @PathVariable String orderId,
+
+            @ApiParam(name = "orderStatus", value = "订单状态", required = true)
+            @PathVariable Integer orderStatus) {
 
         String token = request.getHeader("token");
-        OrderInfo orderInfo = orderInfoService.getOrderInfoDetails(token, orderId);
+        OrderInfo orderInfo = orderInfoService.getOrderInfoDetails(token, orderId, orderStatus);
         return Result.ok(orderInfo);
     }
 

@@ -57,6 +57,17 @@ public enum OrderStatusEnum {
         return "";
     }
 
+    // 判断status状态是否在枚举值中
+    public static boolean exist(Integer status) {
+        OrderStatusEnum[] values = OrderStatusEnum.values();
+        for (OrderStatusEnum obj : values) {
+            if (status.intValue() == obj.getStatus().intValue()){
+                return true;
+            }
+        }
+        return false;
+    }
+
     public Integer getStatus() {
         return status;
     }
