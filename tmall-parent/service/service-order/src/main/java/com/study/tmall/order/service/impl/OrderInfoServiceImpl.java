@@ -224,6 +224,8 @@ public class OrderInfoServiceImpl extends ServiceImpl<OrderInfoMapper, OrderInfo
         baseMapper.insert(orderInfo);
         orderItemService.relevanceOrderInfo(orderItemIdList, orderInfo.getId()); // 让订单项关联订单id
 
+        // TODO 开启定时任务，如果下单超过规定时间未支付，则取消订单
+
         return orderInfo.getId();
     }
 
@@ -324,6 +326,8 @@ public class OrderInfoServiceImpl extends ServiceImpl<OrderInfoMapper, OrderInfo
         orderInfo.setOrderStatus(OrderStatusEnum.WAIT_TAKE_GOODS.getStatus()); // 待收货
         orderInfo.setDeliveryDate(new Date()); // 更新发货日期
         baseMapper.updateById(orderInfo);
+
+        // TODO 发送邮件，提醒用户卖家已发货
     }
 
     /**
@@ -375,6 +379,8 @@ public class OrderInfoServiceImpl extends ServiceImpl<OrderInfoMapper, OrderInfo
 
         // 更新商品月销量，总销量
         productFeignClient.updateSales(paramsMap);
+
+        // TODO 发送邮件，提醒买家已签收
     }
 
     /**
