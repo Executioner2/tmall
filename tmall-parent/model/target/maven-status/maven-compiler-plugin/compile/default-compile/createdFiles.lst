@@ -18,6 +18,7 @@ com\study\tmall\enums\WeChatRedirectTypeEnum.class
 com\study\tmall\enums\PaymentStatusEnum.class
 com\study\tmall\model\category\Property.class
 com\study\tmall\model\user\UserLoginRecord.class
+com\study\tmall\enums\ReviewEnum.class
 com\study\tmall\enums\OrderStatusEnum.class
 com\study\tmall\vo\order\OrderQueryVo.class
 com\study\tmall\enums\SortTypeEnum.class

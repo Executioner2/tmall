@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Copyright@1205878539@qq.com
@@ -87,6 +88,17 @@ public class OrderItemApi {
 
         Long stock = orderItemService.updateProductNumber(orderItem);
         return Result.ok(stock);
+    }
+
+    // 根据订单项id查询订单项和商品
+    @ApiOperation("根据订单项id查询订单项和商品")
+    @GetMapping("/auth/getOrderItemDetailsById/{id}")
+    public Result getOrderItemDetailsById(
+            @ApiParam(name = "id", value = "订单id", required = true)
+            @PathVariable String id) {
+
+        Map<String, Object> resultMap = orderItemService.getOrderItemDetailsById(id);
+        return Result.ok(resultMap);
     }
 
 }

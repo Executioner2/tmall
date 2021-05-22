@@ -19,6 +19,7 @@ import com.study.tmall.order.service.OrderInfoService;
 import com.study.tmall.order.service.OrderItemService;
 import com.study.tmall.order.service.PaymentInfoService;
 import com.study.tmall.order.service.RefundInfoService;
+import com.study.tmall.product.client.ProductFeignClient;
 import com.study.tmall.result.ResultCodeEnum;
 import com.study.tmall.user.client.UserFeignClient;
 import com.study.tmall.vo.order.OrderQueryVo;
@@ -48,6 +49,8 @@ public class OrderInfoServiceImpl extends ServiceImpl<OrderInfoMapper, OrderInfo
     private PaymentInfoService paymentInfoService;
     @Resource
     private RefundInfoService refundInfoService;
+    @Resource
+    private ProductFeignClient productFeignClient;
 
 
     /**
@@ -361,6 +364,17 @@ public class OrderInfoServiceImpl extends ServiceImpl<OrderInfoMapper, OrderInfo
         orderInfo.setOrderStatus(OrderStatusEnum.WAIT_REVIEW.getStatus());
         orderInfo.setConfirmDate(new Date());
         baseMapper.updateById(orderInfo);
+
+        // 查询订单信息
+        List<OrderItem> orderItems = orderItemService.getOrderItemByOrderId(orderInfo.getId());
+        // 销量更新参数map（key:商品id   value:订单项中的商品数量）
+        Map<String, Integer> paramsMap = new HashMap<>();
+        orderItems.stream().forEach(item -> {
+            paramsMap.put(item.getProductId(), item.getNumber());
+        });
+
+        // 更新商品月销量，总销量
+        productFeignClient.updateSales(paramsMap);
     }
 
     /**

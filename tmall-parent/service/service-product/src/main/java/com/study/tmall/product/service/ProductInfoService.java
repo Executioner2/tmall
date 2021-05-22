@@ -59,4 +59,10 @@ public interface ProductInfoService extends IService<ProductInfo> {
 
     // 更新商品库存
     Long updateProductNumber(ProductStockVo productStockVo);
+
+    // 根据id查询商品，取得商品简单信息
+    ProductInfo getProductSimpleInfoById(String id);
+
+    // 更新商品月销量，总销量
+    void updateSales(Map<String, Integer> paramsMap);
 }

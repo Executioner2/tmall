@@ -2,8 +2,6 @@ package com.study.tmall.product.api;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.study.tmall.enums.ArithmeticTypeEnum;
-import com.study.tmall.model.order.OrderItem;
 import com.study.tmall.model.product.ProductInfo;
 import com.study.tmall.product.service.ProductInfoService;
 import com.study.tmall.result.Result;
@@ -108,6 +106,27 @@ public class ProductInfoApi {
 
         // 返回库存
         return productInfoService.updateProductNumber(productStockVo);
+    }
+
+    // 根据id查询商品（内部调用）
+    @ApiOperation("根据id查询商品（内部调用）")
+    @GetMapping("/inner/getById/{id}")
+    public ProductInfo innerGetProductInfoById(
+            @ApiParam(name = "id", value = "商品id", required = true)
+            @PathVariable String id) {
+
+        return productInfoService.getProductSimpleInfoById(id);
+    }
+
+    // 更新商品月销量，总销量
+    @ApiOperation("更新商品月销量，总销量")
+    @PostMapping("/inner/update/sales")
+    public void updateSales(
+            @ApiParam(name = "paramsMap", value = "销量更新参数map", required = true)
+            // 销量更新参数map（key:商品id   value:订单项中的商品数量）
+            @RequestBody Map<String, Integer> paramsMap) {
+
+        productInfoService.updateSales(paramsMap);
     }
 
 }

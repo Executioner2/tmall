@@ -8,6 +8,7 @@ import io.swagger.annotations.ApiModelProperty;
 import io.swagger.annotations.ApiParam;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -40,4 +41,12 @@ public interface ProductFeignClient {
     // 更新商品库存
     @PostMapping("/api/product/productInfo/inner/updateProductNumber")
     Long updateProductNumber(@RequestBody ProductStockVo productStockVo);
+
+    // 根据id查询商品（内部调用）
+    @GetMapping("/api/product/productInfo/inner/getById/{id}")
+    ProductInfo innerGetProductInfoById(@PathVariable("id") String id);
+
+    // 更新商品月销量，总销量
+    @PostMapping("/api/product/productInfo/inner/update/sales")
+    void updateSales(@RequestBody Map<String, Integer> paramsMap);
 }

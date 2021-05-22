@@ -3,21 +3,21 @@ package com.study.tmall.order.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.study.tmall.enums.ArithmeticTypeEnum;
+import com.study.tmall.enums.ReviewEnum;
+import com.study.tmall.exception.TmallException;
 import com.study.tmall.model.order.OrderItem;
 import com.study.tmall.model.product.ProductInfo;
 import com.study.tmall.order.mapper.OrderItemMapper;
 import com.study.tmall.order.service.OrderItemService;
 import com.study.tmall.product.client.ProductFeignClient;
+import com.study.tmall.result.ResultCodeEnum;
 import com.study.tmall.util.JwtHelper;
 import com.study.tmall.vo.after_end.ProductStockVo;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -290,6 +290,26 @@ public class OrderItemServiceImpl extends ServiceImpl<OrderItemMapper, OrderItem
        QueryWrapper<OrderItem> wrapper = new QueryWrapper<>();
        wrapper.eq("order_id", id);
        baseMapper.delete(wrapper);
+    }
+
+    /**
+     * 根据订单项id查询订单项和商品
+     * @param id
+     * @return
+     */
+    @Override
+    public Map<String, Object> getOrderItemDetailsById(String id) {
+        Map<String, Object> map = new HashMap<>();
+        // 先根据订单项id查询出订单项
+        OrderItem orderItem = baseMapper.selectById(id);
+        if (orderItem == null) throw new TmallException(ResultCodeEnum.PARAM_ERROR);
+
+        // 查询商品信息
+        ProductInfo productInfo = productFeignClient.innerGetProductInfoById(orderItem.getProductId());
+
+        map.put("orderItem", orderItem);
+        map.put("productInfo", productInfo);
+        return map;
     }
 
 }

@@ -83,10 +83,13 @@
               <span>确认收货</span>
             </router-link>
           </td>
-          <td class="evaluate" v-if="index2 == 0 && item.orderStatus == 3" :rowspan="item.params.orderItems.length">
-            <a href="">
+          <td class="evaluate" v-if="item.orderStatus == 3">
+            <router-link :to="{name: 'review', query:{'orderItemId': oItem.id, 'createDate': item.createDate}}" v-if="oItem.isReview == 0">
               <span>评价</span>
-            </a>
+            </router-link>
+            <span v-else>
+              已评价
+            </span>
           </td>
         </tr>
       </table>

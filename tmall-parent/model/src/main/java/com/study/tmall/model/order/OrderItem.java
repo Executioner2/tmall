@@ -36,4 +36,8 @@ public class OrderItem extends BaseEntity {
     @ApiModelProperty(value = "商品数量")
     @TableField("number")
     private Integer number;
+
+    @ApiModelProperty(value = "是否评价(0:未评价 1:已评价)")
+    @TableField("is_review")
+    private Integer isReview;
 }

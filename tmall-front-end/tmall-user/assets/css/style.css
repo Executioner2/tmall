@@ -1250,6 +1250,10 @@ nav.top .redColor{
     text-decoration: none;
 }
 
+.myOrderItem .myOrderProductItem .evaluate {
+  border-bottom: 1px #E8E8E8 solid;
+}
+
 .myOrderItem .myOrderProductItem .evaluate a{
     display: block;
     padding: 5px 10px;
@@ -1830,7 +1834,7 @@ nav.top .redColor{
 #theEvaluationUp .rightProductInfo{
     display: inline-block;
     height: 100%;
-    padding: 40px 10px;
+    padding: 40px 20px;
 }
 #theEvaluationUp .productTitle{
     font-size: 16px;

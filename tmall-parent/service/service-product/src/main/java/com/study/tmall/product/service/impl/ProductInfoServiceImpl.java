@@ -441,6 +441,48 @@ public class ProductInfoServiceImpl extends ServiceImpl<ProductInfoMapper, Produ
         return null;
     }
 
+    /**
+     * 根据id查询商品，取得商品简单信息
+     * @param id
+     * @return
+     */
+    @Override
+    public ProductInfo getProductSimpleInfoById(String id) {
+        ProductInfo productInfo = baseMapper.selectById(id);
+        if (productInfo == null) {
+            throw new TmallException(ResultCodeEnum.PARAM_ERROR);
+        }
+        // 封装商品信息
+        this.packParams(productInfo);
+        return productInfo;
+    }
+
+    /**
+     * 更新商品月销量，总销量
+     * @param paramsMap 销量更新参数map（key:商品id   value:订单项中的商品数量）
+     */
+    @Override
+    public void updateSales(Map<String, Integer> paramsMap) {
+        // 取得商品id的集合
+        Set<String> idSet = paramsMap.keySet();
+
+        // 条件查询，取得满足条件的商品
+        QueryWrapper<ProductInfo> wrapper = new QueryWrapper<>();
+        wrapper.in("id", idSet);
+        List<ProductInfo> productInfoList = baseMapper.selectList(wrapper);
+        if (productInfoList == null || productInfoList.size() == 0) {
+            throw new TmallException(ResultCodeEnum.PARAM_ERROR);
+        }
+
+        // 更新商品销量
+        productInfoList.stream().forEach(item -> {
+            Integer number = paramsMap.get(item.getId()); // 购买数量
+            item.setSalesVolume(item.getSalesVolume() + number); // 旧总销量加购买数量
+            item.setMonthlySales(item.getMonthlySales() + number); // 旧月销量加购买数量
+            baseMapper.updateById(item);
+        });
+    }
+
     // 把第一张缩略图装进去
     private ProductInfo packImage(ProductInfo productInfo) {
         // 从数据库查询产品第一张缩略图的url
