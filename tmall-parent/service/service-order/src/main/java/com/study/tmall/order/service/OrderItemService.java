@@ -40,4 +40,7 @@ public interface OrderItemService extends IService<OrderItem> {
 
     // 根据订单id取得订单项信息
     Map<String, List<OrderItem>> getOrderItemByOrderId(List<String> orderIdList);
+
+    // 根据订单id取得订单项信息
+    List<OrderItem> getOrderItemByOrderId(String orderId);
 }

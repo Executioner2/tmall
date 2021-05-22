@@ -265,4 +265,20 @@ public class OrderItemServiceImpl extends ServiceImpl<OrderItemMapper, OrderItem
         return orderItemMap;
     }
 
+    /**
+     * 根据订单id取得订单项信息
+     * @param orderId
+     * @return
+     */
+    @Override
+    public List<OrderItem> getOrderItemByOrderId(String orderId) {
+        // 根据订单id查询出所有订单项
+        QueryWrapper<OrderItem> wrapper = new QueryWrapper<>();
+        wrapper.eq("order_id", orderId);
+        List<OrderItem> orderItems = baseMapper.selectList(wrapper);
+        // 对订单项进行封装
+        this.packOrderItems(orderItems);
+        return orderItems;
+    }
+
 }

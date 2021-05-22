@@ -46,10 +46,14 @@ public class OrderInfoApi {
     @ApiOperation("获取订单信息")
     @PostMapping("/auth/getOrderInfo/{orderId}")
     public Result getOrderInfo(
+            @ApiParam(name = "request", value = "request", required = true)
+            HttpServletRequest request,
+
             @ApiParam(name = "orderId", value = "订单id", required = true)
             @PathVariable String orderId) {
 
-        OrderInfo orderInfo = orderInfoService.getById(orderId);
+        String token = request.getHeader("token");
+        OrderInfo orderInfo = orderInfoService.getOrderInfo(token, orderId);
         return Result.ok(orderInfo);
     }
 
@@ -66,5 +70,50 @@ public class OrderInfoApi {
         String token = request.getHeader("token");
         List<OrderInfo> orderInfos = orderInfoService.listOrderInfo(token, orderStatus);
         return Result.ok(orderInfos);
+    }
+
+    // 用户催卖家发货，卖家光速发货
+    @ApiOperation("用户催卖家发货，卖家光速发货")
+    @PostMapping("/auth/deliver/{orderId}")
+    public Result deliver(
+            @ApiParam(name = "request", value = "request", required = true)
+            HttpServletRequest request,
+
+            @ApiParam(name = "orderId", value = "订单id", required = true)
+            @PathVariable String orderId) {
+
+        String token = request.getHeader("token");
+        orderInfoService.deliverGoodsByUser(token, orderId);
+        return Result.ok();
+    }
+
+    // 获取订单详细信息
+    @ApiOperation("获取订单详细信息")
+    @PostMapping("/auth/getOrderInfoDetails/{orderId}")
+    public Result getOrderInfoDetails(
+            @ApiParam(name = "request", value = "request", required = true)
+            HttpServletRequest request,
+
+            @ApiParam(name = "orderId", value = "订单id", required = true)
+            @PathVariable String orderId) {
+
+        String token = request.getHeader("token");
+        OrderInfo orderInfo = orderInfoService.getOrderInfoDetails(token, orderId);
+        return Result.ok(orderInfo);
+    }
+
+    // 确认收货
+    @ApiOperation("确认收货")
+    @PostMapping("/auth/confirmReceipt/{orderId}")
+    public Result confirmReceipt(
+            @ApiParam(name = "request", value = "request", required = true)
+            HttpServletRequest request,
+
+            @ApiParam(name = "orderId", value = "订单id", required = true)
+            @PathVariable String orderId) {
+
+        String token = request.getHeader("token");
+        orderInfoService.confirmReceipt(token, orderId);
+        return Result.ok();
     }
 }

@@ -19,7 +19,8 @@ public enum OrderStatusEnum {
     WAIT_PAY(0, "待付款"),
     WAIT_SHIPMENTS(1, "待发货"),
     WAIT_TAKE_GOODS(2, "待收货"),
-    WAIT_REVIEW(3, "待评价")
+    WAIT_REVIEW(3, "待评价"),
+    COMPLETE_TRANSACTION(4, "交易完成"),
     ;
 
     private Integer status;

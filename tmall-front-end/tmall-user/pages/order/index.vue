@@ -39,7 +39,7 @@
             <a href="javascript:void(0)"><div class="wangwangGif"></div></a>
           </td>
           <td>
-            <a href="javascript:void(0)"><span class="orderListItemDelete glyphicon glyphicon-trash"></span></a>
+            <a href="javascript:void(0)" v-if="item.orderStatus >= 3"><span class="orderListItemDelete glyphicon glyphicon-trash"></span></a>
           </td>
         </tr>
         <tr class="myOrderProductItem" v-for="(oItem, index2) in item.params.orderItems" :key="index2">
@@ -68,20 +68,20 @@
             <div>(含运费：￥0.00)</div>
           </td>
           <td class="waitPay" v-if="index2 == 0 && item.orderStatus == 0" :rowspan="item.params.orderItems.length">
-            <a href="">
+            <router-link :to="'/pay/' + item.id">
               <span>付款</span>
-            </a>
+            </router-link>
           </td>
           <td class="waitDeliver" v-if="index2 == 0 && item.orderStatus == 1" :rowspan="item.params.orderItems.length">
             <span>待发货</span>
-            <a href="">
+            <a href="javascript:void(0)" @click="deliver(item.id)">
               <span>催卖家发货</span>
             </a>
           </td>
           <td class="waitTake" v-if="index2 == 0 && item.orderStatus == 2" :rowspan="item.params.orderItems.length">
-            <a href="">
+            <router-link :to="'/confirmReceipt/' + item.id">
               <span>确认收货</span>
-            </a>
+            </router-link>
           </td>
           <td class="evaluate" v-if="index2 == 0 && item.orderStatus == 3" :rowspan="item.params.orderItems.length">
             <a href="">
@@ -124,6 +124,21 @@ export default {
     // 货币格式化
     moneyFormat(data) {
       return moneyFormat.format(data)
+    },
+
+    // 发货
+    deliver(orderId) {
+      order.deliver(orderId)
+        .then(response => {
+          this.$message.success("卖家已光速发货")
+          // 一秒后自动刷新页面
+          setTimeout(() => {
+            this.$router.go(0)
+          }, 1000)
+        })
+        .catch(error => {
+          this.$message.error("卖家拒绝发货并向您竖了个中指")
+        })
     },
 
     //红色下标的位置

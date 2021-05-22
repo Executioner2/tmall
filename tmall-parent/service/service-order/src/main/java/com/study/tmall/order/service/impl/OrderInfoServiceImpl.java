@@ -203,11 +203,12 @@ public class OrderInfoServiceImpl extends ServiceImpl<OrderInfoMapper, OrderInfo
         }
 
         orderInfo.setOrderStatus(OrderStatusEnum.WAIT_PAY.getStatus()); // 设置订单状态
-        orderInfo.setCreateDate(new Date()); // 设置下单日期时间
+        Date date = new Date(); // 下单日期
+        orderInfo.setCreateDate(date); // 设置下单日期时间
         orderInfo.setUserId(userInfo.getId()); // 设置用户id
         orderInfo.setAmount(amount); // 支付金额
         // 生成流水订单号
-        String format = DateUtil.format(new Date(),"yyyyMMddHHmmss");
+        String format = DateUtil.format(date,"yyyyMMddHHmmss");
         String numbers = RandomUtil.randomNumbers(5);
         orderInfo.setOutTradeNo(format + numbers); // 对外订单号
 
@@ -226,15 +227,17 @@ public class OrderInfoServiceImpl extends ServiceImpl<OrderInfoMapper, OrderInfo
      */
     @Override
     public List<OrderInfo> listOrderInfo(String token, Integer orderStatus) {
-        // 取得用户id
-        String userId = JwtHelper.getUserId(token);
+        // 先验证用户信息是否合法
+        UserInfo userInfo = userFeignClient.getUserInfoByToken(token);
+        if (userInfo == null) throw new TmallException(ResultCodeEnum.FETCH_USERINFO_ERROR);
 
         // 根据用户id和订单状态查询出用户订单
         QueryWrapper<OrderInfo> wrapper = new QueryWrapper<>();
-        wrapper.eq("user_id", userId);
+        wrapper.eq("user_id", userInfo.getId());
         if (orderStatus != -1) {
             wrapper.eq("order_status", orderStatus);
         }
+        wrapper.orderByDesc("create_date"); // 降序排序
         List<OrderInfo> orderInfos = baseMapper.selectList(wrapper);
         // 如果订单集合为空或者没有数据则返回空
         if (orderInfos == null || orderInfos.size() == 0) {
@@ -263,5 +266,97 @@ public class OrderInfoServiceImpl extends ServiceImpl<OrderInfoMapper, OrderInfo
         });
 
         return orderInfos;
+    }
+
+    /**
+     * 获取订单信息
+     * @param token
+     * @param orderId
+     * @return
+     */
+    @Override
+    public OrderInfo getOrderInfo(String token, String orderId) {
+        // 先验证用户信息是否合法
+        UserInfo userInfo = userFeignClient.getUserInfoByToken(token);
+        if (userInfo == null) throw new TmallException(ResultCodeEnum.FETCH_USERINFO_ERROR);
+        // 根据用户id 订单id 订单状态（待付款）查询订单信息
+        OrderInfo orderInfo = this.getOrderInfoOfCondition(userInfo, orderId, OrderStatusEnum.WAIT_PAY.getStatus());
+
+        return orderInfo;
+    }
+
+    // 根据用户id 订单id 订单状态查询订单信息
+    private OrderInfo getOrderInfoOfCondition(UserInfo userInfo, String orderId, Integer status) {
+        QueryWrapper<OrderInfo> wrapper = new QueryWrapper<>();
+        wrapper.eq("id", orderId);
+        wrapper.eq("user_id", userInfo.getId());
+        wrapper.eq("order_status", status);
+        OrderInfo orderInfo = baseMapper.selectOne(wrapper);
+
+        return orderInfo;
+    }
+
+    /**
+     * 用户催卖家发货，卖家光速发货
+     * @param token
+     * @param orderId
+     */
+    @Override
+    public void deliverGoodsByUser(String token, String orderId) {
+        // 先验证用户信息是否合法
+        UserInfo userInfo = userFeignClient.getUserInfoByToken(token);
+        if (userInfo == null) throw new TmallException(ResultCodeEnum.FETCH_USERINFO_ERROR);
+        // 根据用户id 订单id 订单状态（待发货）查询订单信息
+        OrderInfo orderInfo = this.getOrderInfoOfCondition(userInfo, orderId, OrderStatusEnum.WAIT_SHIPMENTS.getStatus());
+        // 查询结果为空，参数不正确
+        if (orderInfo == null) throw new TmallException(ResultCodeEnum.PARAM_ERROR);
+
+        // 如果不为空，那么更新订单信息
+        orderInfo.setOrderStatus(OrderStatusEnum.WAIT_TAKE_GOODS.getStatus()); // 待收货
+        orderInfo.setDeliveryDate(new Date()); // 更新发货日期
+        baseMapper.updateById(orderInfo);
+    }
+
+    /**
+     * 获取订单详细信息
+     * @param token
+     * @param orderId
+     * @return
+     */
+    @Override
+    public OrderInfo getOrderInfoDetails(String token, String orderId) {
+        // 先验证用户信息是否合法
+        UserInfo userInfo = userFeignClient.getUserInfoByToken(token);
+        if (userInfo == null) throw new TmallException(ResultCodeEnum.FETCH_USERINFO_ERROR);
+        // 根据用户id 订单id 订单状态（待收货）查询订单信息
+        OrderInfo orderInfo = this.getOrderInfoOfCondition(userInfo, orderId, OrderStatusEnum.WAIT_TAKE_GOODS.getStatus());
+        // 查询结果为空，参数不正确
+        if (orderInfo == null) throw new TmallException(ResultCodeEnum.PARAM_ERROR);
+
+        // 往订单信息中封装订单项信息
+        List<OrderItem> orderItems = orderItemService.getOrderItemByOrderId(orderId);
+        orderInfo.getParams().put("orderItems", orderItems);
+        return orderInfo;
+    }
+
+    /**
+     * 确认收货
+     * @param token
+     * @param orderId
+     */
+    @Override
+    public void confirmReceipt(String token, String orderId) {
+        // 先验证用户信息是否合法
+        UserInfo userInfo = userFeignClient.getUserInfoByToken(token);
+        if (userInfo == null) throw new TmallException(ResultCodeEnum.FETCH_USERINFO_ERROR);
+        // 根据用户id 订单id 订单状态（待收货）查询订单信息
+        OrderInfo orderInfo = this.getOrderInfoOfCondition(userInfo, orderId, OrderStatusEnum.WAIT_TAKE_GOODS.getStatus());
+        // 查询结果为空，参数不正确
+        if (orderInfo == null) throw new TmallException(ResultCodeEnum.PARAM_ERROR);
+
+        // 更新订单信息
+        orderInfo.setOrderStatus(OrderStatusEnum.WAIT_REVIEW.getStatus());
+        orderInfo.setConfirmDate(new Date());
+        baseMapper.updateById(orderInfo);
     }
 }

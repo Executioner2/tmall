@@ -7,6 +7,10 @@ export default {
     // 12345.12 format  12,345.12
     // 123456.12 format  123,456.12
     // 1234567.12 format  1,234,567.12
+
+    if (data == null) {
+      data = 0
+    }
     data = data.toString() // 转为字符串
     let pointBefore = data.substring(0, data.indexOf("."))
     let pointAfter = data.substring(data.indexOf("."), data.length)
