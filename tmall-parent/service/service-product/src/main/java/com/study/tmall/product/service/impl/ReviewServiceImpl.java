@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.study.tmall.enums.OrderStatusEnum;
 import com.study.tmall.enums.ReviewEnum;
 import com.study.tmall.exception.TmallException;
+import com.study.tmall.model.order.OrderItem;
 import com.study.tmall.model.product.Review;
 import com.study.tmall.model.user.UserInfo;
 import com.study.tmall.order.client.OrderFeignClient;
@@ -83,6 +84,13 @@ public class ReviewServiceImpl extends ServiceImpl<ReviewMapper, Review> impleme
         // 核实用户信息
         UserInfo userInfo = userFeignClient.getUserInfoByToken(token);
         if (userInfo == null) throw new TmallException(ResultCodeEnum.FETCH_USERINFO_ERROR);
+
+        // 根据用户id和订单id查询订单项
+        OrderItem orderItem = orderFeignClient.getOrderItem(reviewVo.getOrderItemId(), userInfo.getId());
+        // 如果订单项查询为空或者订单项已评价抛出参数异常
+        if (orderItem == null || orderItem.getIsReview() == ReviewEnum.REVIEW.getStatus()) {
+            throw new TmallException(ResultCodeEnum.PARAM_ERROR);
+        }
 
         // 增加评价
         Review review = new Review();

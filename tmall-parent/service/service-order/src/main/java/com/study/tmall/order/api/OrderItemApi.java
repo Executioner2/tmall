@@ -106,12 +106,25 @@ public class OrderItemApi {
     @PostMapping("inner/update/reviewStatus/{id}/{status}")
     public void updateReviewStatus(
             @ApiParam(name = "id", value = "订单id", required = true)
-            @PathVariable("id") String id,
+            @PathVariable String id,
 
             @ApiParam(name = "status", value = "评价状态", required = true)
-            @PathVariable("status") Integer status) {
+            @PathVariable Integer status) {
 
         orderItemService.updateReviewStatus(id, status);
+    }
+
+    // 根据订单项id和用户id查询订单项（内部调用）
+    @ApiOperation("根据订单项id和用户id查询订单项（内部调用）")
+    @GetMapping("/inner/getOrderItem/{id}/{userId}")
+    public OrderItem getOrderItem(
+            @ApiParam(name = "id", value = "订单id", required = true)
+            @PathVariable String id,
+
+            @ApiParam(name = "userId", value = "用户id", required = true)
+            @PathVariable String userId) {
+
+        return orderItemService.getOrderItem(id, userId);
     }
 
 }

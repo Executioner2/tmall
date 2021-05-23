@@ -349,4 +349,18 @@ public class OrderItemServiceImpl extends ServiceImpl<OrderItemMapper, OrderItem
         orderInfoService.updateOrderStatus(orderId, OrderStatusEnum.COMPLETE_TRANSACTION.getStatus());
     }
 
+    /**
+     * 根据订单项id和用户id查询订单项
+     * @param id
+     * @param userId
+     * @return
+     */
+    @Override
+    public OrderItem getOrderItem(String id, String userId) {
+        QueryWrapper<OrderItem> wrapper = new QueryWrapper<>();
+        wrapper.eq("id", id);
+        wrapper.eq("user_id", userId);
+        return baseMapper.selectOne(wrapper);
+    }
+
 }
