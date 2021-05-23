@@ -94,7 +94,7 @@ public class OrderItemApi {
     @ApiOperation("根据订单项id查询订单项和商品")
     @GetMapping("/auth/getOrderItemDetailsById/{id}")
     public Result getOrderItemDetailsById(
-            @ApiParam(name = "id", value = "订单id", required = true)
+            @ApiParam(name = "id", value = "订单项id", required = true)
             @PathVariable String id) {
 
         Map<String, Object> resultMap = orderItemService.getOrderItemDetailsById(id);

@@ -87,7 +87,7 @@
             <router-link :to="'/product/' + product.id" class="productItemDescLink">
               <span class="productItemDesc">[热销] {{product.name}}</span>
             </router-link>
-            <span>¥ {{product.promotePrice}}</span>
+            <span>¥ {{moneyFormat(product.promotePrice)}}</span>
           </div>
         </div>
         <div class="endDiv" id="endDiv">
@@ -102,6 +102,7 @@
 <script>
   import search from "../layouts/search"
   import home from "../api/home"
+  import moneyFormat from "../assets/js/moneyFormat";
 
   export default {
     components: {search},
@@ -121,6 +122,11 @@
           .then(response => {
             this.list = response.data
           })
+      },
+
+      // 货币格式化
+      moneyFormat(data) {
+        return moneyFormat.format(data)
       },
 
       // 显示浮动菜单

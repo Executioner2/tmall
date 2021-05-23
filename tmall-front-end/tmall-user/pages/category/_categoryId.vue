@@ -33,7 +33,7 @@
       <div style="height: 200px; text-align: center">
         <router-link :to="'/product/' + item.id"><img class="productImage" :src="item.params.imageUrl" height="150"/></router-link>
       </div>
-      <span class="price">￥{{item.promotePrice}}</span>
+      <span class="price">￥{{moneyFormat(item.promotePrice)}}</span>
       <router-link :to="'/product/' + item.id">{{item.name}}</router-link>
       <a href="javascript:void(0)">天猫专卖</a>
       <div class="itemFooter">
@@ -62,6 +62,7 @@
 <script>
 import search from "../../layouts/search";
 import category from "../../api/category";
+import moneyFormat from "../../assets/js/moneyFormat";
 
 export default {
   components: {
@@ -125,6 +126,11 @@ export default {
       }
 
       this.listProductInfo(1)
+    },
+
+    // 货币格式化
+    moneyFormat(data) {
+      return moneyFormat.format(data)
     },
 
   }

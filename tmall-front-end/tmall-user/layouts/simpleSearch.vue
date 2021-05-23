@@ -7,7 +7,7 @@
       <div class="pull-right">
         <div class="searchDiv">
           <input type="text" name="keyword" placeholder="平衡车 原汁机" v-model="keyword" @keydown="keydown">
-          <button class="searchButton">搜天猫</button>
+          <button class="searchButton" @click="search">搜天猫</button>
         </div>
         <div class="searchBelow">
           <span><a href="#">冰箱</a><span>|</span></span>

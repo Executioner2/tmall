@@ -38,12 +38,12 @@
           </div>
           <div>
             <span>价格</span>
-            <span><del>￥{{productInfo.orignalPrice}}</del></span>
+            <span><del>￥{{moneyFormat(productInfo.orignalPrice)}}</del></span>
           </div>
           <div>
             <span>促销价</span>
             <span>￥</span>
-            <span>{{productInfo.promotePrice}}</span>
+            <span>{{moneyFormat(productInfo.promotePrice)}}</span>
           </div>
         </div>
         <div class="salesAndReviews">
@@ -257,6 +257,11 @@ export default {
     init() {
       this.orderItem.number = 1
       this.orderItem.productId = this.productId
+    },
+
+    // 货币格式化
+    moneyFormat(data) {
+      return moneyFormat.format(data)
     },
 
     // 加入购物车

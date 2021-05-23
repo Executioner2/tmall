@@ -7,7 +7,7 @@
     <div class="queryResultProductList" id="queryResultProductList">
       <div class="productItem" v-for="(item, index) in list" :key="index">
         <router-link :to="'/product/' + item.id"><img class="productImage" :src="item.params.imageUrl"/></router-link>
-        <span class="price">￥{{item.promotePrice}}</span>
+        <span class="price">￥{{moneyFormat(item.promotePrice)}}</span>
         <span><router-link :to="'/product/' + item.id">{{item.name}}</router-link></span>
         <span><a href="javascript:void(0)">天猫专卖</a></span>
         <div>
@@ -41,6 +41,7 @@
 <script>
 import Search from "../../layouts/search";
 import searchApi from "../../api/search"
+import moneyFormat from "../../assets/js/moneyFormat";
 
 export default {
   components: {Search},
@@ -79,8 +80,14 @@ export default {
           this.list = response.data.records
           this.total = response.data.total
         })
-    }
-  }
+    },
+
+    // 货币格式化
+    moneyFormat(data) {
+      return moneyFormat.format(data)
+    },
+
+  },
 
 }
 </script>

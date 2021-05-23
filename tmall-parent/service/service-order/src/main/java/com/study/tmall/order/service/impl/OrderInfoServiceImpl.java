@@ -292,7 +292,7 @@ public class OrderInfoServiceImpl extends ServiceImpl<OrderInfoMapper, OrderInfo
         if (userInfo == null) throw new TmallException(ResultCodeEnum.FETCH_USERINFO_ERROR);
         // 如果传来的订单状态不存在，则抛出参数错误
         if (!OrderStatusEnum.exist(orderStatus)) throw new TmallException(ResultCodeEnum.PARAM_ERROR);
-        // 根据用户id 订单id 订单状态（待发货）查询订单信息
+        // 根据用户id 订单id 订单状态 查询订单信息
         OrderInfo orderInfo = this.getOrderInfoOfCondition(userInfo, orderId, orderStatus);
 
         return orderInfo;
@@ -356,11 +356,8 @@ public class OrderInfoServiceImpl extends ServiceImpl<OrderInfoMapper, OrderInfo
      */
     @Override
     public void confirmReceipt(String token, String orderId) {
-        // 先验证用户信息是否合法
-        UserInfo userInfo = userFeignClient.getUserInfoByToken(token);
-        if (userInfo == null) throw new TmallException(ResultCodeEnum.FETCH_USERINFO_ERROR);
-        // 根据用户id 订单id 订单状态（待收货）查询订单信息
-        OrderInfo orderInfo = this.getOrderInfoOfCondition(userInfo, orderId, OrderStatusEnum.WAIT_TAKE_GOODS.getStatus());
+        // 获得订单信息
+        OrderInfo orderInfo = this.getOrderInfo(token, orderId, OrderStatusEnum.WAIT_TAKE_GOODS.getStatus());
         // 查询结果为空，参数不正确
         if (orderInfo == null) throw new TmallException(ResultCodeEnum.PARAM_ERROR);
 
@@ -393,7 +390,7 @@ public class OrderInfoServiceImpl extends ServiceImpl<OrderInfoMapper, OrderInfo
         // 先验证用户信息是否合法
         UserInfo userInfo = userFeignClient.getUserInfoByToken(token);
         if (userInfo == null) throw new TmallException(ResultCodeEnum.FETCH_USERINFO_ERROR);
-        // 根据用户id 订单id 订单状态（待收货）查询订单信息
+        // 根据用户id 订单id 订单状态（待评价，交易完成）查询订单信息
         OrderInfo orderInfo = this.getOrderInfoOfCondition(
                 userInfo, orderId,
                 OrderStatusEnum.WAIT_REVIEW.getStatus(),

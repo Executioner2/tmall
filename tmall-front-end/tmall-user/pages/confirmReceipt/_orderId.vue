@@ -61,7 +61,7 @@
             <span>{{orderInfo.address}}，</span>
             <span>{{orderInfo.receiver}}，</span>
             <span>{{orderInfo.mobile}}，</span>
-            <span>{{orderInfo.post}}</span>
+            <span>{{orderInfo.post == "" ? "000000" : orderInfo.post}}</span>
           </td>
         </tr>
         <tr>
