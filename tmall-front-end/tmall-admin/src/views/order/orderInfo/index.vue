@@ -52,12 +52,19 @@
       <el-table-column
         type="expand">
          <template slot-scope="scope">
-           <div style="width: 100%; text-align: center;" v-for="(item) in scope.row.params.orderItems">
-             <el-image style="width: 50px;" :src="item.params.productInfo.params.imageUrl"></el-image>
-             <div style="display: inline-block; margin-left: 20px; padding-top: 15px; vertical-align: top">
-               <el-link type="primary" style="margin-right: 80px">{{item.params.productInfo.name}}</el-link>
-               <span style="margin-right: 80px">{{item.number + "个"}}</span>
-               <span>{{"单价：¥" + item.params.productInfo.promotePrice}}</span>
+           <div style="width: 100%; margin-top: 10px; margin-bottom: 10px" v-for="(item) in scope.row.params.orderItems">
+             <div style="width: 850px; margin: 0px auto">
+               <el-image style="width: 50px;" :src="item.params.productInfo.params.imageUrl"></el-image>
+               <div style="display: inline-block; margin-left: 20px; padding-top: 15px; vertical-align: top">
+                 <el-link :href="tmallUserUrl + '/product/' + item.params.productInfo.id"
+                          type="primary"
+                          style="margin-right: 80px; width: 450px"
+                          target="_blank">
+                   {{item.params.productInfo.name}}
+                 </el-link>
+                 <span style="margin-right: 80px">{{item.number + "个"}}</span>
+                 <span>{{"单价：¥" + item.params.productInfo.promotePrice}}</span>
+               </div>
              </div>
            </div>
          </template>
@@ -69,7 +76,7 @@
       </el-table-column>
       <el-table-column
         label="状态"
-        width="70"
+        width="90"
         prop="params.orderStatusStr">
       </el-table-column>
       <el-table-column
@@ -132,9 +139,12 @@
 <script>
 import orderInfo from "@/api/order/orderInfo";
 
+const tmallUserUrl = "http://127.0.0.1:3000"
+
 export default {
   data() {
     return {
+      tmallUserUrl: tmallUserUrl, // 天猫用户系统访问地址
       list: [], // 订单列表
       current: 1, // 起始页
       limit: 5, // 每页记录数

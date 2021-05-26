@@ -157,6 +157,12 @@ export default {
         this.confirmTime = 60*5 // 用户滑动了滑块，确认时间重置
         // this.confirmTime = 10 // 用户滑动了滑块，确认时间重置
       } else { // 验证成功，从新获取userInfo
+        // 尝试获取token，如果为空则重新登录
+        if (storage.getItem("token") == null) {
+          this.$message.error("请重新登录")
+          this.reLogin()
+          return
+        }
         this.$message.success("欢迎回来！")
         this.init()
         this.getUserInfo()

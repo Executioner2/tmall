@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>2Executioner</title>
+    <style>
+        body {
+            text-align: center;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        #main {
+            text-align: center;
+            height: 300px;
+        }
+        #content {
+            display: inline-block;
+            margin: 0px auto;
+        }
+    </style>
+</head>
+<body>
+<div id="main">
+    <h3>Welcome <span th:text="${project}"></span> -By <span th:text=" ${author}"></span></h3>
+    <div id="content">
+        <table>
+            <tr>
+                <td>您的订单号：1516519842616516516516</td>
+                <td>已发货</td>
+            </tr>
+            <tr>
+                <td>
+                    <img width="100px" src="http://192.168.123.130/group1/M00/00/01/wKh7gmB1moeEKuYeAAAAAG78NSc501.jpg">
+                </td>
+            </tr>
+        </table>
+
+
+
+    </div>
+    <h2><span th:text="${code}"></span></h2>
+    <h5>It will be effective within ten minutes</h5>
+</div>
+</body>
+</html>

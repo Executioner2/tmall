@@ -26,6 +26,9 @@ import java.util.concurrent.TimeUnit;
  */
 @Service
 public class EmailServiceImpl implements EmailService {
+    public final static String project = "tmall-v1.0";
+    public final static String author = "2Executioner";
+
     @Resource
     private JavaMailSender mailSender;
     @Resource
@@ -50,11 +53,11 @@ public class EmailServiceImpl implements EmailService {
     public void send(String to, String subject, String text) {
         // 设置template中的参数
         Context context = new Context();
-        context.setVariable("project", "tmall-v1.0");
-        context.setVariable("author", "2Executioner");
+        context.setVariable("project", project);
+        context.setVariable("author", author);
         context.setVariable("code", text);
-        // 把template当作内容发送
-        String emailContent = templateEngine.process("mail", context);
+        // 把template（code.html）当作内容发送
+        String emailContent = templateEngine.process("code", context);
 
         MimeMessage message = mailSender.createMimeMessage();
         MimeMessageHelper helper = null;
