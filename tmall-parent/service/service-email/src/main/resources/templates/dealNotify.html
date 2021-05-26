@@ -8,38 +8,99 @@
             text-align: center;
             margin-left: auto;
             margin-right: auto;
+            font-size: 13px;
         }
         #main {
             text-align: center;
             height: 300px;
         }
         #content {
+            text-align: left;
             display: inline-block;
             margin: 0px auto;
         }
+        .link-a {
+            text-decoration: none;
+            color: #999999;
+        }
+        .link-a:hover {
+            color: #C40000;
+        }
+        .link-order {
+            text-decoration: none;
+            color: #333333;
+        }
+        .link-order:hover {
+            color: #C40000;
+        }
+
     </style>
 </head>
 <body>
 <div id="main">
     <h3>Welcome <span th:text="${project}"></span> -By <span th:text=" ${author}"></span></h3>
+    <h4>您在tmall-v1.0购买的商品已发货，请耐心等待快递运输</h4>
     <div id="content">
-        <table>
-            <tr>
-                <td>您的订单号：1516519842616516516516</td>
-                <td>已发货</td>
-            </tr>
-            <tr>
-                <td>
-                    <img width="100px" src="http://192.168.123.130/group1/M00/00/01/wKh7gmB1moeEKuYeAAAAAG78NSc501.jpg">
+        <table border="1px">
+            <tr id="title">
+                <td colspan="2">
+                    <span style="font-weight: bold">2021-05-23 16:29:53</span>
+                    <a class="link-order" href="http://localhost:3000/order" target="_blank">订单号：2021052316295338828</a>
                 </td>
+                <td colspan="3" style="text-align: right">订单状态：已发货</td>
+            </tr>
+            <tr class="product_item">
+                <td>
+                    <img width="80px" src="http://192.168.123.130/group1/M00/00/01/wKh7gmB1moeEKuYeAAAAAG78NSc501.jpg">
+                </td>
+
+                <td>
+                    <a class="link-a" href="http://localhost:3000/product/1385583548844765185" target="_blank">
+                        Hisense/海信 LED49EC320A 49吋led液晶电视机智能网络平板电视50
+                    </a>
+                </td>
+
+                <td>
+                    <div><del>￥2,799.00</del></div>
+                    <div>￥1,679.40</div>
+                </td>
+
+                <td style="width: 30px; text-align: center">
+                    <span>2</span>
+                </td>
+
+                <td rowspan="2" style="vertical-align: top">
+                    ￥5,578.20
+                </td>
+            </tr>
+            <tr class="product_item">
+                <td>
+                    <img width="80px" src="http://192.168.123.130/group1/M00/00/01/wKh7gmB9tFGEWgruAAAAAFZQESo679.jpg">
+                </td>
+
+                <td>
+                    <a class="link-a" href="http://localhost:3000/product/1385583548844765185" target="_blank">
+                        Konka/康佳 LED58S1 58英寸8核安卓智能电视机LED液晶无线wifi 60
+                    </a>
+                </td>
+
+                <td>
+                    <div><del>￥3,699.00</del></div>
+                    <div>￥2,219.40</div>
+                </td>
+
+                <td style="width: 30px; text-align: center">
+                    <span>1</span>
+                </td>
+
+
             </tr>
         </table>
 
 
 
     </div>
-    <h2><span th:text="${code}"></span></h2>
-    <h5>It will be effective within ten minutes</h5>
+    <h5>联系开发者：1205878539@qq.com</h5>
 </div>
 </body>
 </html>
