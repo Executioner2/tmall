@@ -120,9 +120,11 @@ public class CategoryInfoServiceImpl extends ServiceImpl<CategoryInfoMapper, Cat
     @Override
     @CacheEvict(value = "categoryInfo", allEntries = true) // 删除操作，清空redis缓存
     public void batchRemoveCategory(List<String> idList) {
-        idList.stream().forEach(item-> {
-            this.removeCategoryById(item);
-        });
+//        idList.stream().forEach(item-> {
+//            this.removeCategoryById(item);
+//        });
+        // lambda表达式方法引用
+        idList.stream().forEach(this::removeCategoryById);
     }
 
     /**
@@ -176,6 +178,7 @@ public class CategoryInfoServiceImpl extends ServiceImpl<CategoryInfoMapper, Cat
 
     /**
      * 首页显示分类列表和热销商品
+     * @return
      */
     @Override
     @Cacheable(value = "categoryInfo", keyGenerator = "keyGenerator") // 使用spring cache 底层存入到了redis中去
@@ -189,9 +192,7 @@ public class CategoryInfoServiceImpl extends ServiceImpl<CategoryInfoMapper, Cat
 
         // 为了减少后面的远程调用次数，把所有分类的id封装到一个list集合中
         List<String> idList = new ArrayList<>();
-        categoryInfos.stream().forEach(item -> {
-            idList.add(item.getId());
-        });
+        categoryInfos.stream().forEach(item -> idList.add(item.getId()));
 
         // 根据分类分别按销量查询出热销的前5个商品信息，包含第一张缩略图url（远程调用）
         Map<String, List<ProductInfo>> hotMap = productFeignClient.listProductInfoHot(idList);

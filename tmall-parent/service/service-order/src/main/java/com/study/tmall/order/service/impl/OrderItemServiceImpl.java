@@ -58,9 +58,7 @@ public class OrderItemServiceImpl extends ServiceImpl<OrderItemMapper, OrderItem
     private void packOrderItems(List<OrderItem> orderItems) {
         // 根据订单项中的商品id查询出产品，用远程调用访问product模块
         List<String> productInfoIdList = new ArrayList<>();
-        orderItems.stream().forEach(item -> {
-            productInfoIdList.add(item.getProductId());
-        });
+        orderItems.stream().forEach(item -> productInfoIdList.add(item.getProductId()));
 
         // 传入list集合是为了减少远程调用，提高处理速度
         List<ProductInfo> productInfoList = productFeignClient.listProductInfoById(productInfoIdList);

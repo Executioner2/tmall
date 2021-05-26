@@ -61,9 +61,8 @@ public class ProductInfoServiceImpl extends ServiceImpl<ProductInfoMapper, Produ
      */
     @Override
     public void batchRemove(List<String> idList) {
-        idList.stream().forEach(item -> {
-            this.removeProductById(item);
-        });
+        // lambda表达式引用方法
+        idList.stream().forEach(this::removeProductById);
     }
 
     /**
@@ -109,10 +108,8 @@ public class ProductInfoServiceImpl extends ServiceImpl<ProductInfoMapper, Produ
         }
 
         IPage<ProductInfo> productInfoIPage = baseMapper.selectPage(page, wrapper);
-        productInfoIPage.getRecords().stream().forEach(item -> {
-            // 把第一张缩略图装进去
-            this.packImage(item);
-        });
+        // 把第一张缩略图装进去
+        productInfoIPage.getRecords().stream().forEach(this::packImage);
         return productInfoIPage;
     }
 
@@ -324,11 +321,8 @@ public class ProductInfoServiceImpl extends ServiceImpl<ProductInfoMapper, Produ
         }
         IPage<ProductInfo> productInfoIPage = baseMapper.selectProductInfoPageOrderBy(page, wrapper);
 
-        // 对商品数据再进行处理
-        productInfoIPage.getRecords().stream().forEach(item -> {
-            // 封装商品参数
-            this.packParams(item);
-        });
+        // 对商品数据再进行处理（封装商品参数）
+        productInfoIPage.getRecords().stream().forEach(this::packParams);
         return productInfoIPage;
     }
 
@@ -396,10 +390,7 @@ public class ProductInfoServiceImpl extends ServiceImpl<ProductInfoMapper, Produ
         IPage<ProductInfo> productInfoPage = baseMapper.selectPage(page, wrapper);
 
         // 封装商品首张缩略图 评价数
-        productInfoPage.getRecords().stream().forEach(item -> {
-            // 封装商品参数
-            this.packParams(item);
-        });
+        productInfoPage.getRecords().stream().forEach(this::packParams);
 
         return productInfoPage;
     }

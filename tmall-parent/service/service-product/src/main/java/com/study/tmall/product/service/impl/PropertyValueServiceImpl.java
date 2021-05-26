@@ -59,9 +59,7 @@ public class PropertyValueServiceImpl extends ServiceImpl<PropertyValueMapper, P
 
         // 封装成List<PropertyAndValueVo>
         List<PropertyAndValueVo> list = new ArrayList<>();
-        propertyList.stream().forEach(item -> {
-            list.add(this.packPropertyValue(propertyValues, item));
-        });
+        propertyList.stream().forEach(item -> list.add(this.packPropertyValue(propertyValues, item)));
 
         return list;
     }

@@ -1,10 +1,8 @@
 package com.study.tmall.product.service.impl;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.study.tmall.enums.OrderStatusEnum;
 import com.study.tmall.enums.ReviewEnum;
 import com.study.tmall.exception.TmallException;
 import com.study.tmall.model.order.OrderItem;
@@ -22,7 +20,6 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
@@ -64,11 +61,8 @@ public class ReviewServiceImpl extends ServiceImpl<ReviewMapper, Review> impleme
 
         // 远程调用查询用户信息
         List<UserInfo> userInfoList = userFeignClient.listUserInfoOfInner(idList);
-        reviewPage.getRecords().forEach(item -> {
-            // TODO 后续给用户提供匿名可选，不匿名则显示全名称
-            // 封装匿名用户名称
-            this.packUserName(item, userInfoList);
-        });
+        // 封装匿名用户名称 TODO 后续给用户提供匿名可选，不匿名则显示全名称
+        reviewPage.getRecords().forEach(item -> this.packUserName(item, userInfoList));
 
         return reviewPage;
     }

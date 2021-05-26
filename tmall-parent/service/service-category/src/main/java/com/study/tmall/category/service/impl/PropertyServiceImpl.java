@@ -33,9 +33,11 @@ public class PropertyServiceImpl extends ServiceImpl<PropertyMapper, Property> i
      */
     @Override
     public void batchRemove(List<String> idList) {
-        idList.stream().forEach(item -> {
-            baseMapper.deleteById(item);
-        });
+//        idList.stream().forEach(item -> {
+//            baseMapper.deleteById(item);
+//        });
+        // lambda表达式引用方法
+        idList.stream().forEach(baseMapper::deleteById);
     }
 
     /**

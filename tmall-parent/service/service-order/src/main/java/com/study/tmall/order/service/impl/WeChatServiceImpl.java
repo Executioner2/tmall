@@ -1,8 +1,6 @@
 package com.study.tmall.order.service.impl;
 
-import cn.hutool.Hutool;
 import cn.hutool.core.util.RandomUtil;
-import cn.hutool.crypto.digest.MD5;
 import com.github.wxpay.sdk.WXPayUtil;
 import com.study.tmall.enums.PaymentStatusEnum;
 import com.study.tmall.enums.PaymentTypeEnum;

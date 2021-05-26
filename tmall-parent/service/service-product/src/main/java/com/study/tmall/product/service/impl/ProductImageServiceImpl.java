@@ -122,9 +122,8 @@ public class ProductImageServiceImpl extends ServiceImpl<ProductImageMapper, Pro
      */
     @Override
     public void batchRemove(List<String> idList) {
-        idList.stream().forEach(item -> {
-            this.removeImageById(item);
-        });
+        // lambda表达式引用方法
+        idList.stream().forEach(this::removeImageById);
     }
 
     /**

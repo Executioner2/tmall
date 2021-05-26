@@ -87,16 +87,12 @@ public class OrderInfoServiceImpl extends ServiceImpl<OrderInfoMapper, OrderInfo
         IPage<OrderInfo> orderInfoIPage = baseMapper.selectPage(page, wrapper);
         // 每个订单都要获得用户信息，为了减少远程调用量，把这一页所有订单的用户id封装到list集合中
         List<String> userIdList = new ArrayList<>();
-        orderInfoIPage.getRecords().stream().forEach(item -> {
-            userIdList.add(item.getUserId());
-        });
+        orderInfoIPage.getRecords().stream().forEach(item -> userIdList.add(item.getUserId()));
         // 通过远程调用获得用户信息集合
         List<UserInfo> userInfoList = userFeignClient.listUserInfoOfInner(userIdList);
 
         // 封装参数
-        orderInfoIPage.getRecords().stream().forEach(item -> {
-            this.packOrderInfo(item, userInfoList);
-        });
+        orderInfoIPage.getRecords().stream().forEach(item -> this.packOrderInfo(item, userInfoList));
         return orderInfoIPage;
     }
 
@@ -370,9 +366,7 @@ public class OrderInfoServiceImpl extends ServiceImpl<OrderInfoMapper, OrderInfo
         List<OrderItem> orderItems = orderItemService.getOrderItemByOrderId(orderInfo.getId());
         // 销量更新参数map（key:商品id   value:订单项中的商品数量）
         Map<String, Integer> paramsMap = new HashMap<>();
-        orderItems.stream().forEach(item -> {
-            paramsMap.put(item.getProductId(), item.getNumber());
-        });
+        orderItems.stream().forEach(item -> paramsMap.put(item.getProductId(), item.getNumber()));
 
         // 更新商品月销量，总销量
         productFeignClient.updateSales(paramsMap);
