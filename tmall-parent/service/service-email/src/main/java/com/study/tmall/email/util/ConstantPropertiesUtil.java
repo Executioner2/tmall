@@ -16,10 +16,10 @@ public class ConstantPropertiesUtil implements InitializingBean {
     @Value("${spring.mail.username}")
     private String from;
 
-    @Value("${mail.project}")
+    @Value("${email.project}")
     private String project;
 
-    @Value("${mail.author}")
+    @Value("${email.author}")
     private String author;
 
     public static String FROM;

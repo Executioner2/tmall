@@ -20,6 +20,7 @@ import org.thymeleaf.context.Context;
 import javax.annotation.Resource;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
+import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -153,12 +154,17 @@ public class EmailServiceImpl implements EmailService {
             status = "已签收";
         }
 
+        // 创建日期格式化
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String createDate = sdf.format(orderInfo.getCreateDate());
+
         // 设置template中的参数
         Context context = new Context();
         context.setVariable("project", ConstantPropertiesUtil.PROJECT);
         context.setVariable("author", ConstantPropertiesUtil.AUTHOR);
         context.setVariable("hint", hint);
         context.setVariable("status", status);
+        context.setVariable("createDate", createDate);
         context.setVariable("orderInfo", orderInfo);
         context.setVariable("orderItemList",orderItemList);
         // 把template当作内容发送
@@ -175,6 +181,8 @@ public class EmailServiceImpl implements EmailService {
         } catch (MessagingException e) {
             e.printStackTrace();
         }
+        System.out.println("通知开始发送");
         mailSender.send(message);
+        System.out.println("通知已发送");
     }
 }

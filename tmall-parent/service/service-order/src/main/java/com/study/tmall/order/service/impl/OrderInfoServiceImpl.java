@@ -347,6 +347,7 @@ public class OrderInfoServiceImpl extends ServiceImpl<OrderInfoMapper, OrderInfo
         // 根据订单id查询订单项
         List<OrderItem> orderItemList = orderItemService.getOrderItemByOrderId(orderId);
         dealNotifyVo.setOrderItemList(orderItemList);
+        System.out.println(orderItemList);
 
         dealNotifySend.send(MessageBuilder.withPayload(dealNotifyVo).build());
     }

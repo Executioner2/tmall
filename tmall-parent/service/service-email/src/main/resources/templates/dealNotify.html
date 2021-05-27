@@ -1,95 +1,43 @@
 <!DOCTYPE html>
+<!--suppress ALL-->
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
+    <meta charset="UTF-8" meta name="referrer" content="no-referrer">
     <title>2Executioner</title>
     <style>
-        body {
-            text-align: center;
-            margin-left: auto;
-            margin-right: auto;
-            font-size: 13px;
-            font-family: Arial;
-        }
-        #main {
-            text-align: center;
-            height: 300px;
-        }
-        #content {
-            text-align: left;
-            display: inline-block;
-            margin: 0px auto;
-        }
-        table {
-            border: 1px #ECECEC solid;
-        }
-        .product_item td{
-            border: 1px #ECECEC solid;
-        }
-        .link-a {
-            text-decoration: none;
-            color: #999999;
-        }
         .link-a:hover {
             color: #C40000;
-        }
-        .link-order {
-            text-decoration: none;
-            color: #333333;
         }
         .link-order:hover {
             color: #C40000;
         }
-        table .title {
-            background-color: #F1F1F1;
-            font-size: 12px;
-        }
-        table .title td {
-            padding: 15px 20px 15px 10px;
-        }
-        table .product_name {
-            width: 500px;
-        }
-        table .product_price {
-            width: 100px;
-            font-size: 14px;
-            text-align: center;
-        }
-        table .amount {
-            vertical-align: top;
-            width: 120px;
-            text-align: center;
-            font-size: 14px;
-            padding-top: 10px;
-        }
-
     </style>
 </head>
-<body>
-<div id="main">
+<body style="text-align: center; margin-left: auto;  margin-right: auto; font-family: Arial;">
+<div id="main" style="text-align: center; min-height: 300px; min-width: 870px;">
     <h3>Welcome <span th:text="${project}"></span> -By <span th:text=" ${author}"></span></h3>
     <h4 th:text="${hint}"></h4>
-    <div id="content">
-        <table cellspacing="0">
-            <tr class="title">
-                <td colspan="2">
-                    <span style="font-weight: bold; margin-right: 10px" th:text="${orderInfo.createDate}"></span>
-                    <a class="link-order" href="http://localhost:3000/order" target="_blank" th:text="'订单号：' + ${orderInfo.id}"></a>
+    <div id="content" style="text-align: left; display: inline-block; margin: 0px auto;">
+        <table cellspacing="0" style="border: 1px #ECECEC solid;">
+            <tr class="title" style="background-color: #F1F1F1; font-size: 12px;">
+                <td colspan="2" style="padding: 15px 20px 15px 10px;">
+                    <span style="font-weight: bold; margin-right: 10px" th:text="${createDate}"></span>
+                    <a class="link-order" style="text-decoration: none; color: #333333;" href="http://localhost:3000/order" target="_blank" th:text="'订单号：' + ${orderInfo.id}"></a>
                 </td>
-                <td colspan="3" style="text-align: right;"><span th:text="'订单状态：' + ${status}"></span></td>
+                <td colspan="3" style="text-align: right; padding: 15px 20px 15px 10px;"><span th:text="'订单状态：' + ${status}"></span></td>
             </tr>
-            <tr class="product_item" th:each="item, index : ${orderItemList}">
+            <tr class="product_item" th:each="item, itemStat : ${orderItemList}" style=" border: 1px #ECECEC solid;">
                 <td>
                     <div style="width: 80px; height: 80px">
-                        <img width="80px" title="这是一个未加载出来的商品图片" th:src="${item.params.productInfo.params.imgUrl}">
+                        <img width="80px" title="这是一个未加载出来的商品图片" th:src="${item.params.productInfo.params.imageUrl}">
                     </div>
                 </td>
 
-                <td class="product_name">
-                    <a class="link-a" th:href="@{'http://localhost:3000/product/' + item.params.proudcInfo.id}" target="_blank" th:text="${item.params.productInfo.name}"></a>
+                <td class="product_name" style="width: 500px;">
+                    <a class="link-a" style="text-decoration: none; color: #999999;" th:href="@{http://localhost:3000/product/} + ${item.params.productInfo.id}" target="_blank" th:text="${item.params.productInfo.name}"></a>
                 </td>
 
-                <td class="product_price">
+                <td class="product_price" style="width: 100px; font-size: 14px; text-align: center;">
                     <div style="color: #A69999;"><del th:text="'￥' + ${item.params.productInfo.orignalPrice}"></del></div>
                     <div th:text="'￥' + ${item.params.productInfo.promotePrice}"></div>
                 </td>
@@ -98,7 +46,7 @@
                     <span>2</span>
                 </td>
 
-                <td th:if="index == 0" th:rowspan="${orderItemList.size()}" class="amount">
+                <td style="vertical-align: top; width: 120px; text-align: center; font-size: 14px; padding-top: 10px;" th:if="${itemStat.index == 0}" th:rowspan="${itemStat.size}" class="amount">
                     <div style="font-weight: bold" th:text="'￥' + ${orderInfo.amount}"></div>
                     <div style="font-size: 12px; color: #6C6C6C">（含运费：￥0.00）</div>
                 </td>

@@ -7,6 +7,7 @@ com\study\tmall\order\service\PaymentInfoService.class
 com\study\tmall\order\service\impl\RefundInfoServiceImpl.class
 com\study\tmall\order\service\OrderItemService.class
 com\study\tmall\order\service\impl\PaymentInfoServiceImpl.class
+com\study\tmall\order\handler\MySource.class
 com\study\tmall\order\util\HttpClient$1.class
 com\study\tmall\order\config\OrderConfig.class
 com\study\tmall\order\ServiceOrderApplication.class
