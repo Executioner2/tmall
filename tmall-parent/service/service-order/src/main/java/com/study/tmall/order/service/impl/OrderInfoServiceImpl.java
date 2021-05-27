@@ -14,6 +14,7 @@ import com.study.tmall.model.order.OrderInfo;
 import com.study.tmall.model.order.OrderItem;
 import com.study.tmall.model.product.ProductInfo;
 import com.study.tmall.model.user.UserInfo;
+import com.study.tmall.order.handler.MySource;
 import com.study.tmall.order.mapper.OrderInfoMapper;
 import com.study.tmall.order.service.OrderInfoService;
 import com.study.tmall.order.service.OrderItemService;
@@ -22,9 +23,13 @@ import com.study.tmall.order.service.RefundInfoService;
 import com.study.tmall.product.client.ProductFeignClient;
 import com.study.tmall.result.ResultCodeEnum;
 import com.study.tmall.user.client.UserFeignClient;
+import com.study.tmall.vo.after_end.DealNotifyVo;
 import com.study.tmall.vo.order.OrderQueryVo;
 import com.study.tmall.vo.order.SettlementVo;
 import org.springframework.beans.BeanUtils;
+import org.springframework.cloud.stream.annotation.EnableBinding;
+import org.springframework.messaging.MessageChannel;
+import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -40,6 +45,7 @@ import java.util.*;
  * Description:
  */
 @Service
+@EnableBinding(MySource.class)
 public class OrderInfoServiceImpl extends ServiceImpl<OrderInfoMapper, OrderInfo> implements OrderInfoService {
     @Resource
     private UserFeignClient userFeignClient;
@@ -51,6 +57,8 @@ public class OrderInfoServiceImpl extends ServiceImpl<OrderInfoMapper, OrderInfo
     private RefundInfoService refundInfoService;
     @Resource
     private ProductFeignClient productFeignClient;
+    @Resource
+    private MessageChannel dealNotifySend; // 自己的消息发送通道
 
 
     /**
@@ -283,9 +291,7 @@ public class OrderInfoServiceImpl extends ServiceImpl<OrderInfoMapper, OrderInfo
      */
     @Override
     public OrderInfo getOrderInfo(String token, String orderId, Integer orderStatus) {
-        // 先验证用户信息是否合法
-        UserInfo userInfo = userFeignClient.getUserInfoByToken(token);
-        if (userInfo == null) throw new TmallException(ResultCodeEnum.FETCH_USERINFO_ERROR);
+        UserInfo userInfo = this.getUserInfo(token);
         // 如果传来的订单状态不存在，则抛出参数错误
         if (!OrderStatusEnum.exist(orderStatus)) throw new TmallException(ResultCodeEnum.PARAM_ERROR);
         // 根据用户id 订单id 订单状态 查询订单信息
@@ -303,7 +309,18 @@ public class OrderInfoServiceImpl extends ServiceImpl<OrderInfoMapper, OrderInfo
         wrapper.in("order_status", status);
         OrderInfo orderInfo = baseMapper.selectOne(wrapper);
 
+        // 查询结果为空，参数不正确
+        if (orderInfo == null) throw new TmallException(ResultCodeEnum.PARAM_ERROR);
+
         return orderInfo;
+    }
+
+    // 获取用户信息
+    private UserInfo getUserInfo(String token) {
+        // 先验证用户信息是否合法
+        UserInfo userInfo = userFeignClient.getUserInfoByToken(token);
+        if (userInfo == null) throw new TmallException(ResultCodeEnum.FETCH_USERINFO_ERROR);
+        return userInfo;
     }
 
     /**
@@ -313,10 +330,10 @@ public class OrderInfoServiceImpl extends ServiceImpl<OrderInfoMapper, OrderInfo
      */
     @Override
     public void deliverGoodsByUser(String token, String orderId) {
-        // 先查询待发货的订单信息
-        OrderInfo orderInfo = this.getOrderInfo(token, orderId, OrderStatusEnum.WAIT_SHIPMENTS.getStatus());
-        // 查询结果为空，参数不正确
-        if (orderInfo == null) throw new TmallException(ResultCodeEnum.PARAM_ERROR);
+        // 获得用户信息
+        UserInfo userInfo = this.getUserInfo(token);
+        // 查询待发货的订单信息
+        OrderInfo orderInfo = this.getOrderInfoOfCondition(userInfo, orderId, OrderStatusEnum.WAIT_SHIPMENTS.getStatus());
 
         // 如果不为空，那么更新订单信息
         orderInfo.setOrderStatus(OrderStatusEnum.WAIT_TAKE_GOODS.getStatus()); // 待收货
@@ -324,6 +341,14 @@ public class OrderInfoServiceImpl extends ServiceImpl<OrderInfoMapper, OrderInfo
         baseMapper.updateById(orderInfo);
 
         // TODO 发送邮件，提醒用户卖家已发货
+        DealNotifyVo dealNotifyVo = new DealNotifyVo();
+        dealNotifyVo.setOrderInfo(orderInfo);
+        dealNotifyVo.setReceiverEmail(userInfo.getEmail());
+        // 根据订单id查询订单项
+        List<OrderItem> orderItemList = orderItemService.getOrderItemByOrderId(orderId);
+        dealNotifyVo.setOrderItemList(orderItemList);
+
+        dealNotifySend.send(MessageBuilder.withPayload(dealNotifyVo).build());
     }
 
     /**

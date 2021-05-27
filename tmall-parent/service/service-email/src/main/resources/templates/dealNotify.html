@@ -9,6 +9,7 @@
             margin-left: auto;
             margin-right: auto;
             font-size: 13px;
+            font-family: Arial;
         }
         #main {
             text-align: center;
@@ -18,6 +19,12 @@
             text-align: left;
             display: inline-block;
             margin: 0px auto;
+        }
+        table {
+            border: 1px #ECECEC solid;
+        }
+        .product_item td{
+            border: 1px #ECECEC solid;
         }
         .link-a {
             text-decoration: none;
@@ -33,71 +40,70 @@
         .link-order:hover {
             color: #C40000;
         }
+        table .title {
+            background-color: #F1F1F1;
+            font-size: 12px;
+        }
+        table .title td {
+            padding: 15px 20px 15px 10px;
+        }
+        table .product_name {
+            width: 500px;
+        }
+        table .product_price {
+            width: 100px;
+            font-size: 14px;
+            text-align: center;
+        }
+        table .amount {
+            vertical-align: top;
+            width: 120px;
+            text-align: center;
+            font-size: 14px;
+            padding-top: 10px;
+        }
 
     </style>
 </head>
 <body>
 <div id="main">
     <h3>Welcome <span th:text="${project}"></span> -By <span th:text=" ${author}"></span></h3>
-    <h4>您在tmall-v1.0购买的商品已发货，请耐心等待快递运输</h4>
+    <h4 th:text="${hint}"></h4>
     <div id="content">
-        <table border="1px">
-            <tr id="title">
+        <table cellspacing="0">
+            <tr class="title">
                 <td colspan="2">
-                    <span style="font-weight: bold">2021-05-23 16:29:53</span>
-                    <a class="link-order" href="http://localhost:3000/order" target="_blank">订单号：2021052316295338828</a>
+                    <span style="font-weight: bold; margin-right: 10px" th:text="${orderInfo.createDate}"></span>
+                    <a class="link-order" href="http://localhost:3000/order" target="_blank" th:text="'订单号：' + ${orderInfo.id}"></a>
                 </td>
-                <td colspan="3" style="text-align: right">订单状态：已发货</td>
+                <td colspan="3" style="text-align: right;"><span th:text="'订单状态：' + ${status}"></span></td>
             </tr>
-            <tr class="product_item">
+            <tr class="product_item" th:each="item, index : ${orderItemList}">
                 <td>
-                    <img width="80px" src="http://192.168.123.130/group1/M00/00/01/wKh7gmB1moeEKuYeAAAAAG78NSc501.jpg">
+                    <div style="width: 80px; height: 80px">
+                        <img width="80px" title="这是一个未加载出来的商品图片" th:src="${item.params.productInfo.params.imgUrl}">
+                    </div>
                 </td>
 
-                <td>
-                    <a class="link-a" href="http://localhost:3000/product/1385583548844765185" target="_blank">
-                        Hisense/海信 LED49EC320A 49吋led液晶电视机智能网络平板电视50
-                    </a>
+                <td class="product_name">
+                    <a class="link-a" th:href="@{'http://localhost:3000/product/' + item.params.proudcInfo.id}" target="_blank" th:text="${item.params.productInfo.name}"></a>
                 </td>
 
-                <td>
-                    <div><del>￥2,799.00</del></div>
-                    <div>￥1,679.40</div>
+                <td class="product_price">
+                    <div style="color: #A69999;"><del th:text="'￥' + ${item.params.productInfo.orignalPrice}"></del></div>
+                    <div th:text="'￥' + ${item.params.productInfo.promotePrice}"></div>
                 </td>
 
-                <td style="width: 30px; text-align: center">
+                <td style="width: 50px; text-align: center">
                     <span>2</span>
                 </td>
 
-                <td rowspan="2" style="vertical-align: top">
-                    ￥5,578.20
+                <td th:if="index == 0" th:rowspan="${orderItemList.size()}" class="amount">
+                    <div style="font-weight: bold" th:text="'￥' + ${orderInfo.amount}"></div>
+                    <div style="font-size: 12px; color: #6C6C6C">（含运费：￥0.00）</div>
                 </td>
-            </tr>
-            <tr class="product_item">
-                <td>
-                    <img width="80px" src="http://192.168.123.130/group1/M00/00/01/wKh7gmB9tFGEWgruAAAAAFZQESo679.jpg">
-                </td>
-
-                <td>
-                    <a class="link-a" href="http://localhost:3000/product/1385583548844765185" target="_blank">
-                        Konka/康佳 LED58S1 58英寸8核安卓智能电视机LED液晶无线wifi 60
-                    </a>
-                </td>
-
-                <td>
-                    <div><del>￥3,699.00</del></div>
-                    <div>￥2,219.40</div>
-                </td>
-
-                <td style="width: 30px; text-align: center">
-                    <span>1</span>
-                </td>
-
-
             </tr>
         </table>
-
-
 
     </div>
     <h5>联系开发者：1205878539@qq.com</h5>

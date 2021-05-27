@@ -45,11 +45,23 @@ spring:
           # 解决消费者重复读取队列中的消息，就是分组，同一个分组的消费者只会拿一次，不会都同时拿相同的（轮询策略）
           # 分组还能实现消息持久化
           group: code_del #<---关键
+        dealNotifyReceive: # 订单状态消息接收者
+          destination: exchange.direct.deal # 表示要使用的Exchange名称定义
+          content-type: application/json # 设置消息类型，本次为对象json，如果是文本则设置“text/plain”
+          binder: defaultRabbit # 设置要绑定的消息服务的具体设置
+          # 解决消费者重复读取队列中的消息，就是分组，同一个分组的消费者只会拿一次，不会都同时拿相同的（轮询策略）
+          # 分组还能实现消息持久化
+          group: order_status #<---关键
   mail:
     host: smtp.qq.com
     port: 587
     username: 1205878539@qq.com
     password: xhuahrwqohznjggc
+
+# 这个是自己定义的参数，不同于上面的
+main:
+  project: tmall-v1.0
+  author: 2Executioner
 
 logging:
   level:

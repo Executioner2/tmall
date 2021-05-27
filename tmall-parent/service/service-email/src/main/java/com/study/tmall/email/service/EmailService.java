@@ -1,5 +1,6 @@
 package com.study.tmall.email.service;
 
+import com.study.tmall.vo.after_end.DealNotifyVo;
 import com.study.tmall.vo.front.EmailCodeVo;
 
 /**
@@ -18,4 +19,7 @@ public interface EmailService {
 
     // 删除redis中的邮箱验证码
     void delCode(String key);
+
+    // 订单状态通知
+    void dealNotify(DealNotifyVo dealNotifyVo);
 }

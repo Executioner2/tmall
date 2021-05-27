@@ -25,6 +25,7 @@ com\study\tmall\enums\SortTypeEnum.class
 com\study\tmall\model\user\UserInfo.class
 com\study\tmall\vo\after_end\ProductStockVo.class
 com\study\tmall\enums\ImageUrlEnum.class
+com\study\tmall\vo\after_end\DealNotifyVo.class
 com\study\tmall\enums\PaymentTypeEnum.class
 com\study\tmall\vo\category\PropertyQueryVo.class
 com\study\tmall\vo\front\UserInfoVo.class

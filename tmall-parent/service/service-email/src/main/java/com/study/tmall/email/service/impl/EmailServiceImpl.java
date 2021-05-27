@@ -2,7 +2,12 @@ package com.study.tmall.email.service.impl;
 
 import cn.hutool.core.util.RandomUtil;
 import com.study.tmall.email.service.EmailService;
+import com.study.tmall.email.util.ConstantPropertiesUtil;
 import com.study.tmall.enums.EmailCodeTypeEnum;
+import com.study.tmall.enums.OrderStatusEnum;
+import com.study.tmall.model.order.OrderInfo;
+import com.study.tmall.model.order.OrderItem;
+import com.study.tmall.vo.after_end.DealNotifyVo;
 import com.study.tmall.vo.front.EmailCodeVo;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -15,6 +20,7 @@ import org.thymeleaf.context.Context;
 import javax.annotation.Resource;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -26,9 +32,6 @@ import java.util.concurrent.TimeUnit;
  */
 @Service
 public class EmailServiceImpl implements EmailService {
-    public final static String project = "tmall-v1.0";
-    public final static String author = "2Executioner";
-
     @Resource
     private JavaMailSender mailSender;
     @Resource
@@ -40,9 +43,6 @@ public class EmailServiceImpl implements EmailService {
     @Resource
     private TemplateEngine templateEngine;
 
-    @Value("${spring.mail.username}")
-    private String from;
-
     /**
      * 发送内容到目标邮箱
      * @param to
@@ -53,8 +53,8 @@ public class EmailServiceImpl implements EmailService {
     public void send(String to, String subject, String text) {
         // 设置template中的参数
         Context context = new Context();
-        context.setVariable("project", project);
-        context.setVariable("author", author);
+        context.setVariable("project", ConstantPropertiesUtil.PROJECT);
+        context.setVariable("author", ConstantPropertiesUtil.AUTHOR);
         context.setVariable("code", text);
         // 把template（code.html）当作内容发送
         String emailContent = templateEngine.process("code", context);
@@ -63,7 +63,7 @@ public class EmailServiceImpl implements EmailService {
         MimeMessageHelper helper = null;
         try {
             helper = new MimeMessageHelper(message, true);
-            helper.setFrom(from);  // 发送方
+            helper.setFrom(ConstantPropertiesUtil.FROM);  // 发送方
             helper.setTo(to); // 接收方
             helper.setSubject(subject); // 发送主题
             helper.setText(emailContent, true); // 发送的内容（一个网页）
@@ -93,8 +93,8 @@ public class EmailServiceImpl implements EmailService {
 
         // 设置template中的参数
         Context context = new Context();
-        context.setVariable("project", "tmall-v1.0");
-        context.setVariable("author", "2Executioner");
+        context.setVariable("project", ConstantPropertiesUtil.PROJECT);
+        context.setVariable("author", ConstantPropertiesUtil.AUTHOR);
         context.setVariable("code", code);
         // 把template当作内容发送
         String emailContent = templateEngine.process("mail", context);
@@ -103,7 +103,7 @@ public class EmailServiceImpl implements EmailService {
         MimeMessageHelper helper = null;
         try {
             helper = new MimeMessageHelper(message, true);
-            helper.setFrom(from);  // 发送方
+            helper.setFrom(ConstantPropertiesUtil.FROM);  // 发送方
             helper.setTo(to); // 接收方
             helper.setSubject("tmall login code"); // 发送主题
             helper.setText(emailContent, true); // 发送的内容（一个网页）
@@ -125,5 +125,56 @@ public class EmailServiceImpl implements EmailService {
     @Override
     public void delCode(String key) {
        stringRedisTemplate.delete(key);
+    }
+
+    /**
+     * 订单状态通知
+     * @param dealNotifyVo
+     */
+    @Override
+    public void dealNotify(DealNotifyVo dealNotifyVo) {
+        // 获取接收者邮箱， 订单信息 和 订单项集合
+        String to = dealNotifyVo.getReceiverEmail();
+        OrderInfo orderInfo = dealNotifyVo.getOrderInfo();
+        List<OrderItem> orderItemList = dealNotifyVo.getOrderItemList();
+
+        String hint = "";
+        String status = "";
+
+        // 根据订单状态编号设置提示和订单状态中文字符
+        Integer orderStatus = orderInfo.getOrderStatus();
+        if (orderStatus.intValue() == OrderStatusEnum.WAIT_TAKE_GOODS.getStatus()) {
+            // 是待收货，那么卖家已发货
+            hint = "您在tmall-v1.0购买的商品已发货，请耐心等待快递运输！";
+            status = "已发货";
+        } else if (orderStatus.intValue() == OrderStatusEnum.WAIT_REVIEW.getStatus()) {
+            // 是待评价，那么买家已签收
+            hint = "您在tmall-v1.0购买的商品已被签收，请给您购买的商品一个评价吧！";
+            status = "已签收";
+        }
+
+        // 设置template中的参数
+        Context context = new Context();
+        context.setVariable("project", ConstantPropertiesUtil.PROJECT);
+        context.setVariable("author", ConstantPropertiesUtil.AUTHOR);
+        context.setVariable("hint", hint);
+        context.setVariable("status", status);
+        context.setVariable("orderInfo", orderInfo);
+        context.setVariable("orderItemList",orderItemList);
+        // 把template当作内容发送
+        String emailContent = templateEngine.process("dealNotify", context);
+
+        MimeMessage message = mailSender.createMimeMessage();
+        MimeMessageHelper helper = null;
+        try {
+            helper = new MimeMessageHelper(message, true);
+            helper.setFrom(ConstantPropertiesUtil.FROM);  // 发送方
+            helper.setTo(to); // 接收方
+            helper.setSubject("tmall deal info"); // 发送主题
+            helper.setText(emailContent, true); // 发送的内容（一个网页）
+        } catch (MessagingException e) {
+            e.printStackTrace();
+        }
+        mailSender.send(message);
     }
 }

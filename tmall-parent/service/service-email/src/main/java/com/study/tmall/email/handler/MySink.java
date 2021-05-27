@@ -14,6 +14,7 @@ public interface MySink {
     String INPUT = "input"; // 标准消息接收通道
     String CODE_RECEIVE = "codeReceive"; // 验证码发送消息接收
     String CODE_DEL_RECEIVE = "codeDelReceive"; // 验证码删除消息接收
+    String DEAL_NOTIFY_RECEIVE = "dealNotifyReceive"; // 订单状态消息接收
 
     @Input("input")
     SubscribableChannel input();
@@ -23,4 +24,7 @@ public interface MySink {
 
     @Input("codeDelReceive")
     SubscribableChannel codeDelReceive();
+
+    @Input("dealNotifyReceive")
+    SubscribableChannel dealNotifyReceive();
 }
