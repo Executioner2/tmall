@@ -56,7 +56,7 @@ public class WeChatServiceImpl implements WeChatService {
                 }
             }
             // 生成一个uuid，便于向redis进行轮询，判别用户是否扫码
-            String uuid = IdUtil.randomUUID().replaceAll("-", "");
+            String uuid = IdUtil.simpleUUID();
             // 对uuid进行base64编码并进行加密
             uuid = Base64.encode(uuid);
 
