@@ -35,6 +35,7 @@ public class TaskListener {
                             long nowTime = System.currentTimeMillis();
                             System.out.println(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
                             if (nowTime - item.getExecuteTime() > 0) {
+                                // TODO 把任务发送到rabbitMQ中
                                 System.out.println("定时任务执行了：" + item.getData());
                                 taskQueue.remove(item); // 从队列中移除该任务
                                 System.out.println("删除任务后的队列：" + taskQueue);
