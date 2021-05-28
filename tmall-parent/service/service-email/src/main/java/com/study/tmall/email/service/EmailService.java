@@ -1,6 +1,6 @@
 package com.study.tmall.email.service;
 
-import com.study.tmall.vo.after_end.DealNotifyVo;
+import com.study.tmall.dto.DealNotify;
 import com.study.tmall.vo.front.EmailCodeVo;
 
 /**
@@ -21,5 +21,5 @@ public interface EmailService {
     void delCode(String key);
 
     // 订单状态通知
-    void dealNotify(DealNotifyVo dealNotifyVo);
+    void dealNotify(DealNotify dealNotify);
 }

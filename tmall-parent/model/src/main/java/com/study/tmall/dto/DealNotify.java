@@ -1,4 +1,4 @@
-package com.study.tmall.vo.after_end;
+package com.study.tmall.dto;
 
 import com.study.tmall.model.order.OrderInfo;
 import com.study.tmall.model.order.OrderItem;
@@ -16,8 +16,8 @@ import java.util.List;
  * Description:
  */
 @Data
-@ApiModel(description = "交易通知vo类")
-public class DealNotifyVo {
+@ApiModel(description = "交易通知传输类")
+public class DealNotify {
     @ApiModelProperty("订单对象")
     private OrderInfo orderInfo;
 

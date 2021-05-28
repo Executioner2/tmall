@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.study.tmall.model.product.ProductInfo;
-import com.study.tmall.vo.after_end.ProductStockVo;
+import com.study.tmall.dto.ProductStock;
 import com.study.tmall.vo.product.ProductInfoFrontQueryVo;
 import com.study.tmall.vo.product.ProductQueryVo;
 import org.springframework.web.multipart.MultipartFile;
@@ -58,7 +58,7 @@ public interface ProductInfoService extends IService<ProductInfo> {
     IPage<ProductInfo> searchProductInfo(Page<ProductInfo> page, String keyword);
 
     // 更新商品库存
-    Long updateProductNumber(ProductStockVo productStockVo);
+    Long updateProductNumber(ProductStock productStock);
 
     // 根据id查询商品，取得商品简单信息
     ProductInfo getProductSimpleInfoById(String id);

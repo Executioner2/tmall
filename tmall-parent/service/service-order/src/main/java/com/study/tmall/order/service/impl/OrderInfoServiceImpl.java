@@ -23,7 +23,7 @@ import com.study.tmall.order.service.RefundInfoService;
 import com.study.tmall.product.client.ProductFeignClient;
 import com.study.tmall.result.ResultCodeEnum;
 import com.study.tmall.user.client.UserFeignClient;
-import com.study.tmall.vo.after_end.DealNotifyVo;
+import com.study.tmall.dto.DealNotify;
 import com.study.tmall.vo.order.OrderQueryVo;
 import com.study.tmall.vo.order.SettlementVo;
 import org.springframework.beans.BeanUtils;
@@ -340,16 +340,16 @@ public class OrderInfoServiceImpl extends ServiceImpl<OrderInfoMapper, OrderInfo
         orderInfo.setDeliveryDate(new Date()); // 更新发货日期
         baseMapper.updateById(orderInfo);
 
-        // TODO 发送邮件，提醒用户卖家已发货
-        DealNotifyVo dealNotifyVo = new DealNotifyVo();
-        dealNotifyVo.setOrderInfo(orderInfo);
-        dealNotifyVo.setReceiverEmail(userInfo.getEmail());
+        // 发送邮件，提醒用户卖家已发货
+        DealNotify dealNotify = new DealNotify();
+        dealNotify.setOrderInfo(orderInfo);
+        dealNotify.setReceiverEmail(userInfo.getEmail());
         // 根据订单id查询订单项
         List<OrderItem> orderItemList = orderItemService.getOrderItemByOrderId(orderId);
-        dealNotifyVo.setOrderItemList(orderItemList);
+        dealNotify.setOrderItemList(orderItemList);
         System.out.println(orderItemList);
 
-        dealNotifySend.send(MessageBuilder.withPayload(dealNotifyVo).build());
+        dealNotifySend.send(MessageBuilder.withPayload(dealNotify).build());
     }
 
     /**
@@ -408,8 +408,7 @@ public class OrderInfoServiceImpl extends ServiceImpl<OrderInfoMapper, OrderInfo
     @Override
     public void removeOrderInfo(String token, String orderId) {
         // 先验证用户信息是否合法
-        UserInfo userInfo = userFeignClient.getUserInfoByToken(token);
-        if (userInfo == null) throw new TmallException(ResultCodeEnum.FETCH_USERINFO_ERROR);
+        UserInfo userInfo = this.getUserInfo(token);
         // 根据用户id 订单id 订单状态（待评价，交易完成）查询订单信息
         OrderInfo orderInfo = this.getOrderInfoOfCondition(
                 userInfo, orderId,

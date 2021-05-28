@@ -7,9 +7,8 @@ import com.study.tmall.enums.EmailCodeTypeEnum;
 import com.study.tmall.enums.OrderStatusEnum;
 import com.study.tmall.model.order.OrderInfo;
 import com.study.tmall.model.order.OrderItem;
-import com.study.tmall.vo.after_end.DealNotifyVo;
+import com.study.tmall.dto.DealNotify;
 import com.study.tmall.vo.front.EmailCodeVo;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -130,14 +129,14 @@ public class EmailServiceImpl implements EmailService {
 
     /**
      * 订单状态通知
-     * @param dealNotifyVo
+     * @param dealNotify
      */
     @Override
-    public void dealNotify(DealNotifyVo dealNotifyVo) {
+    public void dealNotify(DealNotify dealNotify) {
         // 获取接收者邮箱， 订单信息 和 订单项集合
-        String to = dealNotifyVo.getReceiverEmail();
-        OrderInfo orderInfo = dealNotifyVo.getOrderInfo();
-        List<OrderItem> orderItemList = dealNotifyVo.getOrderItemList();
+        String to = dealNotify.getReceiverEmail();
+        OrderInfo orderInfo = dealNotify.getOrderInfo();
+        List<OrderItem> orderItemList = dealNotify.getOrderItemList();
 
         String hint = "";
         String status = "";

@@ -16,6 +16,7 @@ import java.util.Map;
  */
 @ApiModel(description = "订单状态枚举类")
 public enum OrderStatusEnum {
+    CANCEL_PAYMENT(-1, "取消支付"),
     WAIT_PAY(0, "待付款"),
     WAIT_SHIPMENTS(1, "待发货"),
     WAIT_TAKE_GOODS(2, "待收货"),

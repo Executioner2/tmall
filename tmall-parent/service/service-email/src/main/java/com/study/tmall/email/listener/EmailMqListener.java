@@ -2,7 +2,7 @@ package com.study.tmall.email.listener;
 
 import com.study.tmall.email.handler.MySink;
 import com.study.tmall.email.service.EmailService;
-import com.study.tmall.vo.after_end.DealNotifyVo;
+import com.study.tmall.dto.DealNotify;
 import com.study.tmall.vo.front.EmailCodeVo;
 import org.springframework.cloud.stream.annotation.EnableBinding;
 import org.springframework.cloud.stream.annotation.StreamListener;
@@ -49,8 +49,8 @@ public class EmailMqListener {
      * @param message
      */
     @StreamListener(MySink.DEAL_NOTIFY_RECEIVE)
-    public void dealNotify(Message<DealNotifyVo> message) {
-        DealNotifyVo dealNotifyVo = message.getPayload();
-        emailService.dealNotify(dealNotifyVo);
+    public void dealNotify(Message<DealNotify> message) {
+        DealNotify dealNotify = message.getPayload();
+        emailService.dealNotify(dealNotify);
     }
 }

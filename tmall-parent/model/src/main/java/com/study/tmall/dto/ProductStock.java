@@ -1,4 +1,4 @@
-package com.study.tmall.vo.after_end;
+package com.study.tmall.dto;
 
 import com.study.tmall.enums.ArithmeticTypeEnum;
 import io.swagger.annotations.ApiModel;
@@ -13,8 +13,8 @@ import lombok.Data;
  * Description:
  */
 @Data
-@ApiModel(description = "商品库存vo类")
-public class ProductStockVo {
+@ApiModel(description = "商品库存传输类")
+public class ProductStock {
     @ApiModelProperty("订单项id")
     private String id;
 

@@ -21,7 +21,7 @@ import com.study.tmall.product.service.ProductInfoService;
 import com.study.tmall.product.service.PropertyValueService;
 import com.study.tmall.product.service.ReviewService;
 import com.study.tmall.result.ResultCodeEnum;
-import com.study.tmall.vo.after_end.ProductStockVo;
+import com.study.tmall.dto.ProductStock;
 import com.study.tmall.vo.product.*;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
@@ -397,15 +397,15 @@ public class ProductInfoServiceImpl extends ServiceImpl<ProductInfoMapper, Produ
 
     /**
      * 更新商品库存
-     * @param productStockVo
+     * @param productStock
      * @return
      */
     @Override
-    public Long updateProductNumber(ProductStockVo productStockVo) {
+    public Long updateProductNumber(ProductStock productStock) {
         // 取出商品信息
-        String productId = productStockVo.getProductId();
-        Integer number = productStockVo.getNumber();
-        ArithmeticTypeEnum type = productStockVo.getType();
+        String productId = productStock.getProductId();
+        Integer number = productStock.getNumber();
+        ArithmeticTypeEnum type = productStock.getType();
         if (StringUtils.isEmpty(productId) || number == null || number <= 0) {
             throw new TmallException(ResultCodeEnum.PARAM_ERROR);
         }

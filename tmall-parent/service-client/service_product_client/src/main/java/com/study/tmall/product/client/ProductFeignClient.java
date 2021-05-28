@@ -1,11 +1,7 @@
 package com.study.tmall.product.client;
 
-import com.study.tmall.enums.ArithmeticTypeEnum;
-import com.study.tmall.model.order.OrderItem;
 import com.study.tmall.model.product.ProductInfo;
-import com.study.tmall.vo.after_end.ProductStockVo;
-import io.swagger.annotations.ApiModelProperty;
-import io.swagger.annotations.ApiParam;
+import com.study.tmall.dto.ProductStock;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -40,7 +36,7 @@ public interface ProductFeignClient {
 
     // 更新商品库存
     @PostMapping("/api/product/productInfo/inner/updateProductNumber")
-    Long updateProductNumber(@RequestBody ProductStockVo productStockVo);
+    Long updateProductNumber(@RequestBody ProductStock productStock);
 
     // 根据id查询商品（内部调用）
     @GetMapping("/api/product/productInfo/inner/getById/{id}")

@@ -5,7 +5,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.study.tmall.model.product.ProductInfo;
 import com.study.tmall.product.service.ProductInfoService;
 import com.study.tmall.result.Result;
-import com.study.tmall.vo.after_end.ProductStockVo;
+import com.study.tmall.dto.ProductStock;
 import com.study.tmall.vo.product.ProductInfoFrontQueryVo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -101,11 +101,11 @@ public class ProductInfoApi {
     @ApiOperation("更新商品数量")
     @PostMapping("/inner/updateProductNumber")
     public Long updateProductNumber(
-            @ApiParam(name = "productStockVo", value = "专门用来更新商品数量的vo", required = true)
-            @RequestBody ProductStockVo productStockVo) {
+            @ApiParam(name = "productStock", value = "专门用来更新商品数量的vo", required = true)
+            @RequestBody ProductStock productStock) {
 
         // 返回库存
-        return productInfoService.updateProductNumber(productStockVo);
+        return productInfoService.updateProductNumber(productStock);
     }
 
     // 根据id查询商品（内部调用）

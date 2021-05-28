@@ -14,7 +14,7 @@ import com.study.tmall.order.service.OrderItemService;
 import com.study.tmall.product.client.ProductFeignClient;
 import com.study.tmall.result.ResultCodeEnum;
 import com.study.tmall.util.JwtHelper;
-import com.study.tmall.vo.after_end.ProductStockVo;
+import com.study.tmall.dto.ProductStock;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
@@ -97,10 +97,10 @@ public class OrderItemServiceImpl extends ServiceImpl<OrderItemMapper, OrderItem
         OrderItem item = baseMapper.selectOne(wrapper);
 
         // 远程调用service-product模块更新商品数量
-        ProductStockVo productStockVo = new ProductStockVo(); // 专门用来更新商品数量的vo
-        BeanUtils.copyProperties(orderItem, productStockVo);
-        productStockVo.setType(ArithmeticTypeEnum.SUBTRACT);
-        Long stock = productFeignClient.updateProductNumber(productStockVo);
+        ProductStock productStock = new ProductStock(); // 专门用来更新商品数量的vo
+        BeanUtils.copyProperties(orderItem, productStock);
+        productStock.setType(ArithmeticTypeEnum.SUBTRACT);
+        Long stock = productFeignClient.updateProductNumber(productStock);
         if (stock != null) {
             int flag;
             // 如果购物车中没有该商品则添加数据
@@ -160,10 +160,10 @@ public class OrderItemServiceImpl extends ServiceImpl<OrderItemMapper, OrderItem
         // 先查询，更新商品的库存
         OrderItem orderItem = baseMapper.selectOne(wrapper);
         // 更新商品库存，加法
-        ProductStockVo productStockVo = new ProductStockVo(); // 专门用来更新商品数量的vo
-        BeanUtils.copyProperties(orderItem, productStockVo);
-        productStockVo.setType(ArithmeticTypeEnum.ADD);
-        Long stock = productFeignClient.updateProductNumber(productStockVo);
+        ProductStock productStock = new ProductStock(); // 专门用来更新商品数量的vo
+        BeanUtils.copyProperties(orderItem, productStock);
+        productStock.setType(ArithmeticTypeEnum.ADD);
+        Long stock = productFeignClient.updateProductNumber(productStock);
 
         if (stock != null) { // 如果库存更新成功就把商品从购物车中删除
             baseMapper.delete(wrapper);
@@ -183,20 +183,20 @@ public class OrderItemServiceImpl extends ServiceImpl<OrderItemMapper, OrderItem
         Integer newNumber = orderItem.getNumber();
 
         // 设置商品数量更新对象
-        ProductStockVo productStockVo = new ProductStockVo();
-        BeanUtils.copyProperties(orderItem, productStockVo);
-        productStockVo.setNumber(Math.abs((oldNumber - newNumber))); // 要更新的数量
+        ProductStock productStock = new ProductStock();
+        BeanUtils.copyProperties(orderItem, productStock);
+        productStock.setNumber(Math.abs((oldNumber - newNumber))); // 要更新的数量
         // 进行的算术，是增加还是减少
         if (oldNumber < newNumber) { // 如果旧的数量小于新的数量库存就减去新增的
-            productStockVo.setType(ArithmeticTypeEnum.SUBTRACT);
+            productStock.setType(ArithmeticTypeEnum.SUBTRACT);
         } else if (oldNumber > newNumber) { // 如果旧的大于新的就是加上减去的
-            productStockVo.setType(ArithmeticTypeEnum.ADD);
+            productStock.setType(ArithmeticTypeEnum.ADD);
         } else { // 如果相等了，那么就返回不更新
             return null;
         }
 
         // 远程调用更新商品库存
-        Long stock = productFeignClient.updateProductNumber(productStockVo);
+        Long stock = productFeignClient.updateProductNumber(productStock);
         // 如果库存更新成功，那么订单项中的商品数量也更新
         if (stock != null) {
             baseMapper.updateById(orderItem);
