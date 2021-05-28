@@ -12,7 +12,7 @@ import lombok.Data;
  * Description:
  */
 @Data
-@ApiModel(description = "倒计时任务传输对象")
+@ApiModel(description = "计时器任务传输对象")
 public class TimerTask<T> {
     @ApiModelProperty("结束时间，当前时间(ms)+到执行时间的等待时间(ms)")
     private Long executeTime;

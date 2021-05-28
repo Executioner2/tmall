@@ -1,21 +1,24 @@
-package com.study.tmall.email;
+package com.study.tmall.task;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.scheduling.annotation.EnableAsync;
 
 /**
  * Copyright@1205878539@qq.com
  * Author:2Executioner
- * Date:2021-04-29 20:31
+ * Date:2021-05-28 20:05
  * Versions:1.0.0
  * Description:
  */
+@SpringBootApplication(exclude = DataSourceAutoConfiguration.class) // 排除数据库连接
+@EnableAsync // 开启异步
 @EnableDiscoveryClient
-@SpringBootApplication(exclude = DataSourceAutoConfiguration.class)
-public class ServiceEmailApplication {
+public class ServiceTaskApplication {
     public static void main(String[] args) {
-        SpringApplication.run(ServiceEmailApplication.class, args);
+        SpringApplication.run(ServiceTaskApplication.class, args);
     }
 }

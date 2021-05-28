@@ -15,6 +15,7 @@ public interface MySink {
     String CODE_RECEIVE = "codeReceive"; // 验证码发送消息接收
     String CODE_DEL_RECEIVE = "codeDelReceive"; // 验证码删除消息接收
     String DEAL_NOTIFY_RECEIVE = "dealNotifyReceive"; // 订单状态消息接收
+    String TIMER_TASK_RECEIVE = "timerTaskReceive"; // 计时器任务接收
 
     @Input("input")
     SubscribableChannel input();
@@ -27,4 +28,7 @@ public interface MySink {
 
     @Input("dealNotifyReceive")
     SubscribableChannel dealNotifyReceive();
+
+    @Input("timerTaskReceive")
+    SubscribableChannel timerTaskReceive();
 }

@@ -17,6 +17,7 @@
         <module>service-category</module>
         <module>service-product</module>
         <module>service-email</module>
+        <module>service-task</module>
     </modules>
 
     <dependencies>
