@@ -1,8 +1,10 @@
 package com.study.tmall.notify.listener;
 
+import com.alibaba.fastjson.JSON;
 import com.study.tmall.dto.DealNotify;
 import com.study.tmall.dto.TimerTask;
 import com.study.tmall.enums.TaskTypeEnum;
+import com.study.tmall.model.order.OrderInfo;
 import com.study.tmall.notify.handler.MySink;
 import com.study.tmall.notify.service.EmailService;
 import com.study.tmall.notify.service.TimerTaskService;

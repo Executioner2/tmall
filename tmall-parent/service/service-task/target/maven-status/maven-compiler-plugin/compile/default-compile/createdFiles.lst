@@ -5,3 +5,4 @@ com\study\tmall\task\ServiceTaskApplication.class
 com\study\tmall\task\util\TaskQueueUtil.class
 com\study\tmall\task\listener\TaskListener.class
 com\study\tmall\task\handler\MySource.class
+com\study\tmall\task\util\ConstantPropertyUtil.class

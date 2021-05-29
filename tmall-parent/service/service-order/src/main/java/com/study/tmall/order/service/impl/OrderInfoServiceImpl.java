@@ -235,7 +235,10 @@ public class OrderInfoServiceImpl extends ServiceImpl<OrderInfoMapper, OrderInfo
         TimerTask<OrderInfo> task = new TimerTask<>();
         task.setType(TaskTypeEnum.PAY_OVERTIME); // 任务类型，支付超时
         task.setData(orderInfo);
-        task.setExecuteTime(1000L); // 十秒后未支付则取消订单
+        task.setExecuteTime(System.currentTimeMillis() + 1000); // 十秒后未支付则取消订单
+        System.out.println("=========================================");
+        System.out.println("订单中显示到期时间：" + task.getExecuteTime());
+        System.out.println("=========================================");
         taskFeignClient.addTask(task); // 远程调用任务模块，添加倒计时任务
         return orderInfo.getId();
     }

@@ -13,5 +13,5 @@ import com.study.tmall.model.order.OrderInfo;
 public interface TimerTaskService {
 
     // 支付超时
-    void payOvertime(TimerTask<OrderInfo> task);
+    void payOvertime(TimerTask task);
 }

@@ -94,6 +94,9 @@
           <td v-if="index2 == 0 && item.orderStatus == 4" :rowspan="item.params.orderItems.length">
             <span>已完成</span>
           </td>
+          <td v-if="index2 == 0 && item.orderStatus == 5" :rowspan="item.params.orderItems.length">
+            <span style="color: #C40000">订单已取消</span>
+          </td>
         </tr>
       </table>
     </div>

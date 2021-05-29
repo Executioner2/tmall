@@ -25,8 +25,6 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 @RestController
 @RequestMapping("/api/task/timerTask")
 public class TimerTaskApi {
-    @ApiModelProperty("任务队列")
-    private final static ConcurrentLinkedQueue<TimerTask> taskQueue = TaskConfig.taskQueue;
 
     @ApiOperation("增加任务（这个接口只用添加任务）")
     @PostMapping("/inner/addTask")
@@ -34,6 +32,9 @@ public class TimerTaskApi {
             @ApiParam(name = "task", value = "定时任务", required = true)
             @RequestBody TimerTask task) {
 
+        System.out.println("接收到的：" + task);
+
+        ConcurrentLinkedQueue<TimerTask> taskQueue = TaskConfig.getTaskQueue();
         // 添加定时任务
         taskQueue.add(task);
         // 保存到序列化文件

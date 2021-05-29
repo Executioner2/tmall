@@ -4,7 +4,6 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
-import org.springframework.scheduling.annotation.EnableAsync;
 
 /**
  * Copyright@1205878539@qq.com
@@ -14,7 +13,6 @@ import org.springframework.scheduling.annotation.EnableAsync;
  * Description:
  */
 @SpringBootApplication(exclude = DataSourceAutoConfiguration.class) // 排除数据库连接
-@EnableAsync // 开启异步
 @EnableDiscoveryClient
 public class ServiceTaskApplication {
     public static void main(String[] args) {

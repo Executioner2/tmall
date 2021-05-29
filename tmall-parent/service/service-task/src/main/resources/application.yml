@@ -24,3 +24,7 @@ spring:
           destination: exchange.direct.task # 表示要使用的Exchange名称定义
           content-type: application/json # 设置消息类型，本次为json，文本则设置“text/plain”
           binder: defaultRabbit # 设置要绑定的消息服务的具体设置
+
+file:
+  save:
+    path: E:/JavaProject/study/tmall-v1.0/tmall-parent/service/service-task/src/main/resources/taskQueue.dat

@@ -25,14 +25,4 @@ public class TimerTask<T> implements Serializable {
 
     @ApiModelProperty("任务类型")
     private TaskTypeEnum type;
-
-    /**
-     * 设置多少ms后执行
-     * @param time 多少ms后
-     */
-    public void setExecuteTime(Long time) {
-        System.out.println(System.currentTimeMillis() + time);
-        this.executeTime = System.currentTimeMillis() + time;
-        System.out.println("到期时间：" + this.executeTime);
-    }
 }

@@ -1,7 +1,6 @@
 package com.study.tmall.task.util;
 
 import com.study.tmall.dto.TimerTask;
-import org.springframework.stereotype.Component;
 
 import java.io.*;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -21,7 +20,7 @@ public class TaskQueueUtil {
      * @param queue
      */
     public static void writeTaskQueue(ConcurrentLinkedQueue<TimerTask> queue) {
-        File file = new File("taskQueue.dat");
+        File file = new File(ConstantPropertyUtil.FILE_PATH);
         // 放在try中的流会被自动关闭
         try(ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(file))) {
             oos.writeObject(queue);
@@ -35,8 +34,7 @@ public class TaskQueueUtil {
 
     public static ConcurrentLinkedQueue<TimerTask> readTaskQueue() {
         ConcurrentLinkedQueue<TimerTask> taskQueue = null;
-
-        File file = new File("taskQueue.dat");
+        File file = new File(ConstantPropertyUtil.FILE_PATH);
 
         // 如果该文件不存在则返回一个新的队列对象
         if (!file.exists()) {

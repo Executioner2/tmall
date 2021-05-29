@@ -25,7 +25,6 @@ public interface CategoryClient {
     List<Property> showByCid(@PathVariable("categoryId") String categoryId);
 
     // 根据分类id获得分类信息（内部调用）
-    @ApiOperation(value = "根据分类id获得分类信息（内部调用）")
     @GetMapping("/admin/category/categoryInfo/inner/get/{id}")
     CategoryInfo getById(@PathVariable("id") String id);
 }

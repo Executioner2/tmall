@@ -1,5 +1,6 @@
 package com.study.tmall.notify.service.impl;
 
+import com.alibaba.fastjson.JSON;
 import com.study.tmall.dto.TimerTask;
 import com.study.tmall.model.order.OrderInfo;
 import com.study.tmall.notify.service.TimerTaskService;
@@ -25,10 +26,10 @@ public class TimerTaskServiceImpl implements TimerTaskService {
      * @param task
      */
     @Override
-    public void payOvertime(TimerTask<OrderInfo> task) {
+    public void payOvertime(TimerTask task) {
+        // 因为泛型在通过feign传输会转换为linkedHashMap，所以先把它转换为json字符串，再把json字符串转为对象
+        OrderInfo orderInfo = JSON.parseObject(JSON.toJSONString(task.getData()), OrderInfo.class);
         // 远程调用取消订单
-        System.out.println("远程调用开始");
-        orderFeignClient.cancelOrder(task.getData());
-        System.out.println("远程调用结束");
+        orderFeignClient.cancelOrder(orderInfo);
     }
 }
