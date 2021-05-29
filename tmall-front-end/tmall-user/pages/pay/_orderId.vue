@@ -63,9 +63,17 @@ export default {
         if (s < 10) s = "0" + s
         formatTime = h + ":" + m + ":" + s
         this.payTime = formatTime
+        if (letSecond <= 0) {
+          setTimeout(()=> {
+            this.$message.warning("超过支付时间，交易已被取消，请重新下单！")
+            this.$router.push("/order")
+          }, 1000)
+          clearInterval(timer);
+          timer = null;
+        }
       }, 1000)
       // 关闭计时器
-      this.$once('hook:beforeDestroy',()=>{
+      this.$once("hook:beforeDestroy",() => {
         clearInterval(timer);
         timer = null;
       })

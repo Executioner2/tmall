@@ -21,7 +21,6 @@
 
     <el-dialog
       @open="dialogOpen"
-      @closed="dialogClosed"
       :visible.sync="dialogVisible"
       :before-close="handlerClose"
       :show-close="false"
@@ -53,7 +52,6 @@ export default {
       dialogVisible: false,
       hint: "", // 提示
       msgIsShow: false, // 提示默认不显示
-      confirmTimer: null, // 在线确认计时器
       confirmTime: 0, // 在线确认时间
     }
   },
@@ -114,16 +112,9 @@ export default {
       }
     },
 
-    // 模态框关闭
-    dialogClosed() {
-      clearInterval(this.confirmTimer) // 清除确认计时器
-      this.confirmTimer = null
-    },
-
     // 重新登录
     reLogin() {
       storage.removeLoginStatus() // 移除localStorage所有项
-      clearInterval(this.confirmTimer) // 清除确认计时器
       this.dialogVisible = false // 关闭模态框，也是为了清空计时器
       window.location.href = "/login"
     },
@@ -133,7 +124,7 @@ export default {
       this.confirmTime = 60*5 // 设置5分钟给用户在线确认，若超过5分钟用户未确认则视为离线
       // this.confirmTime = 10 // 设置5分钟给用户在线确认，若超过5分钟用户未确认则视为离线
       let my = this
-      this.confirmTimer = setInterval(function () {
+      let timer = setInterval(function () {
         // console.log(my.confirmTime)
         --my.confirmTime
         if (my.confirmTime == 0) { // 超时未确认，重新登录
@@ -141,6 +132,10 @@ export default {
           my.reLogin()
         }
       },1000)
+      this.$once("hook:beforeDestroy", () => {
+        clearInterval(timer)
+        timer = null
+      })
     },
 
     // 在线状态确认
@@ -178,8 +173,13 @@ export default {
         if (--time == 0) {
           this.dialogVisible = true
           clearInterval(timer)
+          timer = null
         }
       }, 1000)
+      this.$once("hook:beforeDestroy", () => {
+        clearInterval(timer)
+        timer = null
+      })
     },
 
     // 获取用户信息
