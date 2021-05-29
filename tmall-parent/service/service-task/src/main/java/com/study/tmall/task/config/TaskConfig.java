@@ -29,7 +29,6 @@ public class TaskConfig implements ApplicationRunner {
     }
 
     public static ConcurrentLinkedQueue<TimerTask> getTaskQueue() {
-        System.out.println("获取的队列：" + taskQueue);
         return taskQueue;
     }
 }

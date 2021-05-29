@@ -85,7 +85,6 @@ public class WeChatServiceImpl implements WeChatService {
             String content = httpClient.getContent();
             Map<String, String> resultMap = WXPayUtil.xmlToMap(content);
             // 封装返回结果集
-            System.out.println(resultMap);
             Map map = new HashMap();
             map.put("orderId", orderId);
             map.put("amount", orderInfo.getAmount());

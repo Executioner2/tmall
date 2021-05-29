@@ -32,13 +32,10 @@ public class TimerTaskApi {
             @ApiParam(name = "task", value = "定时任务", required = true)
             @RequestBody TimerTask task) {
 
-        System.out.println("接收到的：" + task);
-
         ConcurrentLinkedQueue<TimerTask> taskQueue = TaskConfig.getTaskQueue();
         // 添加定时任务
         taskQueue.add(task);
         // 保存到序列化文件
         TaskQueueUtil.writeTaskQueue(taskQueue);
-        System.out.println("定时任务增加了：" + taskQueue);
     }
 }

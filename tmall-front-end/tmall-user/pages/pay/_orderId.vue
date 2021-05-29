@@ -4,7 +4,8 @@
     <div class="payPage" id="payPage">
       <img src="~assets/img/site/simpleLogo.png"/>
       <div class="payMediate">
-        <div>   扫一扫付款（元）</div>
+        <span style="color: #C40000">订单将在{{payTime}}后取消，请注意支付有效时间</span>
+        <div>扫一扫付款（元）</div>
         <div class="paymentAmount">￥{{amountStr}}</div>
         <div>
           <div style="margin: 50px auto; height: 200px; width: 200px" class="qrcode" ref="qrCodeUrl"></div>
@@ -27,7 +28,7 @@ export default {
       orderInfo: {}, // 订单信息
       amountStr: "", // 金额
       codeUrl: null, // 二维码地址
-      timer: null, // 轮询计时器
+      payTime: "2:00:00", // 支付有效时间
     }
   },
   mounted() {
@@ -35,12 +36,41 @@ export default {
     this.getOrderInfo()
     this.createNative()
   },
-  watch: {
-    $route() {
-      clearInterval(this.timer)
-    }
-  },
   methods: {
+    // 剩余支付时间
+    leftPayTime() {
+      // 拆分创建时间字符串
+      let createDate = this.orderInfo.createDate
+      let time = createDate.substring(createDate.indexOf(" "), createDate.length)
+      let ars = time.split(":")
+      // 转化为秒
+      let createSecond = parseInt(ars[0])*60*60 + parseInt(ars[1])*60 + parseInt(ars[2])
+      // 当前时间转化为秒
+      let nowDate = new Date()
+      let nowSecond = nowDate.getHours()*60*60 + nowDate.getMinutes()*60 + nowDate.getMilliseconds()
+      // 剩余的支付时间（秒）
+      let letSecond = 2*60*60 - (nowSecond - createSecond)
+
+      let timer = setInterval(() => {
+        --letSecond
+        let temp = letSecond
+        let formatTime
+        let h = parseInt(temp / (60 * 60))
+        temp = temp % (60 * 60)
+        let m = parseInt(temp / 60)
+        let s = temp % 60
+        if (m < 10) m = "0" + m
+        if (s < 10) s = "0" + s
+        formatTime = h + ":" + m + ":" + s
+        this.payTime = formatTime
+      }, 1000)
+      // 关闭计时器
+      this.$once('hook:beforeDestroy',()=>{
+        clearInterval(timer);
+        timer = null;
+      })
+    },
+
     // 点击支付
     pay() {
       pay.pay(this.orderId)
@@ -57,6 +87,7 @@ export default {
         .then(response => {
           this.orderInfo = response.data
           this.amountStr = moneyFormat.format(this.orderInfo.amount)
+          this.leftPayTime()
         })
     },
 
@@ -79,18 +110,21 @@ export default {
 
     // 轮询
     polling() {
-      this.timer = setInterval(() => {
+      let timer = setInterval(() => {
         pay.polling(this.orderId)
           .then(response => {
             if (response.message == "支付中") {
               return
             }
             // 跳转到支付成功页面
-            clearInterval(this.timer)
             this.$router.push("/paySuccess/" + this.orderId)
-            console.log("计时器已关闭")
           })
       }, 3000)
+      // 关闭计时器
+      this.$once("hook:beforeDestroy", ()=> {
+        clearInterval(timer)
+        timer = null
+      })
     },
 
   },

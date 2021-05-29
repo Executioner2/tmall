@@ -235,10 +235,7 @@ public class OrderInfoServiceImpl extends ServiceImpl<OrderInfoMapper, OrderInfo
         TimerTask<OrderInfo> task = new TimerTask<>();
         task.setType(TaskTypeEnum.PAY_OVERTIME); // 任务类型，支付超时
         task.setData(orderInfo);
-        task.setExecuteTime(System.currentTimeMillis() + 1000); // 十秒后未支付则取消订单
-        System.out.println("=========================================");
-        System.out.println("订单中显示到期时间：" + task.getExecuteTime());
-        System.out.println("=========================================");
+        task.setExecuteTime(System.currentTimeMillis()+2*60*60*1000); // 两小时后未支付则取消订单
         taskFeignClient.addTask(task); // 远程调用任务模块，添加倒计时任务
         return orderInfo.getId();
     }
@@ -274,7 +271,7 @@ public class OrderInfoServiceImpl extends ServiceImpl<OrderInfoMapper, OrderInfo
             // TODO 查询是否有支付超时的商品，如果有则取消该订单（虽然已经有计时器来取消订单，这是个保险措施）
             if (item.getOrderStatus() == OrderStatusEnum.WAIT_PAY.getStatus()) {
                 // 如果订单创建后在十秒内未支付则取消订单
-                if (item.getCreateDate().getTime() + 1000 > System.currentTimeMillis()) {
+                if (item.getCreateDate().getTime()+2*60*60*1000 < System.currentTimeMillis()) {
                     // 取消订单
                     this.cancelOrder(item);
                 }
@@ -414,7 +411,7 @@ public class OrderInfoServiceImpl extends ServiceImpl<OrderInfoMapper, OrderInfo
     }
 
     /**
-     * 删除交易完成了的订单（确认收货后就算完成了交易）
+     * 删除交易关闭或者交易完成了的订单（确认收货后就算完成了交易）
      * @param token
      * @param orderId
      */
@@ -422,11 +419,12 @@ public class OrderInfoServiceImpl extends ServiceImpl<OrderInfoMapper, OrderInfo
     public void removeOrderInfo(String token, String orderId) {
         // 先验证用户信息是否合法
         UserInfo userInfo = this.getUserInfo(token);
-        // 根据用户id 订单id 订单状态（待评价，交易完成）查询订单信息
+        // 根据用户id 订单id 订单状态（待评价，交易完成，交易关闭）查询订单信息
         OrderInfo orderInfo = this.getOrderInfoOfCondition(
                 userInfo, orderId,
                 OrderStatusEnum.WAIT_REVIEW.getStatus(),
-                OrderStatusEnum.COMPLETE_TRANSACTION.getStatus());
+                OrderStatusEnum.COMPLETE_TRANSACTION.getStatus(),
+                OrderStatusEnum.TRADING_CLOSED.getStatus());
 
         // 逻辑删除订单信息
         baseMapper.deleteById(orderInfo);
@@ -454,6 +452,12 @@ public class OrderInfoServiceImpl extends ServiceImpl<OrderInfoMapper, OrderInfo
      */
     @Override
     public void cancelOrder(OrderInfo orderInfo) {
+        OrderInfo orderConfirm = baseMapper.selectById(orderInfo);
+        // 如果两个信息不相同则返回
+        if (!orderConfirm.equals(orderInfo)) {
+            System.out.println("信息不同");
+            return;
+        }
         // 修改订单状态（交易关闭）
         orderInfo.setOrderStatus(OrderStatusEnum.TRADING_CLOSED.getStatus());
         baseMapper.updateById(orderInfo);

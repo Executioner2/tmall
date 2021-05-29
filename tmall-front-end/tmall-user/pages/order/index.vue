@@ -29,8 +29,9 @@
       <table class="myOrderProductItemTable" state="evaluate" v-for="(item, index) in list" :key="index"  >
         <tr class="myOrderPrductItemTitle">
           <td colspan="2">
-              <span class="dateTime">{{item.createDate}}
-              </span>订单号：<span class="orderNumber">{{item.outTradeNo}}</span>
+              <span class="dateTime">{{item.createDate}}</span>
+              订单号：<span class="orderNumber">{{item.outTradeNo}}</span>
+              <span v-if="item.orderStatus == 0" style="color: #C40000; float:right;">请在两小时内完成支付，否则订单将自动取消</span>
           </td>
           <td colspan="2">
             <img class="orderItemTmallPng" src="~/assets/img/site/orderItemTmall.png"/>天猫商城
