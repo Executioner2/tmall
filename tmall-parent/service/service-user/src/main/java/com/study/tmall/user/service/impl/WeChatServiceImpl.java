@@ -2,7 +2,6 @@ package com.study.tmall.user.service.impl;
 
 import cn.hutool.core.util.IdUtil;
 import com.alibaba.fastjson.JSONObject;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.study.tmall.enums.WeChatRedirectTypeEnum;
 import com.study.tmall.model.user.UserInfo;
 import com.study.tmall.result.ResultCodeEnum;

@@ -6,8 +6,10 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.study.tmall.dto.TimerTask;
 import com.study.tmall.enums.AuthStatusEnum;
 import com.study.tmall.enums.OrderStatusEnum;
+import com.study.tmall.enums.TaskTypeEnum;
 import com.study.tmall.enums.UserLockStatusEnum;
 import com.study.tmall.exception.TmallException;
 import com.study.tmall.model.order.OrderInfo;
@@ -22,6 +24,7 @@ import com.study.tmall.order.service.PaymentInfoService;
 import com.study.tmall.order.service.RefundInfoService;
 import com.study.tmall.product.client.ProductFeignClient;
 import com.study.tmall.result.ResultCodeEnum;
+import com.study.tmall.task.client.TaskFeignClient;
 import com.study.tmall.user.client.UserFeignClient;
 import com.study.tmall.dto.DealNotify;
 import com.study.tmall.vo.order.OrderQueryVo;
@@ -57,6 +60,8 @@ public class OrderInfoServiceImpl extends ServiceImpl<OrderInfoMapper, OrderInfo
     private RefundInfoService refundInfoService;
     @Resource
     private ProductFeignClient productFeignClient;
+    @Resource
+    private TaskFeignClient taskFeignClient;
     @Resource
     private MessageChannel dealNotifySend; // 自己的消息发送通道
 
@@ -229,7 +234,11 @@ public class OrderInfoServiceImpl extends ServiceImpl<OrderInfoMapper, OrderInfo
         orderItemService.relevanceOrderInfo(orderItemIdList, orderInfo.getId()); // 让订单项关联订单id
 
         // TODO 开启定时任务，如果下单超过规定时间未支付，则取消订单
-
+        TimerTask<OrderInfo> task = new TimerTask<>();
+        task.setType(TaskTypeEnum.PAY_OVERTIME); // 任务类型，支付超时
+        task.setData(orderInfo);
+        task.setExecuteTime(1000L); // 十秒后未支付则取消订单
+        taskFeignClient.addTask(task); // 远程调用任务模块，添加倒计时任务
         return orderInfo.getId();
     }
 

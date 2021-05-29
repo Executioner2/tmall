@@ -1,5 +1,6 @@
 package com.study.tmall.dto;
 
+import com.study.tmall.enums.TaskTypeEnum;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -19,4 +20,15 @@ public class TimerTask<T> {
 
     @ApiModelProperty("携带的数据")
     private T data;
+
+    @ApiModelProperty("任务类型")
+    private TaskTypeEnum type;
+
+    /**
+     * 设置多少ms后执行
+     * @param time 多少ms后
+     */
+    public void setExecuteTime(Long time) {
+        this.executeTime = System.currentTimeMillis() + time;
+    }
 }

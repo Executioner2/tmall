@@ -1,7 +1,6 @@
 package com.study.tmall.enums;
 
 import io.swagger.annotations.ApiModel;
-import lombok.Data;
 
 /**
  * Copyright@1205878539@qq.com

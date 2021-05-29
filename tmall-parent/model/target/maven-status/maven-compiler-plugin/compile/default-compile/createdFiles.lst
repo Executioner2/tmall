@@ -3,9 +3,11 @@ com\study\tmall\vo\product\ProductInfoFrontQueryVo.class
 com\study\tmall\enums\EmailCodeTypeEnum.class
 com\study\tmall\enums\RegularEnum.class
 com\study\tmall\vo\user\UserRegisterVo.class
+com\study\tmall\dto\TimerTask.class
 com\study\tmall\vo\front\EmailCodeVo.class
 com\study\tmall\vo\product\ProductInfoEeVo.class
 com\study\tmall\model\base\BaseEntity.class
+com\study\tmall\dto\DealNotify.class
 com\study\tmall\model\order\PaymentInfo.class
 com\study\tmall\vo\product\ProductQueryVo.class
 com\study\tmall\vo\user\UserQueryVo.class
@@ -23,9 +25,7 @@ com\study\tmall\enums\OrderStatusEnum.class
 com\study\tmall\vo\order\OrderQueryVo.class
 com\study\tmall\enums\SortTypeEnum.class
 com\study\tmall\model\user\UserInfo.class
-com\study\tmall\vo\after_end\ProductStockVo.class
 com\study\tmall\enums\ImageUrlEnum.class
-com\study\tmall\vo\after_end\DealNotifyVo.class
 com\study\tmall\enums\PaymentTypeEnum.class
 com\study\tmall\vo\category\PropertyQueryVo.class
 com\study\tmall\vo\front\UserInfoVo.class
@@ -34,9 +34,11 @@ com\study\tmall\model\product\ProductImage.class
 com\study\tmall\vo\product\PropertyAndValueVo.class
 com\study\tmall\vo\front\ProductReviewReturnVo.class
 com\study\tmall\model\product\PropertyValue.class
+com\study\tmall\dto\ProductStock.class
 com\study\tmall\vo\category\CategoryQueryVo.class
 com\study\tmall\enums\AuthStatusEnum.class
 com\study\tmall\enums\RefundStatusEnum.class
+com\study\tmall\enums\TaskTypeEnum.class
 com\study\tmall\enums\ImageTypeEnum.class
 com\study\tmall\enums\ArithmeticTypeEnum.class
 com\study\tmall\model\category\CategoryInfo.class

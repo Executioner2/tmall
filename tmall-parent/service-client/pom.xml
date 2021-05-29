@@ -16,6 +16,7 @@
         <module>service_product_client</module>
         <module>service_user_client</module>
         <module>service_order_client</module>
+        <module>service_task_client</module>
     </modules>
 
     <dependencies>
