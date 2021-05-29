@@ -401,7 +401,7 @@ public class ProductInfoServiceImpl extends ServiceImpl<ProductInfoMapper, Produ
      * @return
      */
     @Override
-    public Long updateProductNumber(ProductStock productStock) {
+    public Long updateProductStock(ProductStock productStock) {
         // 取出商品信息
         String productId = productStock.getProductId();
         Integer number = productStock.getNumber();
@@ -430,6 +430,15 @@ public class ProductInfoServiceImpl extends ServiceImpl<ProductInfoMapper, Produ
             return temp; // 库存
         }
         return null;
+    }
+
+    /**
+     * 批量更新商品库存
+     * @param productStock
+     */
+    @Override
+    public void updateProductStock(List<ProductStock> productStock) {
+       productStock.stream().forEach(this::updateProductStock);
     }
 
     /**

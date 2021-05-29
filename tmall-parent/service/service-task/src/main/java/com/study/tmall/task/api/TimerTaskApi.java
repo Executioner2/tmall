@@ -2,6 +2,7 @@ package com.study.tmall.task.api;
 
 import com.study.tmall.dto.TimerTask;
 import com.study.tmall.task.config.TaskConfig;
+import com.study.tmall.task.util.TaskQueueUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiModelProperty;
 import io.swagger.annotations.ApiOperation;
@@ -35,5 +36,8 @@ public class TimerTaskApi {
 
         // 添加定时任务
         taskQueue.add(task);
+        // 保存到序列化文件
+        TaskQueueUtil.writeTaskQueue(taskQueue);
+        System.out.println("定时任务增加了：" + taskQueue);
     }
 }

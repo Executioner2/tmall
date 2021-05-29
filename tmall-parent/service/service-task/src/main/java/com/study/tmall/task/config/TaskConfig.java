@@ -1,6 +1,7 @@
 package com.study.tmall.task.config;
 
 import com.study.tmall.dto.TimerTask;
+import com.study.tmall.task.util.TaskQueueUtil;
 import org.springframework.context.annotation.Configuration;
 
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -15,5 +16,8 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 @Configuration
 public class TaskConfig {
     // 计时器任务队列（ConcurrentLinkedQueue是解决高并发的队列）
-    public final static ConcurrentLinkedQueue<TimerTask> taskQueue = new ConcurrentLinkedQueue();
+    public final static ConcurrentLinkedQueue<TimerTask> taskQueue;
+    static {
+        taskQueue = TaskQueueUtil.readTaskQueue();
+    }
 }

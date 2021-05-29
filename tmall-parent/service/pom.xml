@@ -16,7 +16,7 @@
         <module>service-order</module>
         <module>service-category</module>
         <module>service-product</module>
-        <module>service-email</module>
+        <module>service-notify</module>
         <module>service-task</module>
     </modules>
 

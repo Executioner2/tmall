@@ -46,4 +46,7 @@ public interface OrderInfoService extends IService<OrderInfo> {
 
     // 更新订单状态
     void updateOrderStatus(String orderId, Integer status);
+
+    // 取消订单
+    void cancelOrder(OrderInfo orderInfo);
 }

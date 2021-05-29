@@ -99,13 +99,13 @@ public class ProductInfoApi {
 
     // 更新商品数量
     @ApiOperation("更新商品数量")
-    @PostMapping("/inner/updateProductNumber")
-    public Long updateProductNumber(
-            @ApiParam(name = "productStock", value = "专门用来更新商品数量的vo", required = true)
+    @PostMapping("/inner/updateProductStock")
+    public Long updateProductStock(
+            @ApiParam(name = "productStock", value = "专门用来更新商品数量", required = true)
             @RequestBody ProductStock productStock) {
 
         // 返回库存
-        return productInfoService.updateProductNumber(productStock);
+        return productInfoService.updateProductStock(productStock);
     }
 
     // 根据id查询商品（内部调用）
@@ -127,6 +127,16 @@ public class ProductInfoApi {
             @RequestBody Map<String, Integer> paramsMap) {
 
         productInfoService.updateSales(paramsMap);
+    }
+
+    // 批量更新商品库存
+    @ApiOperation("批量更新商品库存")
+    @PostMapping("/inner/batch/updateProductNumber")
+    public void updateProductStock(
+            @ApiParam(name = "productStockList", value = "更新商品数量集合", required = true)
+            @RequestBody List<ProductStock> productStockList) {
+
+        productInfoService.updateProductStock(productStockList);
     }
 
 }

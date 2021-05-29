@@ -6,11 +6,9 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.study.tmall.dto.ProductStock;
 import com.study.tmall.dto.TimerTask;
-import com.study.tmall.enums.AuthStatusEnum;
-import com.study.tmall.enums.OrderStatusEnum;
-import com.study.tmall.enums.TaskTypeEnum;
-import com.study.tmall.enums.UserLockStatusEnum;
+import com.study.tmall.enums.*;
 import com.study.tmall.exception.TmallException;
 import com.study.tmall.model.order.OrderInfo;
 import com.study.tmall.model.order.OrderItem;
@@ -270,6 +268,14 @@ public class OrderInfoServiceImpl extends ServiceImpl<OrderInfoMapper, OrderInfo
         List<String> orderIdList = new ArrayList<>();
         // 取出订单id和字符化订单状态
         orderInfos.stream().forEach(item -> {
+            // TODO 查询是否有支付超时的商品，如果有则取消该订单（虽然已经有计时器来取消订单，这是个保险措施）
+            if (item.getOrderStatus() == OrderStatusEnum.WAIT_PAY.getStatus()) {
+                // 如果订单创建后在十秒内未支付则取消订单
+                if (item.getCreateDate().getTime() + 1000 > System.currentTimeMillis()) {
+                    // 取消订单
+                    this.cancelOrder(item);
+                }
+            }
             orderIdList.add(item.getId());
             item.getParams().put("orderStatusStr", OrderStatusEnum.getStatusNameByStatus(item.getOrderStatus()));
         });
@@ -356,8 +362,7 @@ public class OrderInfoServiceImpl extends ServiceImpl<OrderInfoMapper, OrderInfo
         // 根据订单id查询订单项
         List<OrderItem> orderItemList = orderItemService.getOrderItemByOrderId(orderId);
         dealNotify.setOrderItemList(orderItemList);
-        System.out.println(orderItemList);
-
+        // 发货通知
         dealNotifySend.send(MessageBuilder.withPayload(dealNotify).build());
     }
 
@@ -371,8 +376,6 @@ public class OrderInfoServiceImpl extends ServiceImpl<OrderInfoMapper, OrderInfo
     @Override
     public OrderInfo getOrderInfoDetails(String token, String orderId, Integer orderStatus) {
         OrderInfo orderInfo = this.getOrderInfo(token, orderId, orderStatus);
-        // 查询结果为空，参数不正确
-        if (orderInfo == null) throw new TmallException(ResultCodeEnum.PARAM_ERROR);
 
         // 往订单信息中封装订单项信息
         List<OrderItem> orderItems = orderItemService.getOrderItemByOrderId(orderId);
@@ -389,8 +392,6 @@ public class OrderInfoServiceImpl extends ServiceImpl<OrderInfoMapper, OrderInfo
     public void confirmReceipt(String token, String orderId) {
         // 获得订单信息
         OrderInfo orderInfo = this.getOrderInfo(token, orderId, OrderStatusEnum.WAIT_TAKE_GOODS.getStatus());
-        // 查询结果为空，参数不正确
-        if (orderInfo == null) throw new TmallException(ResultCodeEnum.PARAM_ERROR);
 
         // 更新订单信息
         orderInfo.setOrderStatus(OrderStatusEnum.WAIT_REVIEW.getStatus());
@@ -423,8 +424,6 @@ public class OrderInfoServiceImpl extends ServiceImpl<OrderInfoMapper, OrderInfo
                 userInfo, orderId,
                 OrderStatusEnum.WAIT_REVIEW.getStatus(),
                 OrderStatusEnum.COMPLETE_TRANSACTION.getStatus());
-        // 查询结果为空，参数不正确
-        if (orderInfo == null) throw new TmallException(ResultCodeEnum.PARAM_ERROR);
 
         // 逻辑删除订单信息
         baseMapper.deleteById(orderInfo);
@@ -444,5 +443,31 @@ public class OrderInfoServiceImpl extends ServiceImpl<OrderInfoMapper, OrderInfo
         OrderInfo orderInfo = baseMapper.selectById(orderId);
         orderInfo.setOrderStatus(status);
         baseMapper.updateById(orderInfo);
+    }
+
+    /**
+     * 超时未支付，取消订单
+     * @param orderInfo
+     */
+    @Override
+    public void cancelOrder(OrderInfo orderInfo) {
+        // 修改订单状态（交易关闭）
+        orderInfo.setOrderStatus(OrderStatusEnum.TRADING_CLOSED.getStatus());
+        baseMapper.updateById(orderInfo);
+        // 更新支付状态（取消支付）
+        paymentInfoService.updatePaymentStatus(orderInfo.getId(), PaymentStatusEnum.CANCEL);
+        // 退回商品数量
+        List<OrderItem> orderItems = orderItemService.getOrderItemByOrderId(orderInfo.getId());
+        List<ProductStock> productStocks = new ArrayList<>();
+        orderItems.stream().forEach(item -> {
+            ProductStock productStock = new ProductStock();
+            productStock.setId(item.getId());
+            productStock.setNumber(item.getNumber());
+            productStock.setType(ArithmeticTypeEnum.ADD);
+            productStock.setProductId(item.getProductId());
+            productStocks.add(productStock);
+        });
+        // 远程调用更细商品库存
+        productFeignClient.updateProductStock(productStocks);
     }
 }

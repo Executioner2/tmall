@@ -3,6 +3,7 @@ package com.study.tmall.task.listener;
 import com.study.tmall.dto.TimerTask;
 import com.study.tmall.task.config.TaskConfig;
 import com.study.tmall.task.handler.MySource;
+import com.study.tmall.task.util.TaskQueueUtil;
 import org.springframework.cloud.stream.annotation.EnableBinding;
 import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.support.MessageBuilder;
@@ -42,12 +43,14 @@ public class TaskListener {
                         taskQueue.stream().forEach(item -> {
                             // 如果开始时间晚于结束时间，那么表示该任务可以执行了
                             long nowTime = System.currentTimeMillis();
-                            System.out.println(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
-                            if (nowTime - item.getExecuteTime() > 0) {
+                            System.out.println(item + "：" + nowTime);
+                            if (nowTime > item.getExecuteTime()) {
                                 // TODO 把任务发送到rabbitMQ中
                                 timerTaskSend.send(MessageBuilder.withPayload(item).build());
                                 System.out.println("定时任务执行了：" + item.getData());
                                 taskQueue.remove(item); // 从队列中移除该任务
+                                // 更新序列化文件
+                                TaskQueueUtil.writeTaskQueue(taskQueue);
                                 System.out.println("删除任务后的队列：" + taskQueue);
                             }
                         });

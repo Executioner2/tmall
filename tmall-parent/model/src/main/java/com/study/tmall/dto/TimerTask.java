@@ -5,6 +5,8 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.io.Serializable;
+
 /**
  * Copyright@1205878539@qq.com
  * Author:2Executioner
@@ -14,7 +16,7 @@ import lombok.Data;
  */
 @Data
 @ApiModel(description = "计时器任务传输对象")
-public class TimerTask<T> {
+public class TimerTask<T> implements Serializable {
     @ApiModelProperty("结束时间，当前时间(ms)+到执行时间的等待时间(ms)")
     private Long executeTime;
 
@@ -29,6 +31,8 @@ public class TimerTask<T> {
      * @param time 多少ms后
      */
     public void setExecuteTime(Long time) {
+        System.out.println(System.currentTimeMillis() + time);
         this.executeTime = System.currentTimeMillis() + time;
+        System.out.println("到期时间：" + this.executeTime);
     }
 }

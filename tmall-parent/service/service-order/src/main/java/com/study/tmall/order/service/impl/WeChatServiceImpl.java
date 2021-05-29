@@ -2,6 +2,7 @@ package com.study.tmall.order.service.impl;
 
 import cn.hutool.core.util.RandomUtil;
 import com.github.wxpay.sdk.WXPayUtil;
+import com.study.tmall.enums.OrderStatusEnum;
 import com.study.tmall.enums.PaymentStatusEnum;
 import com.study.tmall.enums.PaymentTypeEnum;
 import com.study.tmall.exception.TmallException;
@@ -46,14 +47,19 @@ public class WeChatServiceImpl implements WeChatService {
     @Override
     public Map createNative(String orderId) {
         try {
+            // 根据订单号获取订单信息
+            OrderInfo orderInfo = orderInfoService.getById(orderId);
+            // 先查询订单是否被取消
+            if (orderInfo.getOrderStatus().intValue() == OrderStatusEnum.TRADING_CLOSED.getStatus()) {
+                // 如果是抛出订单已取消异常
+                throw new TmallException(ResultCodeEnum.CANCEL_ORDER);
+            }
+
             // 先通过订单id查询redis，如果有
             Map payMap = (Map) redisTemplate.opsForValue().get(orderId);
             if (payMap != null) {
                 return payMap;
             }
-
-            // 根据订单号获取订单信息
-            OrderInfo orderInfo = orderInfoService.getById(orderId);
 
             // 封装请求参数
             Map paramMap = new HashMap();
@@ -89,9 +95,8 @@ public class WeChatServiceImpl implements WeChatService {
             // 保存订单信息到支付信息
             paymentInfoService.savePaymentInfo(orderInfo, PaymentTypeEnum.WEIXIN);
             if(!StringUtils.isEmpty(resultMap.get("result_code"))) {
-                // TODO 开启定时任务，2小时未支付取消订单
-                // 微信支付二维码2小时过期，可采取2小时未支付取消订单
-                redisTemplate.opsForValue().set(orderId, map, 1000, TimeUnit.MINUTES);
+                // 微信支付二维码2小时过期，可采取2小时未支付取消订单（在下单接口中实现了）
+                redisTemplate.opsForValue().set(orderId, map, 120, TimeUnit.MINUTES);
             }
             return map;
         } catch (Exception e) {
@@ -154,6 +159,11 @@ public class WeChatServiceImpl implements WeChatService {
         OrderInfo orderInfo = orderInfoService.getById(orderId);
         if (orderInfo == null) {
             throw new TmallException(ResultCodeEnum.PARAM_ERROR);
+        }
+        // 查询订单是否被取消
+        if (orderInfo.getOrderStatus().intValue() == OrderStatusEnum.TRADING_CLOSED.getStatus()) {
+            // 如果是抛出订单已取消异常
+            throw new TmallException(ResultCodeEnum.CANCEL_ORDER);
         }
         // 假数据
         Map<String, String> resultMap = new HashMap<>();

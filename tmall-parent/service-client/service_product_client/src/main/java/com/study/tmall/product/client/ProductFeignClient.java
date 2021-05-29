@@ -35,8 +35,12 @@ public interface ProductFeignClient {
     Map<String, List<ProductInfo>> listProductInfoHot(@RequestBody List<String> idList);
 
     // 更新商品库存
-    @PostMapping("/api/product/productInfo/inner/updateProductNumber")
-    Long updateProductNumber(@RequestBody ProductStock productStock);
+    @PostMapping("/api/product/productInfo/inner/updateProductStock")
+    Long updateProductStock(@RequestBody ProductStock productStock);
+
+    // 批量更新商品库存
+    @PostMapping("/api/product/productInfo/inner/batch/updateProductNumber")
+    void updateProductStock(@RequestBody List<ProductStock> productStockList);
 
     // 根据id查询商品（内部调用）
     @GetMapping("/api/product/productInfo/inner/getById/{id}")

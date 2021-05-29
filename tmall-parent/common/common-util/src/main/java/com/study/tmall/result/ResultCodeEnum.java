@@ -24,6 +24,7 @@ public enum ResultCodeEnum {
     FETCH_USERINFO_ERROR( 220, "获取用户信息失败"),
 
     PAY_RUN(221, "支付中"),
+    CANCEL_ORDER(222, "订单已取消"),
     CANCEL_ORDER_FAIL(225, "取消订单失败"),
     CANCEL_ORDER_NO(225, "不能取消预约"),
 

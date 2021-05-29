@@ -13,7 +13,8 @@ import io.swagger.annotations.ApiModel;
 public enum PaymentStatusEnum {
     FAIL(0, "支付失败"),
     UNPAID(1,"支付中"),
-    PAID(2, "已支付")
+    PAID(2, "已支付"),
+    CANCEL(3, "取消支付"),
     ;
 
     private Integer status;

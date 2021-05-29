@@ -1,6 +1,0 @@
-com\study\tmall\email\util\ConstantPropertiesUtil.class
-com\study\tmall\email\service\EmailService.class
-com\study\tmall\email\ServiceEmailApplication.class
-com\study\tmall\email\handler\MySink.class
-com\study\tmall\email\listener\EmailMqListener.class
-com\study\tmall\email\service\impl\EmailServiceImpl.class

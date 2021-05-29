@@ -58,7 +58,10 @@ public interface ProductInfoService extends IService<ProductInfo> {
     IPage<ProductInfo> searchProductInfo(Page<ProductInfo> page, String keyword);
 
     // 更新商品库存
-    Long updateProductNumber(ProductStock productStock);
+    Long updateProductStock(ProductStock productStock);
+
+    // 批量更新商品库存
+    void updateProductStock(List<ProductStock> productStock);
 
     // 根据id查询商品，取得商品简单信息
     ProductInfo getProductSimpleInfoById(String id);

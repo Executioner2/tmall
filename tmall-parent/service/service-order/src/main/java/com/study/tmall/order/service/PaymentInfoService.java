@@ -1,6 +1,7 @@
 package com.study.tmall.order.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.study.tmall.enums.PaymentStatusEnum;
 import com.study.tmall.enums.PaymentTypeEnum;
 import com.study.tmall.model.order.OrderInfo;
 import com.study.tmall.model.order.PaymentInfo;
@@ -23,4 +24,7 @@ public interface PaymentInfoService extends IService<PaymentInfo> {
 
     // 根据订单id删除支付记录
     void removeByOrderId(String id);
+
+    // 更新支付状态
+    void updatePaymentStatus(String orderId, PaymentStatusEnum status);
 }

@@ -104,6 +104,20 @@ public class PaymentInfoServiceImpl extends ServiceImpl<PaymentInfoMapper, Payme
        baseMapper.delete(wrapper);
     }
 
+    /**
+     * 更新支付状态
+     * @param orderId
+     * @param status
+     */
+    @Override
+    public void updatePaymentStatus(String orderId, PaymentStatusEnum status) {
+        QueryWrapper<PaymentInfo> wrapper = new QueryWrapper<>();
+        wrapper.eq("order_id", orderId);
+        PaymentInfo paymentInfo = baseMapper.selectOne(wrapper);
+        paymentInfo.setPaymentStatus(status.getStatus());
+        baseMapper.updateById(paymentInfo);
+    }
+
     // 根据商家订单id和订单支付状态查询出支付信息
     private PaymentInfo getPaymentInfo(String outTradeNo, Integer status) {
         QueryWrapper<PaymentInfo> wrapper = new QueryWrapper<>();

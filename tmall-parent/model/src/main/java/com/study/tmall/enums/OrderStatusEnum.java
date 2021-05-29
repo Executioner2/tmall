@@ -16,12 +16,12 @@ import java.util.Map;
  */
 @ApiModel(description = "订单状态枚举类")
 public enum OrderStatusEnum {
-    CANCEL_PAYMENT(-1, "取消支付"),
     WAIT_PAY(0, "待付款"),
     WAIT_SHIPMENTS(1, "待发货"),
     WAIT_TAKE_GOODS(2, "待收货"),
     WAIT_REVIEW(3, "待评价"),
     COMPLETE_TRANSACTION(4, "交易完成"), // 确认了收货就完成了交易
+    TRADING_CLOSED(5, "交易关闭"),
     ;
 
     private Integer status;

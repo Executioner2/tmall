@@ -392,6 +392,7 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
         String emailCode = Base64.decode(userRegisterVo.getEmailCode());
 
         // 从redis中查询验证码是否正确
+        String key = EmailCodeTypeEnum.REGISTER_CODE.getType() + email;
         String code = stringRedisTemplate.opsForValue()
                 .get(EmailCodeTypeEnum.REGISTER_CODE.getType() + email);
         if (StringUtils.isEmpty(emailCode) || !emailCode.equals(code)) {
@@ -412,6 +413,8 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
 
         // 返回一个全新的token
         String newToken = JwtHelper.createToken(userId, password);
+        // 绑定成功后从redis中删除验证码
+        codeDelSend.send(MessageBuilder.withPayload(key).build());
         return newToken;
     }
 

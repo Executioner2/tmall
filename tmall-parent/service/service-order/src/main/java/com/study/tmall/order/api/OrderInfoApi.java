@@ -138,4 +138,14 @@ public class OrderInfoApi {
         return Result.ok();
     }
 
+    // 取消订单（内部调用）
+    @ApiOperation("取消订单（内部调用）")
+    @PostMapping("/inner/cancelOrder")
+    public void cancelOrder(
+            @ApiParam(name = "orderInfo", value = "订单信息", required = true)
+            @RequestBody OrderInfo orderInfo) {
+
+        orderInfoService.cancelOrder(orderInfo);
+    }
+
 }
