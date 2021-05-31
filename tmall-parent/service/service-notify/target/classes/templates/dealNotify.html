@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<!--suppress ALL-->
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" meta name="referrer" content="no-referrer">
+    <title>2Executioner</title>
+    <style>
+        .link-a:hover {
+            color: #C40000;
+        }
+        .link-order:hover {
+            color: #C40000;
+        }
+    </style>
+</head>
+<body style="text-align: center; margin-left: auto;  margin-right: auto; font-family: Arial;">
+<div id="main" style="text-align: center; min-height: 300px; min-width: 880px;">
+    <h3>Welcome <span th:text="${project}"></span> -By <span th:text=" ${author}"></span></h3>
+    <h4 th:text="${hint}"></h4>
+    <div id="content" style="text-align: left; display: inline-block; margin: 0px auto;">
+        <table cellspacing="0" style="border: 1px #ECECEC solid;">
+            <tr class="title" style="background-color: #F1F1F1; font-size: 12px;">
+                <td colspan="2" style="padding: 15px 20px 15px 10px;">
+                    <span style="font-weight: bold; margin-right: 10px" th:text="${createDate}"></span>
+                    <a class="link-order" style="text-decoration: none; color: #333333;" href="http://localhost:3000/order" target="_blank" th:text="'订单号：' + ${orderInfo.id}"></a>
+                </td>
+                <td colspan="3" style="text-align: right; padding: 15px 20px 15px 10px;"><span th:text="'订单状态：' + ${status}"></span></td>
+            </tr>
+            <tr class="product_item" th:each="item, itemStat : ${orderItemList}" style=" border: 1px #ECECEC solid;">
+                <td>
+                    <div style="width: 80px; height: 80px">
+                        <img width="80px" title="这是一个商品图片" th:src="${item.params.productInfo.params.imageUrl}">
+                    </div>
+                </td>
+
+                <td class="product_name" style="width: 500px;">
+                    <a class="link-a" style="text-decoration: none; margin-left: 10px; color: #999999;" th:href="@{http://localhost:3000/product/} + ${item.params.productInfo.id}" target="_blank" th:text="${item.params.productInfo.name}"></a>
+                </td>
+
+                <td class="product_price" style="width: 100px; font-size: 14px; text-align: center;">
+                    <div style="color: #A69999;"><del th:text="'￥' + ${item.params.productInfo.orignalPrice}"></del></div>
+                    <div th:text="'￥' + ${item.params.productInfo.promotePrice}"></div>
+                </td>
+
+                <td style="width: 70px; text-align: center">
+                    <span th:text="${item.number} + '件'"></span>
+                </td>
+
+                <td style="width: 120px; text-align: center; font-size: 14px;" th:if="${itemStat.index == 0}" th:rowspan="${itemStat.size}" class="amount">
+                    <div style="font-weight: bold" th:text="'￥' + ${orderInfo.amount}"></div>
+                    <div style="font-size: 12px; color: #6C6C6C">（含运费：￥0.00）</div>
+                </td>
+            </tr>
+        </table>
+        <div style="margin-left: 5px; margin-top: 10px">
+            <span style="margin-right: 20px"><span style="font-weight: bold">收货人： </span><span style="min-width: 40px; display: inline-block" th:text="${orderInfo.receiver}"></span></span>
+            <span style="margin-right: 20px"><span style="font-weight: bold">手机号： </span><span style="min-width: 80px; display: inline-block" th:text="${orderInfo.mobile}"></span></span>
+            <span><span style="font-weight: bold">收货地址： </span><span th:text="${orderInfo.address}"></span></span>
+            <div style="margin-top: 10px">
+                <span style="font-weight: bold; vertical-align: top">留&nbsp;&nbsp;&nbsp;言：</span>
+                <textarea readonly style="width: 220px; height: 50px; border: 1px #ECECEC solid; resize: none" th:text="${orderInfo.userMessage}"></textarea>
+            </div>
+        </div>
+    </div>
+    <hr style="width: 880px">
+    <h5>联系开发者：1205878539@qq.com</h5>
+</div>
+</body>
+</html>

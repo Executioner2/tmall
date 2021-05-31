@@ -1,8 +1,8 @@
 com\study\tmall\notify\ServiceNotifyApplication.class
 com\study\tmall\notify\handler\MySink.class
+com\study\tmall\notify\service\impl\TimerTaskServiceImpl.class
 com\study\tmall\notify\service\TimerTaskService.class
 com\study\tmall\notify\listener\NotifyMqListener.class
+com\study\tmall\notify\service\EmailService.class
 com\study\tmall\notify\util\ConstantPropertiesUtil.class
 com\study\tmall\notify\service\impl\EmailServiceImpl.class
-com\study\tmall\notify\service\impl\TimerTaskServiceImpl.class
-com\study\tmall\notify\service\EmailService.class

@@ -15,7 +15,7 @@ import lombok.Data;
  * Description:
  */
 @Data
-@ApiModel(description = "用户登录限制表")
+@ApiModel(description = "用户登录记录表")
 @TableName("user_login_record")
 public class UserLoginRecord extends BaseEntity {
     @ApiModelProperty(value = "序列化版本")

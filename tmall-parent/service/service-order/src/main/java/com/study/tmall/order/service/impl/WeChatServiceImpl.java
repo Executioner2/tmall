@@ -49,10 +49,10 @@ public class WeChatServiceImpl implements WeChatService {
         try {
             // 根据订单号获取订单信息
             OrderInfo orderInfo = orderInfoService.getById(orderId);
-            // 先查询订单是否被取消
-            if (orderInfo.getOrderStatus().intValue() == OrderStatusEnum.TRADING_CLOSED.getStatus()) {
-                // 如果是抛出订单已取消异常
-                throw new TmallException(ResultCodeEnum.CANCEL_ORDER);
+            // 先查询订单是否是待支付状态
+            if (orderInfo.getOrderStatus().intValue() != OrderStatusEnum.WAIT_PAY.getStatus()) {
+                // 如果不是抛出参数异常
+                throw new TmallException(ResultCodeEnum.PARAM_ERROR);
             }
 
             // 先通过订单id查询redis，如果有
@@ -159,15 +159,15 @@ public class WeChatServiceImpl implements WeChatService {
         if (orderInfo == null) {
             throw new TmallException(ResultCodeEnum.PARAM_ERROR);
         }
-        // 查询订单是否被取消
-        if (orderInfo.getOrderStatus().intValue() == OrderStatusEnum.TRADING_CLOSED.getStatus()) {
-            // 如果是抛出订单已取消异常
-            throw new TmallException(ResultCodeEnum.CANCEL_ORDER);
+        // 先查询订单是否是待支付状态
+        if (orderInfo.getOrderStatus().intValue() != OrderStatusEnum.WAIT_PAY.getStatus()) {
+            // 如果不是抛出参数异常
+            throw new TmallException(ResultCodeEnum.PARAM_ERROR);
         }
         // 假数据
         Map<String, String> resultMap = new HashMap<>();
         resultMap.put("transaction_id", RandomUtil.randomString(16));
-        resultMap.put("context", "这是一个为了方便支付测试的方法");
+        resultMap.put("context", "这是一个测试，此订单为一键支付");
         // 更新订单状态
         paymentInfoService.paySuccess(orderInfo, PaymentTypeEnum.WEIXIN, resultMap);
         return PaymentStatusEnum.PAID.getName(); // 返回支付成功
