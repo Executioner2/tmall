@@ -361,4 +361,21 @@ public class OrderItemServiceImpl extends ServiceImpl<OrderItemMapper, OrderItem
         return baseMapper.selectOne(wrapper);
     }
 
+    /**
+     * 超时未评价
+     * @param orderId
+     * @param userId
+     */
+    @Override
+    public void reviewOvertime(String orderId, String userId) {
+        // 根据订单id查询出所有订单项
+        List<OrderItem> orderItems = this.getOrderItemByOrderId(orderId);
+
+        // 订单项id
+        List<String> orderItemIdList = new ArrayList<>();
+        orderItems.stream().forEach(item -> orderItemIdList.add(item.getId()));
+        // 修改订单项评价状态
+        baseMapper.updateOrderItemIsReview(ReviewEnum.OVERTIME.getStatus(), orderItemIdList);
+    }
+
 }

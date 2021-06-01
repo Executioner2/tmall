@@ -32,4 +32,16 @@ public class TimerTaskServiceImpl implements TimerTaskService {
         // 远程调用取消订单
         orderFeignClient.cancelOrder(orderInfo);
     }
+
+    /**
+     * 评价超时
+     * @param task
+     */
+    @Override
+    public void reviewOvertime(TimerTask task) {
+        // 因为泛型在通过feign传输会转换为linkedHashMap，所以先把它转换为json字符串，再把json字符串转为对象
+        OrderInfo orderInfo = JSON.parseObject(JSON.toJSONString(task.getData()), OrderInfo.class);
+        // 远程调用不评价商品，订单交易显示完成
+        orderFeignClient.reviewOvertime(orderInfo);
+    }
 }

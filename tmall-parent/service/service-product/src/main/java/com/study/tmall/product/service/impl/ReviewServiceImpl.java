@@ -81,9 +81,12 @@ public class ReviewServiceImpl extends ServiceImpl<ReviewMapper, Review> impleme
 
         // 根据用户id和订单id查询订单项
         OrderItem orderItem = orderFeignClient.getOrderItem(reviewVo.getOrderItemId(), userInfo.getId());
-        // 如果订单项查询为空或者订单项已评价抛出参数异常
-        if (orderItem == null || orderItem.getIsReview() == ReviewEnum.REVIEW.getStatus()) {
+        // 如果订单项查询为空或者订单项不是未评价则抛出参数异常
+        if (orderItem == null || orderItem.getIsReview() != ReviewEnum.NOT_REVIEW.getStatus()) {
             throw new TmallException(ResultCodeEnum.PARAM_ERROR);
+        }
+        if (StringUtils.isEmpty(reviewVo.getContent())) {
+            reviewVo.setContent("此用户没有填写评价。");
         }
 
         // 增加评价
@@ -95,6 +98,7 @@ public class ReviewServiceImpl extends ServiceImpl<ReviewMapper, Review> impleme
         // 更新订单项评价状态
         orderFeignClient.updateReviewStatus(reviewVo.getOrderItemId(), ReviewEnum.REVIEW.getStatus());
     }
+
 
     // 封装匿名用户名称
     private void packUserName(ProductReviewReturnVo item, List<UserInfo> userInfoList) {

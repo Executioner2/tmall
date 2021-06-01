@@ -47,13 +47,13 @@ export default {
       let createSecond = parseInt(ars[0])*60*60 + parseInt(ars[1])*60 + parseInt(ars[2])
       // 当前时间转化为秒
       let nowDate = new Date()
-      let nowSecond = nowDate.getHours()*60*60 + nowDate.getMinutes()*60 + nowDate.getMilliseconds()
+      let nowSecond = nowDate.getHours()*60*60 + nowDate.getMinutes()*60 + nowDate.getSeconds()
       // 剩余的支付时间（秒）
-      let letSecond = 2*60*60 - (nowSecond - createSecond)
+      let leftSecond = 2*60*60 - (nowSecond - createSecond)
 
       let timer = setInterval(() => {
-        --letSecond
-        let temp = letSecond
+        --leftSecond
+        let temp = leftSecond
         let formatTime
         let h = parseInt(temp / (60 * 60))
         temp = temp % (60 * 60)
@@ -63,7 +63,7 @@ export default {
         if (s < 10) s = "0" + s
         formatTime = h + ":" + m + ":" + s
         this.payTime = formatTime
-        if (letSecond <= 0) {
+        if (leftSecond <= 0) {
           setTimeout(()=> {
             this.$message.warning("超过支付时间，交易已被取消，请重新下单！")
             this.$router.push("/order")

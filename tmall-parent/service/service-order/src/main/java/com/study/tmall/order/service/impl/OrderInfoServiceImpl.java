@@ -419,8 +419,11 @@ public class OrderInfoServiceImpl extends ServiceImpl<OrderInfoMapper, OrderInfo
         // 确认收货通知
         dealNotifySend.send(MessageBuilder.withPayload(dealNotify).build());
         // TODO 开启定时任务，超过规定时间则用户不能评价该商品
-//        TimerTask<>
-//        taskFeignClient.addReviewTask();
+        TimerTask<OrderInfo> task = new TimerTask<>();
+        task.setType(TaskTypeEnum.REVIEW_OVERTIME);
+        task.setData(orderInfo);
+        task.setExecuteTime(System.currentTimeMillis()+1000*10); // 10秒后如果不评价就自动评价了
+        taskFeignClient.addReviewTask(task);
     }
 
     /**
@@ -489,5 +492,26 @@ public class OrderInfoServiceImpl extends ServiceImpl<OrderInfoMapper, OrderInfo
         });
         // 远程调用更细商品库存
         productFeignClient.updateProductStock(productStocks);
+    }
+
+    /**
+     * 超时未评价
+     * @param orderInfo
+     */
+    @Override
+    public void reviewOvertime(OrderInfo orderInfo) {
+        OrderInfo orderConfirm = baseMapper.selectById(orderInfo);
+        // 如果两个信息不相同则返回
+        if (!orderConfirm.equals(orderInfo)) {
+            System.out.println("信息不同");
+            return;
+        }
+
+        // 订单项中评价状态改为超时未评价
+        orderItemService.reviewOvertime(orderInfo.getId(), orderInfo.getUserId());
+
+        // 更新订单的状态
+        orderInfo.setOrderStatus(OrderStatusEnum.COMPLETE_TRANSACTION.getStatus());
+        baseMapper.updateById(orderInfo);
     }
 }

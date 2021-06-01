@@ -1,4 +1,5 @@
 com\study\tmall\task\config\TaskConfig.class
+com\study\tmall\task\listener\TaskListener$2.class
 com\study\tmall\task\api\TimerTaskApi.class
 com\study\tmall\task\listener\TaskListener$1.class
 com\study\tmall\task\ServiceTaskApplication.class

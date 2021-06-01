@@ -49,4 +49,7 @@ public interface OrderInfoService extends IService<OrderInfo> {
 
     // 取消订单
     void cancelOrder(OrderInfo orderInfo);
+
+    // 超时未评价，添加默认评价
+    void reviewOvertime(OrderInfo orderInfo);
 }

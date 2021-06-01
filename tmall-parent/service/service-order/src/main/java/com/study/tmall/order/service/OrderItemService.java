@@ -55,4 +55,7 @@ public interface OrderItemService extends IService<OrderItem> {
 
     // 根据订单项id和用户id查询订单项
     OrderItem getOrderItem(String id, String userId);
+
+    // 超时未评价
+    void reviewOvertime(String orderId, String userId);
 }

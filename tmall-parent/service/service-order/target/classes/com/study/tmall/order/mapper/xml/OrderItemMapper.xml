@@ -14,4 +14,15 @@
         AND (order_id IS NULL)
         AND (is_deleted=0)
     </select>
+
+    <update id="updateOrderItemIsReview">
+        UPDATE
+            order_item
+        SET
+            is_review=#{}
+        WHERE
+            <foreach collection="orderItemIdList" item="id" open="id in (" close=")" separator=",">
+                #{id}
+            </foreach>
+    </update>
 </mapper>

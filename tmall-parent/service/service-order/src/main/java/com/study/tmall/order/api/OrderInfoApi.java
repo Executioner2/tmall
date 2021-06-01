@@ -148,4 +148,14 @@ public class OrderInfoApi {
         orderInfoService.cancelOrder(orderInfo);
     }
 
+    // 超时未评价（内部调用）
+    @ApiOperation("超时未评价（内部调用）")
+    @PostMapping("/inner/defaultReview")
+    void reviewOvertime(
+            @ApiParam(name = "orderInfo", value = "订单信息", required = true)
+            @RequestBody OrderInfo orderInfo) {
+
+        orderInfoService.reviewOvertime(orderInfo);
+    }
+
 }

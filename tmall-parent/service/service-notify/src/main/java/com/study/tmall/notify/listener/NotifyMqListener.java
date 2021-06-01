@@ -66,11 +66,21 @@ public class NotifyMqListener {
      * @param message
      */
     @StreamListener(MySink.TIMER_PAY_TASK_RECEIVE)
-    public void timerTask(Message<TimerTask> message) {
+    public void timerPayTask(Message<TimerTask> message) {
         TimerTask task = message.getPayload();
         if (task.getType() == TaskTypeEnum.PAY_OVERTIME) {
             // 是支付超时
             timerTaskService.payOvertime(task);
         }
+    }
+
+    /**
+     * 计时器评价任务
+     * @param message
+     */
+    @StreamListener(MySink.TIMER_REVIEW_TASK_RECEIVE)
+    public void timerReviewTask(Message<TimerTask> message) {
+        TimerTask task = message.getPayload();
+        timerTaskService.reviewOvertime(task);
     }
 }

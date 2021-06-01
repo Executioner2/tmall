@@ -13,6 +13,7 @@ import io.swagger.annotations.ApiModel;
 public enum ReviewEnum {
     NOT_REVIEW(0), // 未评价
     REVIEW(1), // 已评价
+    OVERTIME(-1), // 超时未评价
     ;
 
     private Integer status;

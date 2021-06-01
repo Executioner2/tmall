@@ -35,4 +35,7 @@ public interface OrderFeignClient {
     @PostMapping("/api/order/orderInfo/inner/cancelOrder")
     void cancelOrder(@RequestBody OrderInfo orderInfo);
 
+    // 超时未评价（内部调用）
+    @PostMapping("/api/order/orderInfo/inner/defaultReview")
+    void reviewOvertime(@RequestBody OrderInfo orderInfo);
 }

@@ -14,4 +14,7 @@ public interface TimerTaskService {
 
     // 支付超时
     void payOvertime(TimerTask task);
+
+    // 评价超时
+    void reviewOvertime(TimerTask task);
 }
