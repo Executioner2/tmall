@@ -42,7 +42,7 @@ public class TaskListener implements ApplicationRunner {
                             // 如果开始时间晚于结束时间，那么表示该任务可以执行了
                             long nowTime = System.currentTimeMillis();
                             if (nowTime > item.getExecuteTime()) {
-                                // TODO 把任务发送到rabbitMQ中
+                                // 把任务发送到rabbitMQ中
                                 timerTaskSend.send(MessageBuilder.withPayload(item).build());
                                 System.out.println("定时任务执行了：" + item.getData());
                                 taskQueue.remove(item); // 从队列中移除该任务

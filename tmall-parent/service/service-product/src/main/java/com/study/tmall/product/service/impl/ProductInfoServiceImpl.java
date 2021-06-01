@@ -319,6 +319,7 @@ public class ProductInfoServiceImpl extends ServiceImpl<ProductInfoMapper, Produ
                 wrapper.orderByDesc(lostSortFieldStr);
             }
         }
+        // 条件查询排序显示商品信息
         IPage<ProductInfo> productInfoIPage = baseMapper.selectProductInfoPageOrderBy(page, wrapper);
 
         // 对商品数据再进行处理（封装商品参数）

@@ -97,7 +97,7 @@ public class EmailServiceImpl implements EmailService {
         context.setVariable("author", ConstantPropertiesUtil.AUTHOR);
         context.setVariable("code", code);
         // 把template当作内容发送
-        String emailContent = templateEngine.process("mail", context);
+        String emailContent = templateEngine.process("code", context);
 
         MimeMessage message = mailSender.createMimeMessage();
         MimeMessageHelper helper = null;
@@ -149,8 +149,8 @@ public class EmailServiceImpl implements EmailService {
             status = "已发货";
         } else if (orderStatus.intValue() == OrderStatusEnum.WAIT_REVIEW.getStatus()) {
             // 是待评价，那么买家已签收
-            hint = "您在tmall-v1.0购买的商品已被签收，请给您购买的商品一个评价吧！";
-            status = "已签收";
+            hint = "您在tmall-v1.0购买的商品已确认收货，请给您购买的商品一个评价吧！";
+            status = "已收货";
         }
 
         // 创建日期格式化

@@ -231,7 +231,7 @@ public class OrderInfoServiceImpl extends ServiceImpl<OrderInfoMapper, OrderInfo
         baseMapper.insert(orderInfo);
         orderItemService.relevanceOrderInfo(orderItemIdList, orderInfo.getId()); // 让订单项关联订单id
 
-        // TODO 开启定时任务，如果下单超过规定时间未支付，则取消订单
+        // 开启定时任务，如果下单超过规定时间未支付，则取消订单
         TimerTask<OrderInfo> task = new TimerTask<>();
         task.setType(TaskTypeEnum.PAY_OVERTIME); // 任务类型，支付超时
         task.setData(orderInfo);
@@ -390,8 +390,10 @@ public class OrderInfoServiceImpl extends ServiceImpl<OrderInfoMapper, OrderInfo
      */
     @Override
     public void confirmReceipt(String token, String orderId) {
-        // 获得订单信息
-        OrderInfo orderInfo = this.getOrderInfo(token, orderId, OrderStatusEnum.WAIT_TAKE_GOODS.getStatus());
+        // 获得用户信息
+        UserInfo userInfo = this.getUserInfo(token);
+        // 查询待发货的订单信息
+        OrderInfo orderInfo = this.getOrderInfoOfCondition(userInfo, orderId, OrderStatusEnum.WAIT_TAKE_GOODS.getStatus());
 
         // 更新订单信息
         orderInfo.setOrderStatus(OrderStatusEnum.WAIT_REVIEW.getStatus());
@@ -407,7 +409,16 @@ public class OrderInfoServiceImpl extends ServiceImpl<OrderInfoMapper, OrderInfo
         // 更新商品月销量，总销量
         productFeignClient.updateSales(paramsMap);
 
-        // TODO 发送邮件，提醒买家已签收，同时开启定时任务，超过规定时间则用户不能评价该商品
+        // 发送邮件，提醒买家已确认收货
+        DealNotify dealNotify = new DealNotify();
+        dealNotify.setOrderInfo(orderInfo);
+        dealNotify.setReceiverEmail(userInfo.getEmail());
+        // 根据订单id查询订单项
+        List<OrderItem> orderItemList = orderItemService.getOrderItemByOrderId(orderId);
+        dealNotify.setOrderItemList(orderItemList);
+        // 确认收货通知
+        dealNotifySend.send(MessageBuilder.withPayload(dealNotify).build());
+        // TODO 开启定时任务，超过规定时间则用户不能评价该商品
     }
 
     /**
