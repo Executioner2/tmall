@@ -51,7 +51,7 @@ public class TaskListener implements ApplicationRunner {
                             if (nowTime > item.getExecuteTime()) {
                                 // 把任务发送到rabbitMQ中
                                 timerPayTaskSend.send(MessageBuilder.withPayload(item).build());
-                                System.out.println("支付定时任务执行了：" + item.getData());
+                                System.out.println("计时器支付任务执行了：" + item.getData());
                                 payTaskQueue.remove(item); // 从队列中移除该任务
                                 // 更新序列化文件
                                 TaskQueueUtil.writeTaskQueue(payTaskQueue, ConstantPropertyUtil.PAY_TASK_FILE_PATH);
@@ -85,7 +85,7 @@ public class TaskListener implements ApplicationRunner {
                             if (nowTime > item.getExecuteTime()) {
                                 // 把任务发送到rabbitMQ中
                                 timerReviewTaskSend.send(MessageBuilder.withPayload(item).build());
-                                System.out.println("评价定时任务执行了：" + item.getData());
+                                System.out.println("计时器评价任务执行了：" + item.getData());
                                 reviewTaskQueue.remove(item); // 从队列中移除该任务
                                 // 更新序列化文件
                                 TaskQueueUtil.writeTaskQueue(reviewTaskQueue, ConstantPropertyUtil.REVIEW_TASK_FILE_PATH);

@@ -19,7 +19,7 @@
         UPDATE
             order_item
         SET
-            is_review=#{}
+            is_review=#{status}
         WHERE
             <foreach collection="orderItemIdList" item="id" open="id in (" close=")" separator=",">
                 #{id}

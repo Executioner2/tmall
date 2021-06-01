@@ -80,6 +80,7 @@ public class NotifyMqListener {
      */
     @StreamListener(MySink.TIMER_REVIEW_TASK_RECEIVE)
     public void timerReviewTask(Message<TimerTask> message) {
+        System.out.println("计时器评价任务通知接收到了");
         TimerTask task = message.getPayload();
         timerTaskService.reviewOvertime(task);
     }
