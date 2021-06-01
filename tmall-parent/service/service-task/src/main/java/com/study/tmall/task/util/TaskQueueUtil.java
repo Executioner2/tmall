@@ -19,8 +19,8 @@ public class TaskQueueUtil {
      * 序列化保存倒计时任务到本地文件中去
      * @param queue
      */
-    public static void writeTaskQueue(ConcurrentLinkedQueue<TimerTask> queue) {
-        File file = new File(ConstantPropertyUtil.FILE_PATH);
+    public static void writeTaskQueue(ConcurrentLinkedQueue<TimerTask> queue, String filePath) {
+        File file = new File(filePath);
         // 放在try中的流会被自动关闭
         try(ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(file))) {
             oos.writeObject(queue);
@@ -32,9 +32,9 @@ public class TaskQueueUtil {
         }
     }
 
-    public static ConcurrentLinkedQueue<TimerTask> readTaskQueue() {
+    public static ConcurrentLinkedQueue<TimerTask> readTaskQueue(String filePath) {
         ConcurrentLinkedQueue<TimerTask> taskQueue = null;
-        File file = new File(ConstantPropertyUtil.FILE_PATH);
+        File file = new File(filePath);
 
         // 如果该文件不存在则返回一个新的队列对象
         if (!file.exists()) {

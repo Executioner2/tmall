@@ -53,12 +53,17 @@
             </tr>
         </table>
         <div style="margin-left: 5px; margin-top: 10px">
-            <span style="margin-right: 20px"><span style="font-weight: bold">收货人： </span><span style="min-width: 40px; display: inline-block" th:text="${orderInfo.receiver}"></span></span>
-            <span style="margin-right: 20px"><span style="font-weight: bold">手机号： </span><span style="min-width: 80px; display: inline-block" th:text="${orderInfo.mobile}"></span></span>
-            <span><span style="font-weight: bold">收货地址： </span><span th:text="${orderInfo.address}"></span></span>
-            <div style="margin-top: 10px">
-                <span style="font-weight: bold; vertical-align: top">留&nbsp;&nbsp;&nbsp;言：</span>
-                <textarea readonly style="width: 220px; height: 50px; border: 1px #ECECEC solid; resize: none" th:text="${orderInfo.userMessage}"></textarea>
+            <div th:if="${orderInfo.orderStatus} eq 2">
+                <span style="margin-right: 20px"><span style="font-weight: bold">收货人： </span><span style="min-width: 40px; display: inline-block" th:text="${orderInfo.receiver}"></span></span>
+                <span style="margin-right: 20px"><span style="font-weight: bold">手机号： </span><span style="min-width: 80px; display: inline-block" th:text="${orderInfo.mobile}"></span></span>
+                <span><span style="font-weight: bold">收货地址： </span><span th:text="${orderInfo.address}"></span></span>
+                <div style="margin-top: 10px">
+                    <span style="font-weight: bold; vertical-align: top">留&nbsp;&nbsp;&nbsp;言：</span>
+                    <textarea readonly style="width: 220px; height: 50px; border: 1px #ECECEC solid; resize: none" th:text="${orderInfo.userMessage}"></textarea>
+                </div>
+            </div>
+            <div th:if="${orderInfo.orderStatus} eq 3" style="text-align: center">
+                <span style="color: #C40000; font-weight: bold">感谢亲在天猫购物，期待您的下次光临！喵~</span>
             </div>
         </div>
     </div>

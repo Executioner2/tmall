@@ -2,6 +2,7 @@ package com.study.tmall.task.api;
 
 import com.study.tmall.dto.TimerTask;
 import com.study.tmall.task.config.TaskConfig;
+import com.study.tmall.task.util.ConstantPropertyUtil;
 import com.study.tmall.task.util.TaskQueueUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiModelProperty;
@@ -32,10 +33,10 @@ public class TimerTaskApi {
             @ApiParam(name = "task", value = "定时任务", required = true)
             @RequestBody TimerTask task) {
 
-        ConcurrentLinkedQueue<TimerTask> taskQueue = TaskConfig.getTaskQueue();
+        ConcurrentLinkedQueue<TimerTask> payTaskQueue = TaskConfig.getPayTaskQueue();
         // 添加定时任务
-        taskQueue.add(task);
+        payTaskQueue.add(task);
         // 保存到序列化文件
-        TaskQueueUtil.writeTaskQueue(taskQueue);
+        TaskQueueUtil.writeTaskQueue(payTaskQueue, ConstantPropertyUtil.PAY_TASK_FILE_PATH);
     }
 }

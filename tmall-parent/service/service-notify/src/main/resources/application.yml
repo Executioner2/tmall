@@ -52,13 +52,20 @@ spring:
           # 解决消费者重复读取队列中的消息，就是分组，同一个分组的消费者只会拿一次，不会都同时拿相同的（轮询策略）
           # 分组还能实现消息持久化
           group: order_status #<---关键
-        timerTaskReceive: # 计时器任务接收者
+        timerPayTaskReceive: # 计时器支付任务接收者
           destination: exchange.direct.task # 表示要使用的Exchange名称定义
           content-type: application/json # 设置消息类型，本次为对象json，如果是文本则设置“text/plain”
           binder: defaultRabbit # 设置要绑定的消息服务的具体设置
           # 解决消费者重复读取队列中的消息，就是分组，同一个分组的消费者只会拿一次，不会都同时拿相同的（轮询策略）
           # 分组还能实现消息持久化
-          group: timer_task #<---关键
+          group: timer_pay_task #<---关键
+        timerReviewTaskReceive: # 计时器评价任务接收者
+          destination: exchange.direct.task # 表示要使用的Exchange名称定义
+          content-type: application/json # 设置消息类型，本次为对象json，如果是文本则设置“text/plain”
+          binder: defaultRabbit # 设置要绑定的消息服务的具体设置
+          # 解决消费者重复读取队列中的消息，就是分组，同一个分组的消费者只会拿一次，不会都同时拿相同的（轮询策略）
+          # 分组还能实现消息持久化
+          group: timer_review_task #<---关键
   mail:
     host: smtp.qq.com
     port: 587

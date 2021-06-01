@@ -1,6 +1,7 @@
 package com.study.tmall.task.config;
 
 import com.study.tmall.dto.TimerTask;
+import com.study.tmall.task.util.ConstantPropertyUtil;
 import com.study.tmall.task.util.TaskQueueUtil;
 import com.sun.scenario.effect.impl.sw.java.JSWBlend_SRC_OUTPeer;
 import org.springframework.boot.ApplicationArguments;
@@ -21,14 +22,24 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 @Order(value = 1)
 public class TaskConfig implements ApplicationRunner {
     // 计时器任务队列（ConcurrentLinkedQueue是解决高并发的队列）
-    private static ConcurrentLinkedQueue<TimerTask> taskQueue;
+    // 支付任务队列
+    private static ConcurrentLinkedQueue<TimerTask> payTaskQueue;
+    // 退货任务队列
+    private static ConcurrentLinkedQueue<TimerTask> reviewTaskQueue;
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
-        taskQueue = TaskQueueUtil.readTaskQueue();
+        // 读取支付任务队列文件，取得支付任务队列中的数据
+        payTaskQueue = TaskQueueUtil.readTaskQueue(ConstantPropertyUtil.PAY_TASK_FILE_PATH);
+        // 读取评价任务队列文件，取得评价任务队列中的数据
+        reviewTaskQueue = TaskQueueUtil.readTaskQueue(ConstantPropertyUtil.REVIEW_TASK_FILE_PATH);
     }
 
-    public static ConcurrentLinkedQueue<TimerTask> getTaskQueue() {
-        return taskQueue;
+    public static ConcurrentLinkedQueue<TimerTask> getPayTaskQueue() {
+        return payTaskQueue;
+    }
+
+    public static ConcurrentLinkedQueue<TimerTask> getReviewTaskQueue() {
+        return reviewTaskQueue;
     }
 }

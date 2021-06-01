@@ -13,14 +13,18 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class ConstantPropertyUtil implements InitializingBean {
-    @Value("${file.save.path}")
-    private String filePath;
+    @Value("${file.save.path.pay-task}")
+    private String payTaskFilePath;
 
-    public static String FILE_PATH;
+    @Value("${file.save.path.review-task}")
+    private String reviewTaskFilePath;
+
+    public static String PAY_TASK_FILE_PATH;
+    public static String REVIEW_TASK_FILE_PATH;
 
     @Override
     public void afterPropertiesSet() throws Exception {
-        System.out.println("赋值开始");
-        FILE_PATH = filePath;
+        PAY_TASK_FILE_PATH = payTaskFilePath;
+        REVIEW_TASK_FILE_PATH = reviewTaskFilePath;
     }
 }

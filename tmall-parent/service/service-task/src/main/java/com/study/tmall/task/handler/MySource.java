@@ -12,11 +12,15 @@ import org.springframework.messaging.MessageChannel;
  */
 public interface MySource {
     String OUTPUT = "output"; // 标准消息发送通道
-    String TIMER_TASK_SEND = "timerTaskSend"; // 计时器任务通知
+    String TIMER_PAY_TASK_SEND = "timerPayTaskSend"; // 计时器支付任务通知
+    String TIMER_REVIEW_TASK_SEND = "timerReviewTaskSend"; // 计时器支付任务通知
 
     @Output("output")
     MessageChannel output();
 
-    @Output("timerTaskSend")
-    MessageChannel timerTaskSend();
+    @Output("timerPayTaskSend")
+    MessageChannel timerPayTaskSend();
+
+    @Output("timerReviewTaskSend")
+    MessageChannel timerReviewTaskSend();
 }
