@@ -236,7 +236,7 @@ public class OrderInfoServiceImpl extends ServiceImpl<OrderInfoMapper, OrderInfo
         task.setType(TaskTypeEnum.PAY_OVERTIME); // 任务类型，支付超时
         task.setData(orderInfo);
         task.setExecuteTime(System.currentTimeMillis()+2*60*60*1000); // 两小时后未支付则取消订单
-        taskFeignClient.addTask(task); // 远程调用任务模块，添加倒计时任务
+        taskFeignClient.addPayTask(task); // 远程调用任务模块，添加支付倒计时任务
         return orderInfo.getId();
     }
 
@@ -419,6 +419,8 @@ public class OrderInfoServiceImpl extends ServiceImpl<OrderInfoMapper, OrderInfo
         // 确认收货通知
         dealNotifySend.send(MessageBuilder.withPayload(dealNotify).build());
         // TODO 开启定时任务，超过规定时间则用户不能评价该商品
+//        TimerTask<>
+//        taskFeignClient.addReviewTask();
     }
 
     /**

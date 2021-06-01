@@ -27,16 +27,29 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 @RequestMapping("/api/task/timerTask")
 public class TimerTaskApi {
 
-    @ApiOperation("增加任务（这个接口只用添加任务）")
-    @PostMapping("/inner/addTask")
-    public void addTask(
+    @ApiOperation("增加支付任务（这个接口只用添加任务）")
+    @PostMapping("/inner/add/payTask")
+    public void addPayTask(
             @ApiParam(name = "task", value = "定时任务", required = true)
             @RequestBody TimerTask task) {
 
         ConcurrentLinkedQueue<TimerTask> payTaskQueue = TaskConfig.getPayTaskQueue();
         // 添加定时任务
         payTaskQueue.add(task);
-        // 保存到序列化文件
+        // 保存到支付任务序列化文件
         TaskQueueUtil.writeTaskQueue(payTaskQueue, ConstantPropertyUtil.PAY_TASK_FILE_PATH);
+    }
+
+    @ApiOperation("增加评价任务（这个接口只用添加任务）")
+    @PostMapping("/inner/add/reviewTask")
+    public void addReviewTask(
+            @ApiParam(name = "task", value = "定时任务", required = true)
+            @RequestBody TimerTask task) {
+
+        ConcurrentLinkedQueue<TimerTask> reviewTaskQueue = TaskConfig.getReviewTaskQueue();
+        // 添加定时任务
+        reviewTaskQueue.add(task);
+        // 保存到评价任务序列化文件
+        TaskQueueUtil.writeTaskQueue(reviewTaskQueue, ConstantPropertyUtil.REVIEW_TASK_FILE_PATH);
     }
 }

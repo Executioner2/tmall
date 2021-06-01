@@ -18,6 +18,7 @@ public class TaskQueueUtil {
     /**
      * 序列化保存倒计时任务到本地文件中去
      * @param queue
+     * @param filePath
      */
     public static void writeTaskQueue(ConcurrentLinkedQueue<TimerTask> queue, String filePath) {
         File file = new File(filePath);
@@ -32,6 +33,11 @@ public class TaskQueueUtil {
         }
     }
 
+    /**
+     * 读取序列化文件中的数据
+     * @param filePath
+     * @return
+     */
     public static ConcurrentLinkedQueue<TimerTask> readTaskQueue(String filePath) {
         ConcurrentLinkedQueue<TimerTask> taskQueue = null;
         File file = new File(filePath);

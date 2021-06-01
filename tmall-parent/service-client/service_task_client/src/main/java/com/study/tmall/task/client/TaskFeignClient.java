@@ -18,7 +18,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 @Component
 @FeignClient("service-task")
 public interface TaskFeignClient {
-    // 增加任务（内部调用）
-    @PostMapping("/api/task/timerTask/inner/addTask")
-    void addTask(@RequestBody TimerTask task);
+    // 增加支付任务（内部调用）
+    @PostMapping("/api/task/timerTask/inner/add/payTask")
+    void addPayTask(@RequestBody TimerTask task);
+
+    // 增加评价任务（内部调用）
+    @PostMapping("/api/task/timerTask/inner/add/reviewTask")
+    void addReviewTask(@RequestBody TimerTask task);
 }
