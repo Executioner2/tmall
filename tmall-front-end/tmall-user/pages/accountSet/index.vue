@@ -101,9 +101,16 @@
 
       <!-- 微信绑定 -->
       <div id="weChat_binding_div" v-if="target == 1">
-        <div>
-          <!-- 获取微信登录二维码 -->
-          <div style="margin: 0px auto; width: 220px; height: 220px" class="qrcode" ref="qrCodeUrl"></div>
+        <div style="display: flex; text-align: center;">
+          <div style="margin-left: 10px; width: 220px; border-right: 1px #5E5F62 solid; ">
+            <img style="display: block; margin-left: 22px" src="~assets/img/site/officialAccountsQRCode.png" alt="微信公众号二维码">
+            <div>扫码关注微信公众号</div>
+          </div>
+          <div style="margin-left: 15px; width: 220px;">
+            <!-- 获取微信登录二维码 -->
+            <div style="display: inline-block; margin-top: 15px; margin-bottom: 7px; width: 140px; height: 140px" class="qrcode" ref="qrCodeUrl"></div>
+            <div>扫码绑定微信号</div>
+          </div>
         </div>
         <div style="margin-top: 10px; text-align: center">
           <el-alert style="padding: 10px" v-if="state" title="微信扫码成功，请确认是否绑定微信号" :closable="false" type="success" show-icon>
@@ -248,7 +255,7 @@ export default {
         this.sendBtnText = "发送验证码"
         this.sendBtnText2 = "发送验证码"
       } else if (this.target == 1) { // 微信
-        this.dialogWidth = "320px"
+        this.dialogWidth = "500px"
         this.dialogTitle = "微信绑定"
         this.creatQRCode()
 
