@@ -212,7 +212,7 @@ export default {
       return true
     },
 
-    // TODO 确认密码合法性检测
+    // 确认密码合法性检测
     confirmPasswordCheck() {
       let confirmPassword = this.confirmPassword
       let password = this.password
@@ -223,7 +223,7 @@ export default {
       }
       if (password !== confirmPassword) {
         this.visibilityHint = true
-        this.hintText = "确认密码与登陆密码不一致！"
+        this.hintText = "确认密码与登录密码不一致！"
         return false
       }
       // 如果当前提示框是确认密码问题提示，则隐藏它，否则不隐藏
