@@ -113,7 +113,7 @@
           </div>
         </div>
         <div style="margin-top: 10px; text-align: center">
-          <el-alert style="padding: 10px" v-if="state" title="微信扫码成功，请确认是否绑定微信号" :closable="false" type="success" show-icon>
+          <el-alert style="padding: 10px" v-if="state" center title="微信扫码成功，请确认是否绑定微信号" :closable="false" type="success" show-icon>
           </el-alert>
           <el-button style="margin-top: 10px" type="primary" :disabled="!state" @click="confirmBindWeChat" v-text="'确认绑定'"></el-button>
         </div>
