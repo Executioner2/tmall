@@ -212,7 +212,7 @@ export default {
       return true
     },
 
-    // 确认密码合法性检测
+    // TODO 确认密码合法性检测
     confirmPasswordCheck() {
       let confirmPassword = this.confirmPassword
       let password = this.password
@@ -298,17 +298,22 @@ export default {
           // 发送按钮显示倒计时
           let i = 60
           this.sendBtnText = "已发邮箱 " + i
-          let time = setInterval(() => {
+          let timer = setInterval(() => {
             i--
             this.sendBtnText = "已发邮箱 " + i
             if (i == 0) {
               this.isSend = false
-              this.sendCodeDisable = false
+              this.isDisabled = false
               this.sendBtnText = "重新发送"
               $("#send_code_btn").css({"background-color": "#C40000", "color": "white"})
-              clearInterval(time)
+              clearInterval(timer)
+              timer = null
             }
           }, 1000)
+          this.$once("hook:beforeDestroy", () => {
+            clearInterval(timer)
+            timer = null
+          })
           this.codeDisable = false // 设置验证码输入框可用
         })
     },

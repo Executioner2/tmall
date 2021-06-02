@@ -185,10 +185,13 @@
         </div>
         <div id="weChat_login_div" v-if="!loginWay">
           <div>
-            <div style="margin: 50px auto; height: 200px; width: 200px" class="qrcode" ref="qrCodeUrl"></div>
+            <div v-if="!isGzh" style="margin: 50px auto; height: 200px; width: 200px" class="qrcode" ref="qrCodeUrl"></div>
           </div>
+          <div v-if="isGzh"  style="text-align: center; margin: 50px auto; height: 200px; width: 200px"><img src="~assets/img/site/officialAccountsQRCode.png" alt="微信公众号二维码"></div>
           <div style="margin-top: 20px; padding-left: 30px; padding-right: 30px; width: 100%">
             <span style="float:left;" class="freeRegister"><a href="/regist">免费注册</a></span>
+            <span v-if="!isGzh" style="margin-left: 38px"><a href="javascript:void(0)" @click="QRCodeCut(true)">关注公众号</a></span>
+            <span v-if="isGzh" style="margin-left: 44px"><a @click="QRCodeCut(false)" href="javascript:void(0)">微信登录</a></span>
             <span style="float: right; " class="wechat_login"><a href="javascript:void(0)" @click="accountLogin">账号登录</a></span>
           </div>
         </div>
@@ -243,7 +246,7 @@ export default {
       uuid: null, // 拿取token的凭证
       qrcodeUrl: null, // 二维码地址
       state: null, // 账号状态
-      interval: null, // 微信登录轮询
+      isGzh: false, // 公众号二维码是否显示
 
     }
   },
@@ -469,7 +472,7 @@ export default {
           // 发送按钮显示倒计时
           let i = 60
           this.sendBtnText = "已发邮箱 " + i
-          let time = setInterval(() => {
+          let timer = setInterval(() => {
             i--
             this.sendBtnText = "已发邮箱 " + i
             if (i == 0) {
@@ -477,9 +480,16 @@ export default {
               this.isDisabled = false
               this.sendBtnText = "重新发送"
               $("#send_code_btn").css({"background-color": "#C40000", "color": "white"})
-              clearInterval(time)
+              clearInterval(timer)
+              timer = null
             }
           }, 1000)
+          this.$once("hook:beforeDestroy", () => {
+            if (timer) {
+              clearInterval(timer)
+              timer = null
+            }
+          })
         })
 
     },
@@ -511,9 +521,7 @@ export default {
     accountLogin() {
       this.loginTitle = "账号登录"
       this.loginWay = true
-      if (this.interval != null) {
-        clearInterval(this.interval)
-      }
+      this.isGzh = false
     },
 
     // 获取二维码url
@@ -523,6 +531,7 @@ export default {
           this.qrcodeUrl = response.data.QRCodeUrl
           this.uuid = response.data.uuid
           new qrcode(this.$refs.qrCodeUrl, {
+            title: "",
             text: this.qrcodeUrl, // 需要转换为二维码的内容
           })
         })
@@ -539,7 +548,7 @@ export default {
 
       let time = 60;
       // 轮询
-      this.interval = setInterval(() => {
+      let timer = setInterval(() => {
         if (--time == 0) {
           // 每隔60秒刷新一次二维码
           this.$nextTick(() => {
@@ -568,7 +577,20 @@ export default {
             }
           })
       }, 1000)
-    }
+      this.$once("hook:beforeDestroy", () => {
+        clearInterval(timer)
+        timer = null
+      })
+    },
+
+    // 公众号与微信扫码登录二维码切换
+    QRCodeCut(flag) {
+      this.isGzh = flag
+      if (!flag) {
+        // 不为真，重新加载微信登录二维码
+        this.weChatQRCode()
+      }
+    },
 
   }
 }

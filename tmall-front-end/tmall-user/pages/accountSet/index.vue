@@ -158,7 +158,6 @@ export default {
       emailCode2: null,
       sendBtnText2: "发送验证码",
       binding: true,
-      interval: null, // 轮询
       uuid: null, // redis中获取token的依据
       state: false, // 用户微信扫码状态
       point: 0, // 安全分数
@@ -211,7 +210,6 @@ export default {
       } else if (val == 0) {
         let nickName = this.userInfo.nickName
         if (nickName == null || nickName.trim() == "") {
-          this.$message.info("昵称不能为空")
           return
         }
         // 向后端发送修改用户名的请求
@@ -334,6 +332,7 @@ export default {
           this.qrcodeUrl = response.data.QRCodeUrl
           this.uuid = response.data.uuid
           new qrcode(this.$refs.qrCodeUrl, {
+            title: "",
             text: this.qrcodeUrl, // 需要转换为二维码的内容
           })
         })
@@ -348,7 +347,7 @@ export default {
 
       let time = 120;
       // 轮询
-      this.interval = setInterval(() => {
+      let timer = setInterval(() => {
         if (--time == 0) {
           // 每隔120秒刷新一次二维码
           this.$nextTick(() => {
@@ -361,10 +360,17 @@ export default {
           .then(response => {
             this.state = response.data
             if (this.state) { // 如果扫码成功定时器关闭
-              clearInterval(this.interval)
+              clearInterval(timer)
+              timer = null
             }
           })
       }, 1000)
+      this.$once("hook:beforeDestroy", () => {
+        if (timer) {
+          clearInterval(timer)
+          timer = null
+        }
+      })
     },
 
     // 邮箱绑定模态框
@@ -380,15 +386,22 @@ export default {
       this.isSendCode = true
       let time = 60
       this.sendBtnText = "已发送 " + time
-      this.interval = setInterval(() => {
+      let timer = setInterval(() => {
         --time
         this.sendBtnText = "已发送 " + time
         if (time == 0) {
-          clearInterval(this.interval)
           this.sendBtnText = "重新发送"
           this.isSendCode = false
+          clearInterval(timer)
+          timer = null
         }
       }, 1000)
+      this.$once("hook:beforeDestroy", () => {
+        if (timer) {
+          clearInterval(timer)
+          timer = null
+        }
+      })
     },
 
     // 邮箱验证码校验
@@ -412,15 +425,22 @@ export default {
       this.isSendCode2 = true
       let time = 60
       this.sendBtnText2 = "已发送 " + time
-      this.interval = setInterval(() => {
+      let timer = setInterval(() => {
         --time
         this.sendBtnText2 = "已发送 " + time
         if (time == 0) {
-          clearInterval(this.interval)
           this.sendBtnText2 = "重新发送"
           this.isSendCode2 = false
+          clearInterval(timer)
+          timer = null
         }
       }, 1000)
+      this.$once("hook:beforeDestroy", () => {
+        if (timer) {
+          clearInterval(timer)
+          timer = null
+        }
+      })
     },
 
   }

@@ -47,7 +47,8 @@ public class ReviewServiceImpl extends ServiceImpl<ReviewMapper, Review> impleme
      * @return
      */
     @Override
-    @Cacheable(value = "product", keyGenerator = "keyGeneratorPage") // 缓存到redis
+    // 不再缓存到redis中，因为如果评价的人数多，甚至会降低效率
+//    @Cacheable(value = "product", keyGenerator = "keyGeneratorIdPage") // 缓存到redis
     public IPage listReviewByProductId(Page<ProductReviewReturnVo> page, String productId) {
         // 分页查询
         IPage<ProductReviewReturnVo> reviewPage = baseMapper.selectProductReviewByProductId(page, productId);
@@ -73,7 +74,8 @@ public class ReviewServiceImpl extends ServiceImpl<ReviewMapper, Review> impleme
      * @param reviewVo
      */
     @Override
-    @CacheEvict(value = "product", allEntries = true) // 清除redis缓存
+    // 不再缓存到redis中，因为如果评价的人数多，甚至会降低效率
+//    @CacheEvict(value = "product", allEntries = true) // 清除redis缓存
     public void addReview(String token, ReviewVo reviewVo) {
         // 核实用户信息
         UserInfo userInfo = userFeignClient.getUserInfoByToken(token);
@@ -104,6 +106,7 @@ public class ReviewServiceImpl extends ServiceImpl<ReviewMapper, Review> impleme
     private void packUserName(ProductReviewReturnVo item, List<UserInfo> userInfoList) {
         for (int i = 0; i < userInfoList.size(); i++) {
             UserInfo userInfo = userInfoList.get(i);
+            if (userInfo == null) continue; // 因为查询出来可能为空所以做判断
             if (item.getUserId().equals(userInfo.getId())) {
                 // 取得用户名，nick_name > name
                 StringBuilder name = new StringBuilder();

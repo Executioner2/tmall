@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.study.tmall.vo.category.CategoryQueryVo;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.cache.interceptor.KeyGenerator;
@@ -53,7 +54,7 @@ public class RedisConfig {
 
     /**
      * 自定义适用于分页的key规则
-     * 根据类名，方法名，分页参数（current，limit） 来区分key
+     * 根据类名，方法名，分页参数（current，limit）来区分key
      * @return
      */
     @Bean
@@ -70,6 +71,35 @@ public class RedisConfig {
                         sb.append("@page");
                         sb.append(":current=" + page.getCurrent());
                         sb.append(":limit=" + page.getSize());
+                    }
+                }
+                return sb.toString();
+            }
+        };
+    }
+
+    /**
+     * 自定义适用于分页的key规则
+     * 根据类名，方法名，分页参数（current，limit） , id号来区分key
+     * @return
+     */
+    @Bean
+    public KeyGenerator keyGeneratorIdPage() {
+        return new KeyGenerator() {
+            @Override
+            public Object generate(Object target, Method method, Object... params) {
+                StringBuilder sb = new StringBuilder();
+                sb.append(target.getClass().getName());
+                sb.append(method.getName());
+                for (Object obj : params) {
+                    if (obj instanceof Page) {
+                        Page page = (Page)obj;
+                        sb.append("@page");
+                        sb.append(":current=" + page.getCurrent());
+                        sb.append(":limit=" + page.getSize());
+                    } else if (obj instanceof String) {
+                        String id = (String) obj;
+                        sb.append("@id=" + id);
                     }
                 }
                 return sb.toString();
