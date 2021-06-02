@@ -418,11 +418,11 @@ public class OrderInfoServiceImpl extends ServiceImpl<OrderInfoMapper, OrderInfo
         dealNotify.setOrderItemList(orderItemList);
         // 确认收货通知
         dealNotifySend.send(MessageBuilder.withPayload(dealNotify).build());
-        // TODO 开启定时任务，超过规定时间则用户不能评价该商品
+        // 开启倒计时，超过规定时间则用户不能评价该商品
         TimerTask<OrderInfo> task = new TimerTask<>();
         task.setType(TaskTypeEnum.REVIEW_OVERTIME);
         task.setData(orderInfo);
-        task.setExecuteTime(System.currentTimeMillis()+1000*10); // 10秒后如果不评价就自动评价了
+        task.setExecuteTime(System.currentTimeMillis()+24*60*60*1000); // 1天后如果不评价就自动评价了
         taskFeignClient.addReviewTask(task);
     }
 

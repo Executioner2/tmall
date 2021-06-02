@@ -68,10 +68,8 @@ public class NotifyMqListener {
     @StreamListener(MySink.TIMER_PAY_TASK_RECEIVE)
     public void timerPayTask(Message<TimerTask> message) {
         TimerTask task = message.getPayload();
-        if (task.getType() == TaskTypeEnum.PAY_OVERTIME) {
-            // 是支付超时
-            timerTaskService.payOvertime(task);
-        }
+        // 是支付超时
+        timerTaskService.payOvertime(task);
     }
 
     /**
@@ -80,7 +78,6 @@ public class NotifyMqListener {
      */
     @StreamListener(MySink.TIMER_REVIEW_TASK_RECEIVE)
     public void timerReviewTask(Message<TimerTask> message) {
-        System.out.println("计时器评价任务通知接收到了");
         TimerTask task = message.getPayload();
         timerTaskService.reviewOvertime(task);
     }
