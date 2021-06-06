@@ -7,14 +7,14 @@ spring:
   cloud:
     nacos:
       discovery:
-        server-addr: 192.168.123.130:8848
+        server-addr: 192.168.145.130:8848
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://192.168.123.130:3306/tmall_product?useUnicode=true&characterEncoding=UTF-8&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=GMT%2B8
+    url: jdbc:mysql://192.168.145.130:3306/tmall_product?useUnicode=true&characterEncoding=UTF-8&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=GMT%2B8
     username: root
     password: 123321
   redis:
-    host: 192.168.123.130
+    host: 192.168.145.130
     port: 6379
     database: 1 # product存入到 1 库
     lettuce:

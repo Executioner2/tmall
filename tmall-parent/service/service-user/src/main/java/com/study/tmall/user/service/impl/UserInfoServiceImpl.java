@@ -557,6 +557,20 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
         return userInfo;
     }
 
+    /**
+     * 获取用户基本信息及，内部调用
+     * @param id
+     * @return
+     */
+    @Override
+    public UserInfo getUserInfo(String id) {
+        UserInfo userInfo = baseMapper.selectById(id);
+        // 密码，id置空
+        userInfo.setId(null);
+        userInfo.setPassword(null);
+        return userInfo;
+    }
+
     // 拿取用户名称
     private String getName(UserInfo userInfo) {
         if (!StringUtils.isEmpty(userInfo.getNickName())) {

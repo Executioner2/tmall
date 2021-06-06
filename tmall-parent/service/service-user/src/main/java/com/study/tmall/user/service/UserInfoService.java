@@ -73,4 +73,7 @@ public interface UserInfoService extends IService<UserInfo> {
 
     // 根据token查询用户
     UserInfo getUserInfoByToken(String token);
+
+    // 获取用户基本信息及，内部调用
+    UserInfo getUserInfo(String id);
 }

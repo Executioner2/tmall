@@ -26,6 +26,11 @@ public interface UserFeignClient {
     @PostMapping("/admin/user/userInfo/inner/listUserInfo")
     List<UserInfo> listUserInfoOfInner(@RequestBody List<String> idList);
 
+    // 获取用户基本信息及，内部调用
+    @ApiOperation(value = "获取用户基本信息，内部调用")
+    @PostMapping("/admin/user/userInfo/inner/getUserInfo/{id}")
+    UserInfo getUserInfoOfInner(@PathVariable("id") String id);
+
     // 根据token查询用户
     @ApiOperation("根据token查询用户")
     @PostMapping("/api/user/userInfo/inner/getUserInfo/{token}")

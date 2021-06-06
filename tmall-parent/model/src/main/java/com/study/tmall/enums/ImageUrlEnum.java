@@ -8,7 +8,7 @@ package com.study.tmall.enums;
  * Description:
  */
 public enum ImageUrlEnum {
-    NGINX_IP("http://192.168.123.130"), // nginx的ip
+    NGINX_IP("http://192.168.145.130"), // nginx的ip
     GROUP_1("group1"),
     ;
 

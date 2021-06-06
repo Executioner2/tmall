@@ -94,7 +94,7 @@ public class OrderInfoServiceImpl extends ServiceImpl<OrderInfoMapper, OrderInfo
         if (createDateEnd != null) {
             wrapper.le("create_date", createDateEnd);
         }
-
+        wrapper.orderByDesc("create_date");
         IPage<OrderInfo> orderInfoIPage = baseMapper.selectPage(page, wrapper);
         // 每个订单都要获得用户信息，为了减少远程调用量，把这一页所有订单的用户id封装到list集合中
         List<String> userIdList = new ArrayList<>();
@@ -127,6 +127,18 @@ public class OrderInfoServiceImpl extends ServiceImpl<OrderInfoMapper, OrderInfo
         orderInfo.setDeliveryDate(new Date());
         orderInfo.setOrderStatus(OrderStatusEnum.WAIT_TAKE_GOODS.getStatus());
         baseMapper.updateById(orderInfo);
+
+        // 根据用户id查询用户
+        UserInfo userInfo = userFeignClient.getUserInfoOfInner(orderInfo.getUserId());
+        // 发送邮件，提醒用户卖家已发货
+        DealNotify dealNotify = new DealNotify();
+        dealNotify.setOrderInfo(orderInfo);
+        dealNotify.setReceiverEmail(userInfo.getEmail());
+        // 根据订单id查询订单项
+        List<OrderItem> orderItemList = orderItemService.getOrderItemByOrderId(orderInfo.getId());
+        dealNotify.setOrderItemList(orderItemList);
+        // 发货通知
+        dealNotifySend.send(MessageBuilder.withPayload(dealNotify).build());
     }
 
     /**

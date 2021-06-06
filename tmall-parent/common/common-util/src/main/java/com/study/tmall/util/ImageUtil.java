@@ -25,7 +25,9 @@ public class ImageUtil {
         // http://nginx的Ip/组名/存储路径
         // imageUrl = "http://192.168.123.130/" + fileArray[0] + "/" + fileArray[1]
         // http://192.168.123.130/group1/M00/00/00/wKh7gmBrTfeEAyKkAAAAAFQAsAw989.jpg
-        String url = fileArray == null ? "" : ImageUrlEnum.NGINX_IP.getStr() + "/" + fileArray[0] + "/" + fileArray[1];
+         String url = fileArray == null ? "" : ImageUrlEnum.NGINX_IP.getStr() + "/" + fileArray[0] + "/" + fileArray[1];
+        // TODO 后面改成不再加入nginx的ip，
+        // String url = fileArray == null ? "" : fileArray[0] + "/" + fileArray[1];
 
         return url;
     }

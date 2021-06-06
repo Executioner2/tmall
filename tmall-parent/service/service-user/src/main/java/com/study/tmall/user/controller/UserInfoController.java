@@ -85,4 +85,14 @@ public class UserInfoController {
         return userInfoService.listUserInfo(idList);
     }
 
+    // 获取用户基本信息及，内部调用
+    @ApiOperation(value = "获取用户基本信息，内部调用")
+    @PostMapping("/inner/getUserInfo/{id}")
+    UserInfo getUserInfoOfInner(
+            @ApiParam(name = "id", value = "用户id", required = true)
+            @PathVariable("id") String id) {
+
+        return userInfoService.getUserInfo(id);
+    }
+
 }
