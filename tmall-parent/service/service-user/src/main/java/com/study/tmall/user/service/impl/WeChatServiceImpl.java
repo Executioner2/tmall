@@ -11,6 +11,7 @@ import com.study.tmall.user.util.ConstantWxPropertiesUtil;
 import com.study.tmall.user.util.HttpClientUtils;
 import com.study.tmall.util.Base64;
 import com.study.tmall.util.JwtHelper;
+import com.study.tmall.util.TokenUtil;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -166,7 +167,7 @@ public class WeChatServiceImpl implements WeChatService {
                 }
             }
             // 做成token存入redis，有效时间为60s
-            String token = JwtHelper.createToken(userInfo.getId(), userInfo.getPassword());
+            String token = TokenUtil.createToken(userInfo.getId(), userInfo.getPassword());
             map.put("token", token);
             redisTemplate.opsForValue().set(state, map, 60, TimeUnit.MINUTES);
             return true;
@@ -253,7 +254,7 @@ public class WeChatServiceImpl implements WeChatService {
     @Override
     public Boolean confirmWeChatBinding(String token, String state) {
         try {
-            String userId = JwtHelper.getUserId(token);
+            String userId = TokenUtil.getUserId(token);
             // 对state（base64编码并加密后的uuid）进行解密解码
             state = Base64.decode(state);
             // 根据state查询出openid和account_token

@@ -15,6 +15,7 @@ import com.study.tmall.product.client.ProductFeignClient;
 import com.study.tmall.result.ResultCodeEnum;
 import com.study.tmall.util.JwtHelper;
 import com.study.tmall.dto.ProductStock;
+import com.study.tmall.util.TokenUtil;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
@@ -87,7 +88,7 @@ public class OrderItemServiceImpl extends ServiceImpl<OrderItemMapper, OrderItem
      */
     @Override
     public OrderItem joinOrderItem(String token, OrderItem orderItem) {
-        String userId = JwtHelper.getUserId(token);
+        String userId = TokenUtil.getUserId(token);
 
         // 根据userId查询是否有未下单的购物车，且商品id相同，如果相同更新购物车中商品数量即可，不用新增加数据
         QueryWrapper<OrderItem> wrapper = new QueryWrapper<>();
@@ -129,7 +130,7 @@ public class OrderItemServiceImpl extends ServiceImpl<OrderItemMapper, OrderItem
     @Override
     public List<OrderItem> getOrderItemByToken(String token) {
         // 根据token拿到userId
-        String userId = JwtHelper.getUserId(token);
+        String userId = TokenUtil.getUserId(token);
         // 根据userId查询符合条件的订单项（order_id为空的，即未下单的）
         QueryWrapper<OrderItem> wrapper = new QueryWrapper<>();
         wrapper.eq("user_id", userId);
@@ -149,7 +150,7 @@ public class OrderItemServiceImpl extends ServiceImpl<OrderItemMapper, OrderItem
      */
     @Override
     public void removeProduct(String token, String id) {
-        String userId = JwtHelper.getUserId(token);
+        String userId = TokenUtil.getUserId(token);
 
         // 移除条件，用户id和登录用户id一致，订单id为空，即未下单，id等于前端传入的id
         QueryWrapper<OrderItem> wrapper = new QueryWrapper<>();

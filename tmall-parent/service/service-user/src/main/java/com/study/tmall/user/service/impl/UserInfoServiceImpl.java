@@ -284,7 +284,7 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
         }
 
         // 创建token
-        String token = JwtHelper.createToken(userInfo.getId(), userInfo.getPassword());
+        String token = TokenUtil.createToken(userInfo.getId(), userInfo.getPassword());
 
         // 登录成功后应该删除redis中的邮箱验证码（发送到rabbit中）
         codeDelSend.send(MessageBuilder.withPayload(key).build());
@@ -384,7 +384,7 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
     @Override
     public String emailBinding(String token, UserRegisterVo userRegisterVo) {
         // 解析token
-        String userId = JwtHelper.getUserId(token);
+        String userId = TokenUtil.getUserId(token);
 
         // 对用户名，邮箱，验证码 进行解码
         String name = Base64.decode(userRegisterVo.getName());
@@ -412,7 +412,7 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
         baseMapper.updateById(userInfo);
 
         // 返回一个全新的token
-        String newToken = JwtHelper.createToken(userId, password);
+        String newToken = TokenUtil.createToken(userId, password);
         // 绑定成功后从redis中删除验证码
         codeDelSend.send(MessageBuilder.withPayload(key).build());
         return newToken;
@@ -426,8 +426,8 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
     @Override
     public UserInfoVo getUserInfoVoByToken(String token) {
         // 获取用户id和用户密码
-        String userId = JwtHelper.getUserId(token);
-        String password = JwtHelper.getPassword(token);
+        String userId = TokenUtil.getUserId(token);
+        String password = TokenUtil.getPassword(token);
 
         // 根据id和密码进行查询
         QueryWrapper<UserInfo> wrapper = new QueryWrapper<>();
@@ -459,8 +459,8 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
     @Override
     public UserInfo getUserDetailsInfoByToken(String token) {
         // 获取用户id和用户密码
-        String userId = JwtHelper.getUserId(token);
-        String password = JwtHelper.getPassword(token);
+        String userId = TokenUtil.getUserId(token);
+        String password = TokenUtil.getPassword(token);
 
         // 根据id和密码进行查询
         QueryWrapper<UserInfo> wrapper = new QueryWrapper<>();
@@ -483,7 +483,7 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
      */
     @Override
     public void unWechatBinding(String token) {
-        String userId = JwtHelper.getUserId(token);
+        String userId = TokenUtil.getUserId(token);
         // 根据id设置openid
         baseMapper.setOpenidById(userId, null);
     }
@@ -495,7 +495,7 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
      */
     @Override
     public void updateNickName(String token, String nickName) {
-        String userId = JwtHelper.getUserId(token);
+        String userId = TokenUtil.getUserId(token);
         UserInfo userInfo = baseMapper.selectById(userId);
         userInfo.setNickName(nickName);
         baseMapper.updateById(userInfo);
@@ -509,7 +509,7 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
     @Override
     public void uploadAvatar(String token, MultipartFile file) {
         try {
-            String userId = JwtHelper.getUserId(token);
+            String userId = TokenUtil.getUserId(token);
             // 查询数据库
             UserInfo userInfo = baseMapper.selectById(userId);
 
@@ -545,8 +545,8 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
      */
     @Override
     public UserInfo getUserInfoByToken(String token) {
-        String userId = JwtHelper.getUserId(token);
-        String password = JwtHelper.getPassword(token);
+        String userId = TokenUtil.getUserId(token);
+        String password = TokenUtil.getPassword(token);
 
         // 查询数据库
         QueryWrapper<UserInfo> wrapper = new QueryWrapper<>();

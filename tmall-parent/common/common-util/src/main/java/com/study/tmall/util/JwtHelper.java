@@ -60,10 +60,18 @@ public class JwtHelper {
      * @param token
      * @return
      */
-    public static String getPassword(String token) {
+    public static String getPassword(String token) throws ExpiredJwtException {
         if(StringUtils.isEmpty(token)) return "";
-        Jws<Claims> claimsJws = Jwts.parser().setSigningKey(tokenSignKey).parseClaimsJws(token);
-        Claims claims = claimsJws.getBody();
-        return (String)claims.get("password");
+        String password = null;
+        try {
+            Jws<Claims> claimsJws = Jwts.parser().setSigningKey(tokenSignKey).parseClaimsJws(token);
+            Claims claims = claimsJws.getBody();
+            password = (String)claims.get("password");
+        } catch (ExpiredJwtException e) {
+            // token过期
+            System.out.println("token过期：" + e);
+            throw e;
+        }
+        return password;
     }
 }

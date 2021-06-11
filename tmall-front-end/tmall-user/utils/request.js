@@ -44,7 +44,7 @@ service.interceptors.response.use(
       if (response.data.code === 508) { // 需要登录
         // 清空storage中所有值，并跳转到登陆页面
         storage.removeLoginStatus()
-        this.$router.push("/login")
+        window.location.href = '/login'
       }
       return Promise.reject(response.data)
     } else {
