@@ -1,9 +1,11 @@
 package com.study.tmall.gateway.filter;
 
 import com.alibaba.fastjson.JSONObject;
+import com.study.tmall.exception.TmallException;
 import com.study.tmall.result.Result;
 import com.study.tmall.result.ResultCodeEnum;
 import com.study.tmall.util.JwtHelper;
+import io.jsonwebtoken.ExpiredJwtException;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
 import org.springframework.core.Ordered;
@@ -86,7 +88,14 @@ public class AuthGlobalFilter implements GlobalFilter, Ordered {
             token = tokenList.get(0);
         }
         if(!StringUtils.isEmpty(token)) {
-            return JwtHelper.getUserId(token);
+            try {
+                String userId = JwtHelper.getUserId(token);
+                return userId;
+            } catch (ExpiredJwtException e) {
+                System.out.println("token已过期");
+                return null; // 返回空
+            }
+
         }
         return null;
     }

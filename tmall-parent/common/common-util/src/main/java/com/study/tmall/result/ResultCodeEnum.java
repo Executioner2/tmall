@@ -44,7 +44,6 @@ public enum ResultCodeEnum {
     LOGIN_DISABLED_ERROR(512, "该用户已被禁用"),
     REGISTER_MOBLE_ERROR(513, "手机号已被使用"),
     REGISTER_EMAIL_ERROR(514, "邮箱已被使用"),
-    LOGIN_AURH(515, "需要登录"),
     LOGIN_ACL(516, "没有权限"),
     LOGIN_NAME_FAIL(517, "用户名或密码错误"),
     LOGIN_PHONE_FAIL(518, "手机号或密码错误"),

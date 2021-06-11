@@ -40,11 +40,19 @@ public class JwtHelper {
      * @param token
      * @return
      */
-    public static String getUserId(String token) {
+    public static String getUserId(String token) throws ExpiredJwtException{
         if(StringUtils.isEmpty(token)) return "";
-        Jws<Claims> claimsJws = Jwts.parser().setSigningKey(tokenSignKey).parseClaimsJws(token);
-        Claims claims = claimsJws.getBody();
-        return (String) claims.get("userId");
+        String userId = null;
+        try {
+            Jws<Claims> claimsJws = Jwts.parser().setSigningKey(tokenSignKey).parseClaimsJws(token);
+            Claims claims = claimsJws.getBody();
+            userId = (String) claims.get("userId");
+        } catch (ExpiredJwtException e) {
+            // token过期
+            System.out.println("token过期：" + e);
+            throw e;
+        }
+        return userId;
     }
 
     /**

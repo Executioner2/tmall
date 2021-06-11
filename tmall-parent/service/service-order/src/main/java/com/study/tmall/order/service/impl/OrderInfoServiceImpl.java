@@ -198,7 +198,7 @@ public class OrderInfoServiceImpl extends ServiceImpl<OrderInfoMapper, OrderInfo
         UserInfo userInfo = userFeignClient.getUserInfoByToken(token);
         // 是否查询到用户
         if (userInfo == null) {
-            throw new TmallException(ResultCodeEnum.LOGIN_AURH);
+            throw new TmallException(ResultCodeEnum.LOGIN_AUTH);
         }
         // 用户是否被禁用
         if (userInfo.getStatus() == UserLockStatusEnum.LOCK.getStatus()) {
