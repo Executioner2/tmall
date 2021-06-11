@@ -36,16 +36,16 @@ service.interceptors.request.use(
 service.interceptors.response.use(
   response => {
     if (response.data.code !== 200) {
-      if (response.data.code === 508) { // 需要登录
-        // 清空storage中所有值，并跳转到登陆页面
-        storage.removeLoginStatus()
-        this.$router.push("/login")
-      }
       Message({
         message: response.data.message,
         type: 'error',
         duration: 5 * 1000
       })
+      if (response.data.code === 508) { // 需要登录
+        // 清空storage中所有值，并跳转到登陆页面
+        storage.removeLoginStatus()
+        this.$router.push("/login")
+      }
       return Promise.reject(response.data)
     } else {
       return response.data
